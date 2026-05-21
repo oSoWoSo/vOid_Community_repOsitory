@@ -52,8 +52,8 @@ fatal() {
 usage() {
 	prog=${0##*/}
 	cat <<-EOF
-	Usage: $prog -h | -u | -w | -p | -s | -a
-	       $prog {update|build|upload|serve|archs|help}
+	Usage: $prog -h | -u | -w | -p | -s | -a | -c
+	       $prog {update|build|upload|serve|archs|check-upstream|help}
 
 	Manage repository: templates, README, build.yml, website, and packages.
 
@@ -63,6 +63,7 @@ usage() {
 	  -p, --upload     upload built packages to WebDAV repository
 	  -s, --serve      serve website locally on port 8000
 	  -a, --archs      regenerate architecture pages only
+	  -c, --check      check upstream Void Linux for newer versions and additions
 	  -h, --help       print this message
 
 	Compound: $prog -uw   (update + build)
@@ -602,10 +603,167 @@ do_upload() {
 	echo "==> Done: ${SURFER_URL}/${ARCH}/"
 }
 
+# --- Check upstream ---
+
+check_upstream() {
+	IGNORE_FILE="${SCRIPT_DIR}/.github/ignore-pkgs"
+	STATE_FILE="${SCRIPT_DIR}/.github/upstream-state"
+
+	_ignores=""
+	if [ -f "$IGNORE_FILE" ]; then
+		_ignores=$(grep -v '^#' "$IGNORE_FILE" | grep -v '^$' || true)
+	fi
+	_is_ignored() {
+		printf '%s\n' "$_ignores" | grep -xF "$1" >/dev/null 2>&1
+	}
+
+	_state_data=""
+	[ -f "$STATE_FILE" ] && _state_data=$(cat "$STATE_FILE")
+
+	echo '==> Fetching upstream commit feed...'
+	_feed=$(curl -sS "https://github.com/void-linux/void-packages/commits/master.atom" 2>/dev/null) || true
+
+	_recent=""
+	if [ -n "$_feed" ]; then
+		_tmp=$(mktemp)
+		echo "$_feed" | awk '
+			/<title>/ { if (in_title) next; in_title = 1; title = ""; next }
+			/<\/title>/ {
+				in_title = 0
+				gsub(/^[ \t]+|[ \t]+$/, "", title)
+				if (title != "" && title != "Recent Commits to void-packages:master") print title
+				title = ""; next
+			}
+			in_title { title = title $0 }
+		' 2>/dev/null | while IFS= read -r _msg; do
+			[ -z "$_msg" ] && continue
+			_p=$(echo "$_msg" | sed -n 's/^\([a-zA-Z0-9._+-][a-zA-Z0-9._+-]*\):.*/\1/p')
+			[ -n "$_p" ] && echo "$_p"
+			_p=$(echo "$_msg" | sed -n 's/^New package: \([a-zA-Z0-9._+-]*\)-.*/\1/p')
+			[ -n "$_p" ] && echo "$_p"
+		done > "$_tmp"
+		_recent=$(sort -u "$_tmp" 2>/dev/null | tr '\n' ' ')
+		rm -f "$_tmp"
+	fi
+
+	[ -n "$_recent" ] && echo "==> Recently changed upstream: $_recent" \
+		|| echo '==> (no packages parsed from feed)'
+
+	_old_state_field() {
+		echo "$_state_data" | grep "^${1}|" | head -n1 | cut -d'|' -f"${2}" 2>/dev/null || true
+	}
+
+	echo ''
+	echo '===================== Upstream check report ====================='
+	echo ''
+
+	_state_new=$(mktemp)
+	_newer_list='' _added_list='' _up_to_date=0 _no_upstream=0 _api_calls=0
+
+	for _d in "$SRCPKGS"/*/; do
+		[ -d "$_d" ] || continue
+		_pkg=${_d%/}; _pkg=${_pkg##*/}
+
+		_is_ignored "$_pkg" && {
+			printf '%s|ignored||ignored\n' "$_pkg" >> "$_state_new"
+			continue
+		}
+
+		_local_ver=$(grep '^version=' "$_d/template" 2>/dev/null \
+			| head -n1 | cut -d= -f2- | tr -d '"' | tr -d ' ')
+		[ -z "$_local_ver" ] && _local_ver='?'
+
+		_old_exists=$(_old_state_field "$_pkg" 2)
+		_old_ver=$(_old_state_field "$_pkg" 3)
+
+		_fetch=false
+		case " $_recent " in *" $_pkg "*) _fetch=true ;; esac
+		[ -z "$_old_exists" ] && _fetch=true
+		[ "$_old_exists" = "ignored" ] && _fetch=true
+
+		if $_fetch; then
+			_up_template=$(curl -sf \
+				"https://raw.githubusercontent.com/void-linux/void-packages/master/srcpkgs/${_pkg}/template" \
+				2>/dev/null) || true
+			_api_calls=$((_api_calls + 1))
+			if [ -n "$_up_template" ]; then
+				_up_ver=$(echo "$_up_template" | grep '^version=' | head -n1 \
+					| cut -d= -f2- | tr -d '"' | tr -d ' ')
+				_up_exists="yes"
+			else
+				_up_exists="no"
+				_up_ver=''
+			fi
+		else
+			_up_exists="$_old_exists"
+			_up_ver="$_old_ver"
+		fi
+
+		if [ "$_up_exists" = "yes" ] && [ -n "$_up_ver" ] && [ "$_local_ver" != "?" ]; then
+			if [ "$_up_ver" != "$_local_ver" ]; then
+				_lower=$(printf '%s\n%s' "$_up_ver" "$_local_ver" \
+					| sort -V 2>/dev/null | head -n1)
+				[ "$_lower" = "$_local_ver" ] && _newer_list="$_newer_list $_pkg"
+			fi
+		fi
+
+		_status='current'
+		if [ "$_up_exists" = "yes" ] && [ "$_old_exists" = "no" ]; then
+			_status='suggested_removal'
+			_added_list="$_added_list $_pkg"
+		fi
+
+		if [ "$_up_exists" = "yes" ]; then
+			_up_to_date=$((_up_to_date + 1))
+		elif [ "$_up_exists" = "no" ]; then
+			_no_upstream=$((_no_upstream + 1))
+		fi
+
+		printf '%s|%s|%s|%s\n' "$_pkg" "$_up_exists" "$_up_ver" "$_status" \
+			>> "$_state_new"
+	done
+
+	_ncnt=$(echo $_newer_list | wc -w | tr -d ' ')
+	_acnt=$(echo $_added_list | wc -w | tr -d ' ')
+	_icnt=$(grep -c '|ignored|' "$_state_new" 2>/dev/null) && _icnt="$_icnt" || _icnt=0
+
+	if [ "$_ncnt" -gt 0 ]; then
+		echo ""
+		for _p in $_newer_list; do
+			_nv=$(grep "^${_p}|" "$_state_new" | head -n1 | cut -d'|' -f3)
+			_lv=$(grep '^version=' "$SRCPKGS/$_p/template" 2>/dev/null \
+				| head -n1 | cut -d= -f2- | tr -d '"' | tr -d ' ')
+			printf '  '; _y "[NEWER] $_p: $_lv -> $_nv"
+		done
+	fi
+
+	if [ "$_acnt" -gt 0 ]; then
+		echo ""
+		for _p in $_added_list; do
+			_nv=$(grep "^${_p}|" "$_state_new" | head -n1 | cut -d'|' -f3)
+			printf '  '; _r "[ADDED] $_p (v$_nv) -- nyní existuje ve Void Linux!"
+			echo "         -> rm -rf srcpkgs/$_p/"
+			echo "         -> git rm srcpkgs/$_p/"
+		done
+	fi
+
+	echo ""
+	echo '================================================================='
+	echo ""
+	[ "$_ncnt" -gt 0 ] && printf '  %bNEWER%b:     %s\n' "$YELLOW" "$NC" "$_newer_list"
+	[ "$_acnt" -gt 0 ] && printf '  %bADDED%b:     %s\n' "$RED" "$NC" "$_added_list"
+	[ "$_icnt" -gt 0 ] && echo "  IGNORED:   $_icnt packages"
+	echo "  No change: $_up_to_date in repo, $_no_upstream not in Void Linux"
+	echo "  API calls: $_api_calls"
+
+	mv "$_state_new" "$STATE_FILE"
+	echo ''
+	_g "State saved to $STATE_FILE"
+}
+
 # --- Main ---
 
 main() {
-	# Map named targets to getopts-style args
 	case "${1:-}" in
 		help|--help)     set -- -h ;;
 		update)          set -- -u ;;
@@ -613,11 +771,12 @@ main() {
 		upload|publish)  set -- -p ;;
 		serve)           set -- -s ;;
 		archs)           set -- -a ;;
+		check-upstream|check) set -- -c ;;
 	esac
 
 	_opt='' OPTIND=1 OPTARG=''
-	_do_update='' _do_packages='' _do_web='' _do_archs=''
-	while getopts 'huwpsa' _opt; do
+	_do_update='' _do_packages='' _do_web='' _do_archs='' _do_check=''
+	while getopts 'huwpsac' _opt; do
 		case "$_opt" in
 			h) usage; return 0 ;;
 			u) _do_update=1 ;;
@@ -625,14 +784,15 @@ main() {
 			p) _do_packages=1 ;;
 			s) target_serve; return 0 ;;
 			a) _do_archs=1 ;;
+			c) _do_check=1 ;;
 			*) usage >&2; return 1 ;;
 		esac
 	done
 
-	[ -n "$_do_update$_do_packages$_do_web$_do_archs" ] ||
+	[ -n "$_do_update$_do_packages$_do_web$_do_archs$_do_check" ] ||
 		{ usage >&2; return 1; }
 
-	if [ "$_do_update" = 1 ] || [ "$_do_web" = 1 ]; then
+	if [ "$_do_update" = 1 ] || [ "$_do_web" = 1 ] || [ "$_do_check" = 1 ]; then
 		[ -d "$SRCPKGS" ] || fatal "srcpkgs directory not found: ${SRCPKGS}"
 	fi
 
@@ -648,6 +808,9 @@ main() {
 	fi
 	if [ "$_do_archs" = 1 ] && [ "$_do_web" != 1 ]; then
 		generate_arch_pages
+	fi
+	if [ "$_do_check" = 1 ]; then
+		check_upstream
 	fi
 	if [ "$_do_packages" = 1 ]; then
 		do_upload
