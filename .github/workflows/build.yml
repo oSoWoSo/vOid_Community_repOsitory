@@ -270,8 +270,29 @@ jobs:
             fi
             if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "$ZERO_SHA" ] \
                 || ! git cat-file -e "$BASE_SHA" 2>/dev/null; then
-              echo "No usable diff base ($BASE_SHA); treating as full build"
-              packages=$(all_packages)
+              echo "No direct diff base; comparing against origin/main templatesList"
+              _main_list=$(git show origin/main:.github/templatesList 2>/dev/null || true)
+              if [ -n "$_main_list" ]; then
+                _current_list=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort)
+                _main_list=$(printf '%s\n' "$_main_list" | sort)
+                _added=$(  comm -23 <(printf '%s\n' "$_current_list") <(printf '%s\n' "$_main_list"))
+                _removed=$(comm -13 <(printf '%s\n' "$_current_list") <(printf '%s\n' "$_main_list"))
+                removed=$(printf '%s\n' "$_removed" | tr '\n' ' ' | sed 's/ $//')
+                _common=$(comm -12 <(printf '%s\n' "$_current_list") <(printf '%s\n' "$_main_list"))
+                _modified=""
+                for _pkg in $_common; do
+                  if git show origin/main:srcpkgs/$_pkg/template 2>/dev/null \
+                      | diff -q - srcpkgs/$_pkg/template >/dev/null 2>&1; then
+                    :
+                  else
+                    _modified="$_modified$_pkg "
+                  fi
+                done
+                packages=$(printf '%s\n%s' "$_added" "$_modified" | grep -v '^$' | tr '\n' ' ' | sed 's/ $//')
+              else
+                echo "  templatesList from origin/main not available; treating as full build"
+                packages=$(all_packages)
+              fi
             else
               _diff=$(git diff --name-status "$BASE_SHA" "$HEAD_SHA" -- 'srcpkgs/*/template')
               packages=$(printf '%s\n' "$_diff" \
