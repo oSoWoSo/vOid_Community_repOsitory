@@ -52,9 +52,9 @@ do_check() {
 }
 
 do_install() {
-	for size in 32x32 128x128 256x256; do
-		vmkdir usr/share/icons/hicolor/${size}/apps
-		vinstall src-tauri/icons/${size}.png 644 usr/share/icons/hicolor/${size}/apps com.ccswitch.desktop.png
+	for size in 32 64 128; do
+		vmkdir usr/share/icons/hicolor/${size}x${size}/apps
+		vinstall src-tauri/icons/${size}x${size}.png 644 usr/share/icons/hicolor/${size}x${size}/apps com.ccswitch.desktop.png
 	done
 	vmkdir usr/share/applications
 	vinstall flatpak/com.ccswitch.desktop.desktop 644 usr/share/applications com.ccswitch.desktop.desktop
