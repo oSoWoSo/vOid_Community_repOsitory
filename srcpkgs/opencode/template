@@ -1,0 +1,30 @@
+# Template file for 'opencode'
+pkgname=opencode
+version=1.15.10
+revision=1
+archs="x86_64"
+hostmakedepends="bun-bin nodejs python3 git"
+depends="ripgrep"
+short_desc="Open source AI coding agent"
+maintainer="zenobit <zen@osowoso.org>"
+license="MIT"
+homepage="https://github.com/anomalyco/opencode"
+distfiles="https://github.com/anomalyco/opencode/archive/refs/tags/v${version}.tar.gz"
+checksum=af407ac0a1f2985b0695b9bb92dafc0131c64a8e981f13d30a33af1e6f38267d
+nostrip_files="/usr/bin/opencode"
+nopie_files="/usr/bin/opencode"
+
+do_build() {
+	export OPENCODE_VERSION="${version}"
+
+	bun install --frozen-lockfile
+	bun run --cwd packages/opencode build -- --single --skip-install
+}
+
+do_install() {
+	vbin packages/opencode/dist/opencode-linux-x64/bin/opencode
+	vlicense LICENSE
+
+	$DESTDIR/usr/bin/opencode completion > opencode
+	vcompletion opencode bash
+}

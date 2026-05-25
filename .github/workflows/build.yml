@@ -152,6 +152,7 @@ on:
         - odin2-lv2
         - odin2-standalone
         - odin2-vst3
+        - opencode
         - patchance
         - pop-fonts
         - pop-icons
