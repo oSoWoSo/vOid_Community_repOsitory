@@ -76,6 +76,7 @@ Create PR
 | brow6el | 0.3.4 | https://codeberg.org/janantos/brow6el | zenobit | x86_64 |
 | btrfs-progs | 6.17.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
 | candy-icons-git | 0.11.1 | https://www.opendesktop.org/p/1305251/ | Trve_AY |  |
+| cc-switch | 3.15.0 | https://github.com/farion1231/cc-switch | zenobit | x86_64* aarch64* |
 | clitest | 0.5.0 | https://github.com/aureliojargas/clitest | zenobit |  |
 | corekeyboard | 5.0.1 | https://gitlab.com/cubocore/coreapps/corekeyboard | zenobit |  |
 | cosmic-applets | 1.0.13 | https://github.com/pop-os/cosmic-applets | Bella Viola Wagner | x86_64* i686 |

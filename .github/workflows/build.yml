@@ -43,6 +43,7 @@ on:
         - brow6el
         - btrfs-progs
         - candy-icons-git
+        - cc-switch
         - clitest
         - corekeyboard
         - cosmic-applets
