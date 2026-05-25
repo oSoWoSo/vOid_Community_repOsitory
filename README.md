@@ -186,6 +186,7 @@ Create PR
 | odin2-standalone | 2.4.1 | https://thewavewarden.com/pages/odin-2 | Trve_AY |  |
 | odin2-vst3 | 2.4.1 | https://thewavewarden.com/pages/odin-2 | Trve_AY |  |
 | opencode | 1.15.10 | https://github.com/anomalyco/opencode | zenobit | x86_64 |
+| opencode-arm | 1.15.6 | https://github.com/anomalyco/opencode | zenobit | aarch64* |
 | patchance | 1.4.0 | https://raysession.tuxfamily.org/ | Trve_AY |  |
 | pop-fonts | 0.0.0 | https://github.com/pop-os/fonts | Bella Wagner |  |
 | pop-icons | 3.5.1 | https://github.com/pop-os/icon-theme | Bella Wagner |  |
