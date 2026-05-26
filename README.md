@@ -76,7 +76,9 @@ Create PR
 | brow6el | 0.3.4 | https://codeberg.org/janantos/brow6el | zenobit | x86_64 |
 | btrfs-progs | 6.17.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
 | bun-arm-bin | 1.3.14 | https://bun.sh | zenobit | aarch64 |
+| bun-arm-musl-bin | 1.3.14 | https://bun.sh | zenobit | aarch64-musl |
 | bun-bin | 1.3.14 | https://bun.sh | zenobit | x86_64 |
+| bun-musl-bin | 1.3.14 | https://bun.sh | zenobit | x86_64-musl |
 | candy-icons-git | 0.11.1 | https://www.opendesktop.org/p/1305251/ | Trve_AY |  |
 | cc-switch | 3.15.0 | https://github.com/farion1231/cc-switch | zenobit | x86_64* aarch64* |
 | clitest | 0.5.0 | https://github.com/aureliojargas/clitest | zenobit |  |

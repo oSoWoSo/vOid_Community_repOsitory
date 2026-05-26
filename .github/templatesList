@@ -4,7 +4,9 @@ brave-browser-bin
 brow6el
 btrfs-progs
 bun-arm-bin
+bun-arm-musl-bin
 bun-bin
+bun-musl-bin
 candy-icons-git
 cc-switch
 clitest
