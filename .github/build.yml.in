@@ -129,10 +129,10 @@ jobs:
             else
               _diff=$(git diff --name-status "$BASE_SHA" "$HEAD_SHA" -- 'srcpkgs/*/template')
               packages=$(printf '%s\n' "$_diff" \
-                | awk '$1 ~ /^[ACMR]/ {print $2}' \
+                | awk '$1 ~ /^[ACMR]/ { if (substr($1,1,1)=="R") print $3; else print $2 }' \
                 | cut -d/ -f2 | sort -u | tr '\n' ' ' | sed 's/ $//')
               removed=$(printf '%s\n' "$_diff" \
-                | awk '$1=="D"{print $2}' \
+                | awk '$1=="D"{print $2} $1~/^R/{print $2}' \
                 | cut -d/ -f2 | sort -u | tr '\n' ' ' | sed 's/ $//')
             fi
           else
