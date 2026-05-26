@@ -11,6 +11,7 @@ distfiles="https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-
  https://raw.githubusercontent.com/oven-sh/bun/refs/heads/main/LICENSE.md"
 checksum="951ee2aee855f08595aeec6225226a298d3fea83a3dcd6465c09cbccdf7e848f
  2c6160ec8fb853f7e8f97d9b249e756c9b0ac44860a68b6bf4f1b0bcbc5c3741"
+nocross="No crossbuild support, use native package bun-arm-{musl-}bin"
 skip_extraction="LICENSE.md"
 nopie_files="/usr/bin/bun"
 conflicts="bun"
