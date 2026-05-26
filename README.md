@@ -240,6 +240,7 @@ Create PR
 | xdg-desktop-portal-cosmic | 1.0.13 | https://github.com/pop-os/xdg-desktop-portal-cosmic | Bella Viola Wagner | x86_64* |
 | xdg-desktop-portal-hyprland | 1.3.11 | https://github.com/hyprwm/xdg-desktop-portal-hyprland | zenobit |  |
 | xut | 0.4.2 | https://codeberg.org/mobinmob/xut | mobinmob |  |
+| xxtools-git | 0.0.0 | https://github.com/Piraty/xxtools | zenobit |  |
 | zen-browser-arm-bin | 1.20b | https://github.com/zen-browser/desktop | Bella Viola Wagner | aarch64 |
 | zen-browser-bin | 1.20b | https://github.com/zen-browser/desktop | Bella Viola Wagner | x86_64 |
 | zig | 0.16.0 | https://ziglang.org | Bella Viola Wagner | x86_64* aarch64* |

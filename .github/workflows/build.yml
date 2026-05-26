@@ -207,6 +207,7 @@ on:
         - xdg-desktop-portal-cosmic
         - xdg-desktop-portal-hyprland
         - xut
+        - xxtools-git
         - zen-browser-arm-bin
         - zen-browser-bin
         - zig
