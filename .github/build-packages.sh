@@ -34,10 +34,6 @@ for pkg in $PKGS; do
 		echo "==> Skipping ${pkg}: nocross (built natively)"
 		continue
 	fi
-	if [ "$NATIVE" = true ] && ! grep -q '^nocross=' "srcpkgs/${pkg}/template" 2>/dev/null; then
-		echo "==> Skipping ${pkg}: not nocross (built in cross job)"
-		continue
-	fi
 	echo "==> Building ${pkg}"
 	if sudo -Eu builder ./xbps-src -j"$(nproc)" -s $arch $xbps_test pkg "$pkg"; then
 		BUILT=true

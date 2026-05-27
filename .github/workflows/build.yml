@@ -213,6 +213,15 @@ on:
         - zen-browser-arm-bin
         - zen-browser-bin
         - zig
+      runner:
+        description: 'Runner selection (optional)'
+        required: false
+        type: choice
+        default: auto
+        options:
+        - auto
+        - amd64
+        - arm64
 # Apply changes in .github/build.yml.in instead.
 # .github/workflows/build.yml is generated from this file by `update-repo -u`.
 
@@ -247,6 +256,7 @@ jobs:
           INPUT_ALL: ${{ inputs.all }}
           INPUT_TEMPLATE: ${{ inputs.template }}
           INPUT_TEMPLATES: ${{ inputs.templates }}
+          INPUT_RUNNER: ${{ inputs.runner || 'auto' }}
           EVENT_NAME: ${{ github.event_name }}
           PUSH_BEFORE: ${{ github.event.before }}
           PUSH_AFTER: ${{ github.event.after }}
@@ -390,19 +400,47 @@ jobs:
             matrix_configs="${matrix_configs}{\"arch\":\"$1\",\"host\":\"$2\",\"runner\":\"$3\",\"platform\":\"$4\",\"test\":$5,\"native\":$6}"
           }
 
-          matrix_configs=""
-          if [ -n "$packages" ]; then
-            arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64"      "ubuntu-latest"    "linux/amd64" 1 false
-            needs_cross_aarch64      && add_cfg "aarch64"      "x86_64"      "ubuntu-latest"    "linux/amd64" 0 false
-            arch_needed "x86_64-musl"  && add_cfg "x86_64-musl"  "x86_64-musl" "ubuntu-latest"    "linux/amd64" 1 false
-            needs_cross_aarch64_musl && add_cfg "aarch64-musl" "x86_64-musl" "ubuntu-latest"    "linux/amd64" 0 false
-            needs_native_aarch64 && add_cfg "aarch64" "aarch64" "ubuntu-24.04-arm" "linux/arm64" 1 true
-            needs_native_aarch64_musl && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
-            if [ -z "$matrix_configs" ]; then
-              echo "Warning: no arch matched package list, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
-              add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
-            fi
-          fi
+          _RUNNER="${INPUT_RUNNER:-auto}"
+          case "$_RUNNER" in
+            amd64)
+              # Force x86_64 / x86_64-musl only
+              _amd64=$(arch_needed "x86_64"       && echo 1 || echo 0)
+              _musl=$( arch_needed "x86_64-musl"  && echo 1 || echo 0)
+              matrix_configs=""
+              [ "$_amd64" = 1 ] && add_cfg "x86_64"      "x86_64"      "ubuntu-latest"    "linux/amd64" 1 false
+              [ "$_musl"  = 1 ] && add_cfg "x86_64-musl" "x86_64-musl" "ubuntu-latest"    "linux/amd64" 1 false
+              if [ -z "$matrix_configs" ]; then
+                echo "Warning: no packages for amd64 archs, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
+                add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
+              fi
+              ;;
+            arm64)
+              # Force aarch64 / aarch64-musl native only
+              _arm_native=$(arch_needed "aarch64"      && echo 1 || echo 0)
+              _arm_musl=$(   arch_needed "aarch64-musl" && echo 1 || echo 0)
+              matrix_configs=""
+              [ "$_arm_native" = 1 ] && add_cfg "aarch64"      "aarch64"      "ubuntu-24.04-arm" "linux/arm64" 1 true
+              [ "$_arm_musl"  = 1 ] && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
+              if [ -z "$matrix_configs" ]; then
+                echo "Warning: no packages for arm64 archs, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
+                add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
+              fi
+              ;;
+            auto|*)
+              # Default: auto-detect based on packages and nocross
+              matrix_configs=""
+              arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64"      "ubuntu-latest"    "linux/amd64" 1 false
+              needs_cross_aarch64      && add_cfg "aarch64"      "x86_64"      "ubuntu-latest"    "linux/amd64" 0 false
+              arch_needed "x86_64-musl"  && add_cfg "x86_64-musl"  "x86_64-musl" "ubuntu-latest"    "linux/amd64" 1 false
+              needs_cross_aarch64_musl && add_cfg "aarch64-musl" "x86_64-musl" "ubuntu-latest"    "linux/amd64" 0 false
+              needs_native_aarch64 && add_cfg "aarch64" "aarch64" "ubuntu-24.04-arm" "linux/arm64" 1 true
+              needs_native_aarch64_musl && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
+              if [ -z "$matrix_configs" ]; then
+                echo "Warning: no arch matched package list, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
+                add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
+              fi
+              ;;
+          esac
           echo "matrix={\"config\":[${matrix_configs}]}" >> "$GITHUB_OUTPUT"
 
   test-pr:
