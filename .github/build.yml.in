@@ -47,6 +47,7 @@ on:
         - auto
         - amd64
         - arm64
+        - nativ
 # Apply changes in .github/build.yml.in instead.
 # .github/workflows/build.yml is generated from this file by `update-repo -u`.
 
@@ -178,43 +179,74 @@ jobs:
             return 1
           }
 
+          _check_nocross_chain() {
+            local _pkg="$1"
+            local _tpl="srcpkgs/${_pkg}/template"
+            [ -f "$_tpl" ] || return 1
+            grep -q '^nocross=' "$_tpl" 2>/dev/null && return 0
+            case " ${_cnc_visited:-} " in *" $_pkg "*) return 1 ;; esac
+            _cnc_visited="$_cnc_visited $_pkg"
+            local _deps=""
+            for _field in hostmakedepends makedepends depends; do
+              _line=$(grep -m1 "^${_field}=" "$_tpl" 2>/dev/null)
+              _line="${_line#*=}"
+              _line="${_line#\"}"; _line="${_line%\"}"
+              _line="${_line#'}"; _line="${_line%'}"
+              _deps="$_deps $_line"
+            done
+
+            local _dep _dep_name
+            for _dep in $_deps; do
+              _dep_name="${_dep%%[><=]*}"
+              [ -z "$_dep_name" ] && continue
+              [ -f "srcpkgs/${_dep_name}/template" ] || continue
+              _check_nocross_chain "$_dep_name" && return 0
+            done
+
+            return 1
+          }
+
           needs_cross_aarch64() {
+            _cnc_visited=""
             local any_nocross=0
             for pkg in $packages; do
               local template="srcpkgs/${pkg}/template"
               [ -f "$template" ] || continue
               pkg_arch_ok "$pkg" "aarch64" || continue
-              grep -q '^nocross=' "$template" && any_nocross=1
+              _check_nocross_chain "$pkg" && any_nocross=1
             done
             [ "$any_nocross" = 0 ] && arch_needed "aarch64"
           }
 
           needs_cross_aarch64_musl() {
+            _cnc_visited=""
             local any_nocross=0
             for pkg in $packages; do
               local template="srcpkgs/${pkg}/template"
               [ -f "$template" ] || continue
               pkg_arch_ok "$pkg" "aarch64-musl" || continue
-              grep -q '^nocross=' "$template" && any_nocross=1
+              _check_nocross_chain "$pkg" && any_nocross=1
             done
             [ "$any_nocross" = 0 ] && arch_needed "aarch64-musl"
           }
 
           needs_native_aarch64() {
+            _cnc_visited=""
             for pkg in $packages; do
               local template="srcpkgs/${pkg}/template"
               [ -f "$template" ] || continue
-              grep -q '^nocross=' "$template" || continue
+              _check_nocross_chain "$pkg" || continue
               pkg_arch_ok "$pkg" "aarch64" && return 0
             done
             return 1
           }
 
           needs_native_aarch64_musl() {
+            _cnc_visited=""
             for pkg in $packages; do
               local template="srcpkgs/${pkg}/template"
               [ -f "$template" ] || continue
-              grep -q '^nocross=' "$template" || continue
+              _check_nocross_chain "$pkg" || continue
               pkg_arch_ok "$pkg" "aarch64-musl" && return 0
             done
             return 1
@@ -228,7 +260,6 @@ jobs:
           _RUNNER="${INPUT_RUNNER:-auto}"
           case "$_RUNNER" in
             amd64)
-              # Force x86_64 / x86_64-musl only
               _amd64=$(arch_needed "x86_64"       && echo 1 || echo 0)
               _musl=$( arch_needed "x86_64-musl"  && echo 1 || echo 0)
               matrix_configs=""
@@ -240,7 +271,6 @@ jobs:
               fi
               ;;
             arm64)
-              # Force aarch64 / aarch64-musl native only
               _arm_native=$(arch_needed "aarch64"      && echo 1 || echo 0)
               _arm_musl=$(   arch_needed "aarch64-musl" && echo 1 || echo 0)
               matrix_configs=""
@@ -251,8 +281,18 @@ jobs:
                 add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
               fi
               ;;
+            nativ)
+              matrix_configs=""
+              arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64"      "ubuntu-latest"    "linux/amd64" 1 false
+              arch_needed "aarch64"      && add_cfg "aarch64"      "aarch64"      "ubuntu-24.04-arm" "linux/arm64" 1 true
+              arch_needed "x86_64-musl"  && add_cfg "x86_64-musl"  "x86_64-musl" "ubuntu-latest"    "linux/amd64" 1 false
+              arch_needed "aarch64-musl" && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
+              if [ -z "$matrix_configs" ]; then
+                echo "Warning: no packages for any arch, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
+                add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
+              fi
+              ;;
             auto|*)
-              # Default: auto-detect based on packages and nocross
               matrix_configs=""
               arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64"      "ubuntu-latest"    "linux/amd64" 1 false
               needs_cross_aarch64      && add_cfg "aarch64"      "x86_64"      "ubuntu-latest"    "linux/amd64" 0 false

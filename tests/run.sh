@@ -7,14 +7,9 @@ set -u
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
-# Run tests in an isolated tempdir so we can never clobber the real
-# srcpkgs/, README.md, etc. The functions under test only need PWD;
-# anything that references SCRIPT_DIR (helper paths) still resolves.
 _TEST_TMP=$(mktemp -d)
 trap 'rm -rf "$_TEST_TMP"' EXIT INT TERM
 cd "$_TEST_TMP" || exit 99
-
-# --- assertion infra ---
 
 _PASS=0
 _FAIL=0
@@ -49,13 +44,8 @@ assert_rc() {
 	fi
 }
 
-# --- load functions under test ---
-
-# Source pkg-helpers.sh directly; it's a library.
 . "$SCRIPT_DIR/.github/pkg-helpers.sh"
 
-# update-repo is a CLI. Run only the function defs through eval so its
-# top-level main() does not execute.
 eval "$(awk '
 	/^pkg_name\(\)/        {p=1}
 	/^fetch_remote_list/   {p=1}
@@ -63,8 +53,6 @@ eval "$(awk '
 	p {print}
 	p && /^}$/             {p=0}
 ' "$SCRIPT_DIR/update-repo")"
-
-# --- pkg_name ---
 
 echo '== pkg_name =='
 it 'plain name';            assert_eq "$(pkg_name 'foo-1.0_1.x86_64')"          'foo'
@@ -75,13 +63,9 @@ it 'musl arch suffix';      assert_eq "$(pkg_name 'foo-1.2_1.aarch64-musl')"    
 it 'caller stripped .xbps'; assert_eq "$(pkg_name 'foo-1.0_1.x86_64')"          'foo'
 it 'caller passed .xbps';   assert_eq "$(pkg_name 'foo-1.0_1.x86_64.xbps')"     'foo'
 
-# --- pkg_arch_ok ---
-
 echo '== pkg_arch_ok =='
 
 _mktpl() {
-	# _mktpl <archs-value>  -> writes srcpkgs/_t/template (relative to PWD,
-	# which is the test tempdir, so this never touches the real tree).
 	mkdir -p srcpkgs/_t
 	if [ -z "$1" ]; then
 		: > srcpkgs/_t/template
@@ -116,8 +100,6 @@ it 'missing template (allow all)'
 rm -rf srcpkgs/_t
 pkg_arch_ok _t aarch64; assert_rc $? 0
 
-# --- read_template_fields ---
-
 echo '== read_template_fields =='
 
 _mkfull_tpl() {
@@ -144,8 +126,6 @@ it 'maintainer';  assert_eq "$_tpl_maintainer"  'Jane Doe'
 it 'homepage';    assert_eq "$_tpl_homepage"    'https://example.com/foo?bar=baz'
 it 'archs';       assert_eq "$_tpl_archs"       'x86_64 ~i686'
 
-# Make sure first-occurrence wins (defensive against `archs=` lines inside
-# functions or subpackages reassigning).
 cat > srcpkgs/_t/template <<'EOF'
 version=1.0
 version=2.0
@@ -153,18 +133,13 @@ EOF
 read_template_fields srcpkgs/_t/template
 it 'first version wins'; assert_eq "$_tpl_version" '1.0'
 
-# Empty template should leave all fields empty
 : > srcpkgs/_t/template
 read_template_fields srcpkgs/_t/template
 it 'empty template -> empty version'; assert_eq "$_tpl_version" ''
 it 'empty template -> empty archs';   assert_eq "$_tpl_archs"   ''
 
-# --- fetch_remote_list curl error handling ---
-
 echo '== fetch_remote_list =='
 
-# Build a fake curl that we put first on PATH. The outer EXIT trap
-# already cleans up the entire test tempdir, so no extra trap here.
 _FAKE_BIN=$(mktemp -d)
 
 cat > "$_FAKE_BIN/curl" <<'EOF'
@@ -219,17 +194,13 @@ unset FAKE_CURL_MODE
 
 PATH="$PATH_BACKUP"
 
-# --- prune_orphans (orphans-file output) ---
-
 echo '== prune_orphans =='
 
-# Set up srcpkgs/ with a couple of "kept" templates
 rm -rf srcpkgs
 mkdir -p srcpkgs/keepme srcpkgs/alsokeep
 : > srcpkgs/keepme/template
 : > srcpkgs/alsokeep/template
 
-# Load prune_orphans + delete_remote from update-repo
 eval "$(awk '
 	/^prune_orphans\(\)/ {p=1}
 	/^delete_remote\(\)/ {p=1}
@@ -237,11 +208,8 @@ eval "$(awk '
 	p && /^}$/           {p=0}
 ' "$SCRIPT_DIR/update-repo")"
 
-# Stub delete_remote so we don't hit a real WebDAV
 _DELETED=$(mktemp)
 delete_remote() { printf '%s\n' "$1" >> "$_DELETED"; }
-# Point SCRIPT_DIR at the test tempdir so prune_orphans looks at OUR
-# fake srcpkgs/, not the real project tree.
 _SCRIPT_DIR_BACKUP="$SCRIPT_DIR"
 SCRIPT_DIR="$PWD"
 SRCPKGS=srcpkgs SURFER_TOKEN=x ARCH=x86_64 _webdav="https://x/webdav"
@@ -270,8 +238,6 @@ rm -f "$_orphans" "$_DELETED"
 rm -rf srcpkgs
 SCRIPT_DIR="$_SCRIPT_DIR_BACKUP"
 
-# --- repodata-list.py ---
-
 echo '== repodata-list.py =='
 
 if command -v python3 >/dev/null 2>&1; then
@@ -292,7 +258,6 @@ open("index.plist","wb").write(plistlib.dumps({
 	it 'lists all package names'
 	assert_eq "$(cat "$_wd/out")" 'alpha,alpha-devel,zeta,'
 
-	# Empty index -> empty output, rc=0
 	(
 		cd "$_wd" || exit 1
 		python3 -c 'import plistlib; open("index.plist","wb").write(plistlib.dumps({}, fmt=plistlib.FMT_XML))'
@@ -302,16 +267,13 @@ open("index.plist","wb").write(plistlib.dumps({
 	it 'empty index: rc 0';        assert_rc "$_rc" 0
 	it 'empty index: no output';   assert_eq "$(cat "$_wd/out")" ''
 
-	# Missing arg -> rc 2
 	python3 "$SCRIPT_DIR/.github/repodata-list.py" >/dev/null 2>&1; _rc=$?
 	it 'missing arg: rc 2';        assert_rc "$_rc" 2
 
-	# Garbage input -> rc 1
 	echo bogus > "$_wd/garbage"
 	python3 "$SCRIPT_DIR/.github/repodata-list.py" "$_wd/garbage" >/dev/null 2>&1; _rc=$?
 	it 'garbage input: rc 1';      assert_rc "$_rc" 1
 
-	# zstd-compressed repodata (only if zstd CLI is on PATH -- mirror CI)
 	if command -v zstd >/dev/null 2>&1; then
 		(
 			cd "$_wd" || exit 1
@@ -328,11 +290,9 @@ open("index.plist","wb").write(plistlib.dumps({
 		it 'zstd input: lists all entries'
 		assert_eq "$(cat "$_wd/out")" 'zst-a,zst-b,'
 
-		# Strip + roundtrip through zstd must keep the file zstd-compressed
 		(
 			cd "$_wd" || exit 1
 			python3 "$SCRIPT_DIR/.github/repodata-strip.py" zst-repodata zst-a >/dev/null
-			# Magic check: zstd is \x28\xb5\x2f\xfd
 			head -c 4 zst-repodata | od -An -tx1 | tr -d ' \n'
 		) > "$_wd/out"
 		it 'zstd strip: output is still zstd'
@@ -352,8 +312,6 @@ open("index.plist","wb").write(plistlib.dumps({
 else
 	echo '  (skipped: python3 not on PATH)'
 fi
-
-# --- repodata-strip.py end-to-end ---
 
 echo '== repodata-strip.py =='
 
@@ -385,7 +343,86 @@ else
 	echo '  (skipped: python3 not on PATH)'
 fi
 
-# --- report ---
+echo '== _check_nocross_chain =='
+
+eval "$(awk '
+  /^[[:space:]]*_check_nocross_chain\(\)/ { p=1; depth=0 }
+  p { print }
+  p && /\{/ { depth++ }
+  p && /\}/ { depth--; if (depth==0) p=0 }
+' "$SCRIPT_DIR/.github/workflows/build.yml")"
+
+_mknc_tpl() {
+  local _name="$1"; shift
+  mkdir -p "srcpkgs/${_name}"
+  : > "srcpkgs/${_name}/template"
+  while [ $# -gt 0 ]; do
+    printf '%s\n' "$1" >> "srcpkgs/${_name}/template"
+    shift
+  done
+}
+
+it 'missing template returns 1'
+rm -rf srcpkgs/ghost
+_cnc_visited=""
+_check_nocross_chain ghost; assert_rc $? 1
+
+it 'direct nocross returns 0'
+_mknc_tpl nc1 'nocross=yes'
+_cnc_visited=""
+_check_nocross_chain nc1; assert_rc $? 0
+
+it 'no nocross no deps returns 1'
+_mknc_tpl plain1
+_cnc_visited=""
+_check_nocross_chain plain1; assert_rc $? 1
+
+it 'dep via hostmakedepends with nocross returns 0'
+_mknc_tpl nc_dep 'nocross=yes'
+_mknc_tpl pkg_hmd "hostmakedepends=\"nc_dep\""
+_cnc_visited=""
+_check_nocross_chain pkg_hmd; assert_rc $? 0
+
+it 'dep via makedepends with nocross returns 0'
+_mknc_tpl nc_dep2 'nocross=yes'
+_mknc_tpl pkg_mkd "makedepends=\"nc_dep2\""
+_cnc_visited=""
+_check_nocross_chain pkg_mkd; assert_rc $? 0
+
+it 'dep via depends with nocross returns 0'
+_mknc_tpl nc_dep3 'nocross=yes'
+_mknc_tpl pkg_dep "depends=\"nc_dep3\""
+_cnc_visited=""
+_check_nocross_chain pkg_dep; assert_rc $? 0
+
+it 'transitive chain (3 deep) returns 0'
+_mknc_tpl nc_leaf 'nocross=yes'
+_mknc_tpl chain_b "hostmakedepends=\"nc_leaf\""
+_mknc_tpl chain_a "hostmakedepends=\"chain_b\""
+_cnc_visited=""
+_check_nocross_chain chain_a; assert_rc $? 0
+
+it 'versioned dep (>=) stripped correctly'
+_mknc_tpl nc_ver 'nocross=yes'
+_mknc_tpl pkg_ver "hostmakedepends=\"nc_ver>=1.0\""
+_cnc_visited=""
+_check_nocross_chain pkg_ver; assert_rc $? 0
+
+it 'circular dep without nocross returns 1 (no infinite loop)'
+_mknc_tpl circ_a "hostmakedepends=\"circ_b\""
+_mknc_tpl circ_b "hostmakedepends=\"circ_a\""
+_cnc_visited=""
+_check_nocross_chain circ_a; assert_rc $? 1
+
+it 'external dep (no template) skipped, returns 1'
+_mknc_tpl pkg_ext "hostmakedepends=\"no-such-pkg\""
+_cnc_visited=""
+_check_nocross_chain pkg_ext; assert_rc $? 1
+
+it 'visited guard prevents re-entry'
+_mknc_tpl pkg_guard
+_cnc_visited=" pkg_guard"
+_check_nocross_chain pkg_guard; assert_rc $? 1
 
 echo
 printf 'Passed: %s    Failed: %s\n' "$_PASS" "$_FAIL"
