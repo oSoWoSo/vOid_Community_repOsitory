@@ -9,9 +9,9 @@ license="MIT"
 homepage="https://bun.sh"
 distfiles="https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-linux-aarch64.zip
  https://raw.githubusercontent.com/oven-sh/bun/refs/heads/main/LICENSE.md"
-checksum="
+checksum="a27ffb63a8310375836e0d6f668ae17fa8d8d18b88c37c821c65331973a19a3b
  2c6160ec8fb853f7e8f97d9b249e756c9b0ac44860a68b6bf4f1b0bcbc5c3741"
-nocross="No crossbuild support, use native package bun-arm-{musl-}bin"
+nocross="Build on arm64"
 skip_extraction="LICENSE.md"
 nopie_files="/usr/bin/bun"
 conflicts="bun"
