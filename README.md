@@ -163,7 +163,7 @@ Create PR
 | libspng | 0.7.4 | https://libspng.org/ | zenobit |  |
 | linuxcommandlibrary | 4.0.2 | http://linuxcommandlibrary.com/ | zenobit |  |
 | linuxcommandlibrary-desktop | 4.0.2 | http://linuxcommandlibrary.com/ | zenobit |  |
-| llama-cpp | 9204 | https://github.com/ggml-org/llama.cpp | zenobit |  |
+| llama.cpp | 9357 | https://github.com/ggml-org/llama.cpp | zenobit |  |
 | lunasvg | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
 | ly | 1.4.0 | https://codeberg.org/fairyglade/ly | zenobit | i686 x86_64 |
 | menu-themes | 0.8.0 | https://github.com/kando-menu/menu-themes | zenobit |  |
