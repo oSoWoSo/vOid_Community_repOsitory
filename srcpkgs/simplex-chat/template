@@ -1,6 +1,6 @@
 # Template file for 'simplex-chat'
 pkgname=simplex-chat
-version=6.5.0
+version=6.5.2
 revision=1
 archs="~i686 ~*-musl"
 build_style=cabal
@@ -13,7 +13,7 @@ maintainer="rayfadh <rayfadh@duck.com>"
 license="AGPL-3.0-only"
 homepage="https://simplex.chat"
 distfiles="https://github.com/simplex-chat/simplex-chat/archive/refs/tags/v${version}.tar.gz"
-checksum=8375dad7cdd1a1a5275737fd2b01944e0225a962a939d08b8467f28e1af32a43
+checksum=0134b625b4ccdc431864d9803ebd3756ee4f1698047ab02677eafef7c9f7543f
 nocross="cabal does not support cross compilation"
 nopie_files="/usr/bin/simplex-chat"
 make_check=no # testing hangs
