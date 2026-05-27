@@ -3,7 +3,7 @@ pkgname=opencode-arm
 version=1.15.6
 revision=1
 archs="aarch64*"
-hostmakedepends="bun-bin-arm nodejs python3 git"
+hostmakedepends="bun-arm-bin nodejs python3 git"
 depends="ripgrep"
 short_desc="Open source AI coding agent"
 maintainer="zenobit <zen@osowoso.org>"
@@ -11,7 +11,6 @@ license="MIT"
 homepage="https://github.com/anomalyco/opencode"
 distfiles="https://github.com/anomalyco/opencode/archive/refs/tags/v${version}.tar.gz"
 checksum=566a034e8af1c273395ee1ae8898a7f453b07297da1c4bfc246df7619ca6249f
-# TODO: create update script (Ignore 0. ... versions) same as opencode template
 nostrip_files="/usr/bin/opencode"
 nopie_files="/usr/bin/opencode"
 
