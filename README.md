@@ -133,6 +133,22 @@ Create PR
 | glaze | 7.6.0 | https://github.com/stephenberry/glaze | zenobit |  |
 | gofer | 0.2.0 | https://codeberg.org/JakeAtLinux/Gofer | zenobit |  |
 | gradle | 9.5.0 | https://gradle.org/ | Bnyro |  |
+| graphite-gtk-theme | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-all | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-black | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-black-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-compact-all | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-dark | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-dark-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-light | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-light-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord-dark | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord-dark-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord-light | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord-light-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
 | gum-panel | 0.17.0.003 | https://codeberg.org/oSoWoSo/gum | zenobit |  |
 | helium-browser-arm-bin | 0.12.2.1 | https://helium.computer | zenobit | aarch64 |
 | helium-browser-bin | 0.12.2.1 | https://helium.computer | zenobit | x86_64 |
