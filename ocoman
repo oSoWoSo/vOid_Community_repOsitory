@@ -812,55 +812,38 @@ _clone_repo() {
 }
 
 do_init() {
-	_tgt_void="${CLONE_TEMP}/void-packages"
-	_tgt_oco="${CLONE_TEMP}/oco"
-
-	# Clone both repos to temp
-	_clone_repo "void-packages" "$VOID_URL" "$_tgt_void"
-	_clone_repo "OCO" "$OCO_URL" "$_tgt_oco"
-
-	# Set up void-packages as base
-	mkdir -p "$CLONE_DEST"
-	rm -rf "${CLONE_DEST}/.git"
-	echo "==> Copying void-packages to ${CLONE_DEST} ..."
-	cp -a "${_tgt_void}"/. "$CLONE_DEST"/ || fatal "copy of void-packages failed"
-	rm -rf "$_tgt_void"
-
-	rm -rf "${_tgt_oco}/.git" "${_tgt_oco}/.gitignore"
-
-	# Copying OCO files onto master (srcpkgs merged, management files added)
-	echo "==> Copying OCO files onto master ..."
-	cp -a "${_tgt_oco}"/. "$CLONE_DEST"/ || fatal "copy of OCO files failed"
-	rm -rf "$_tgt_oco"
+	# Clone void-packages directly to destination
+	rm -rf "$CLONE_DEST"
+	_clone_repo "void-packages" "$VOID_URL" "$CLONE_DEST"
 
 	# Set up remotes
 	echo "==> Setting up remotes ..."
-	if git -C "$CLONE_DEST" remote | grep -q '^void$'; then
-		git -C "$CLONE_DEST" remote remove origin 2>/dev/null || true
-	else
-		git -C "$CLONE_DEST" remote rename origin void || fatal "failed to rename remote"
-	fi
+	git -C "$CLONE_DEST" remote rename origin void || fatal "failed to rename remote"
 	git -C "$CLONE_DEST" branch --set-upstream-to=void/master master
-	git -C "$CLONE_DEST" remote add OCO "$OCO_URL" 2>/dev/null || true
+	git -C "$CLONE_DEST" remote add OCO "$OCO_URL"
+
+	# Create OCO branch from the actual OCO remote
+	echo "==> Fetching OCO and creating ${OCO_BRANCH} branch ..."
+	git -C "$CLONE_DEST" fetch OCO
+	git -C "$CLONE_DEST" checkout -b "$OCO_BRANCH" --track "OCO/${OCO_BRANCH}" \
+		|| fatal "failed to create ${OCO_BRANCH} branch"
+
+	git -C "$CLONE_DEST" checkout master
+
+	# Overlay OCO files onto master (untracked) via git archive — skips .gitignore
+	echo "==> Overlaying OCO files onto master ..."
+	git -C "$CLONE_DEST" archive "OCO/${OCO_BRANCH}" \
+		| tar -x -C "$CLONE_DEST" --exclude='.gitignore'
 
 	# Apply shlibs on master
 	do_shlibs
-
-	# Create OCO branch — .gitignore gets /srcpkgs/* so nothing extra is visible
-	echo "==> Creating ${OCO_BRANCH} branch ..."
-	git -C "$CLONE_DEST" checkout -b "$OCO_BRANCH"
-	printf '\n/srcpkgs/*\n' >> "${CLONE_DEST}/.gitignore"
-	git -C "$CLONE_DEST" add .gitignore
-	git -C "$CLONE_DEST" commit -m "Ignore all srcpkgs"
-
-	git -C "$CLONE_DEST" checkout master
 
 	echo "==> Initializing masterdir ..."
 	"${CLONE_DEST}/xbps-src" binary-bootstrap || fatal "binary-bootstrap failed"
 
 	_g "==> Done: ${CLONE_DEST}"
 	_g "    master  → void/master (void-packages)"
-	_g "    ${OCO_BRANCH} branch → push to OCO remote"
+	_g "    ${OCO_BRANCH}      → OCO/${OCO_BRANCH}"
 }
 
 # --- Shlibs ---
