@@ -1,26 +1,42 @@
 #!/bin/sh
 #
-# Manage repository: templates, README, build.yml, website, and packages.
-# Merged from update-repo + create-web.
+# Manage the OCO repository: init, shlibs, update, website, and packages.
+# Merged from update-repo + CLONEme.sh + shlibs-update.
 #
 # Author: zenobit <zen@osowoso.org>
 # License: GPL-3.0-only
 
-[ -f .env ] && . .env
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+[ -f "${SCRIPT_DIR}/.env" ] && . "${SCRIPT_DIR}/.env"
 
+# --- Repo management ---
 SRCPKGS='srcpkgs'
-TEMPLATES_LIST='.github/templatesList'
-README='README.md'
-WORKFLOW='.github/workflows/build.yml'
-BUILD_TEMPLATE='.github/build.yml.in'
+TEMPLATES_LIST='/tmp/oco-templates-list'
+REPODATA_LIST_PY="${SCRIPT_DIR}/.github/repodata-list.py"
+REPODATA_STRIP_PY="${SCRIPT_DIR}/.github/repodata-strip.py"
+BUILD_TEMPLATE="${SCRIPT_DIR}/.github/build.yml.in"
+README="${SCRIPT_DIR}/README.md"
+WORKFLOW="${SCRIPT_DIR}/.github/workflows/build.yml"
 
 SURFER_URL="https://repo.osowoso.org"
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
 SIGNED_BY="zenobit <zen@osowoso.org>"
-SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
 
 . "${SCRIPT_DIR}/.github/pkg-helpers.sh"
+
+# --- Init / clone (env-overridable) ---
+VOID_URL="https://github.com/void-linux/void-packages"
+OCO_URL="https://codeberg.org/oSoWoSo/oco"
+CLONE_DEST="${CLONE_DEST:-$HOME/void}"
+CLONE_TEMP="${CLONE_TEMP:-/tmp}"
+CLONE_DEPTH="${CLONE_DEPTH:-1}"
+OCO_BRANCH="${OCO_BRANCH:-OCO}"
+
+# --- Shlibs (env-overridable) ---
+SHLIBS_FILE="${SHLIBS_FILE:-${CLONE_DEST}/common/shlibs}"
+SHLIBS_APPEND="${SCRIPT_DIR}/shlibs_append"
+SHLIBS_REMOVE="${SCRIPT_DIR}/shlibs_remove"
 
 # --- UI helpers (ANSI) ---
 
@@ -52,21 +68,31 @@ fatal() {
 usage() {
 	prog=${0##*/}
 	cat <<-EOF
-	Usage: $prog -h | -u | -w | -p | -s | -a | -c
-	       $prog {update|build|upload|serve|archs|check-upstream|help}
+	Usage: $prog -h | -u | -w | -p | -s | -a | -c | -i | -l
+	       $prog {update|build|upload|serve|archs|check-upstream|init|shlibs|help}
 
-	Manage repository: templates, README, build.yml, website, and packages.
+	Manage the OCO repository.
 
 	Options
-	  -u, --update     update list, README, and build.yml
-	  -w, --build      regenerate website (requires pandoc)
-	  -p, --upload     upload built packages to WebDAV repository
-	  -s, --serve      serve website locally on port 8000
-	  -a, --archs      regenerate architecture pages only
-	  -c, --check      check upstream Void Linux for newer versions and additions
-	  -h, --help       print this message
+	  -i, --init       Clone void-packages + OCO to CLONE_DEST, apply shlibs
+	  -u, --update     Update list, README, and build.yml
+
+	  -l, --shlibs     Apply shlibs patches to an existing checkout
+	  -a, --archs      Regenerate architecture pages only
+	  -c, --check      Check upstream Void Linux for newer versions and additions
+	  -w, --build      Regenerate website (requires pandoc)
+	  -s, --serve      Serve website locally on port 8000
+	  -p, --upload     Upload built packages to WebDAV repository
+	  -h, --help       Print this message
 
 	Compound: $prog -uw   (update + build)
+
+	Environment variables for -i and -l:
+	  CLONE_DEST    destination directory  (default: ~/void)
+	  CLONE_TEMP    temp directory         (default: /tmp)
+	  CLONE_DEPTH   git clone depth        (default: 1)
+	  OCO_BRANCH    branch created after void-packages clone (default: OCO)
+	  SHLIBS_FILE   shlibs file to patch   (default: CLONE_DEST/common/shlibs)
 	EOF
 }
 
@@ -252,21 +278,33 @@ _build_main_index() {
 
 # --- Update ---
 
-generate_list() {
-	new_list=$(for _entry in "$SRCPKGS"/*/; do
-		[ -d "$_entry" ] || [ -L "$_entry" ] || continue
-		_pkg=${_entry%/}
-		_pkg=${_pkg##*/}
-		echo "$_pkg"
-	done | sort -f)
+list_templates() {
+	sed -n 's/^!\/srcpkgs\/\([^/]*\)[/]*$/\1/p' "${SCRIPT_DIR}/.gitignore" | sort -u
+}
 
-	mkdir -p "$(dirname "$TEMPLATES_LIST")"
-	if [ -f "$TEMPLATES_LIST" ] && [ "$new_list" = "$(cat "$TEMPLATES_LIST")" ]; then
-		echo 'templatesList: no changes'
+generate_list() {
+	_gitignore="${SCRIPT_DIR}/.gitignore"
+
+	_new_pkgs=$(for _entry in "${SCRIPT_DIR}/${SRCPKGS}"/*/; do
+		[ -d "$_entry" ] || [ -L "$_entry" ] || continue
+		_pkg=${_entry%/}; _pkg=${_pkg##*/}
+		echo "$_pkg"
+	done | sort)
+
+	_tmp=$(mktemp)
+	awk '/^# Start of templates list$/{print; exit} {print}' "$_gitignore" > "$_tmp"
+	printf '%s\n' "$_new_pkgs" | sed '/^$/d; s|^|!/srcpkgs/|' >> "$_tmp"
+
+	if diff -q "$_gitignore" "$_tmp" >/dev/null 2>&1; then
+		echo '.gitignore templates: no changes'
+		rm -f "$_tmp"
 	else
-		echo "$new_list" > "$TEMPLATES_LIST"
-		echo 'templatesList: updated'
+		mv "$_tmp" "$_gitignore"
+		echo '.gitignore templates: updated'
 	fi
+
+	list_templates > "$TEMPLATES_LIST"
+	echo "Templates list synchronized from .gitignore"
 }
 
 generate_readme() {
@@ -374,10 +412,7 @@ generate_arch_pages() {
 	_template="${SCRIPT_DIR}/.github/arch-index-template.html"
 	[ -f "$_template" ] || { echo "arch-index-template.html not found, skipping arch pages"; return 1; }
 
-	_pkg_list=$(for _entry in "$SRCPKGS"/*/; do
-		[ -d "$_entry" ] || [ -L "$_entry" ] || continue
-		_p=${_entry%/}; _p=${_p##*/}; echo "$_p"
-	done | sort -f)
+	_pkg_list=$(list_templates)
 
 	for _arch in $ARCHES; do
 		_out_dir="${SCRIPT_DIR}/docs/${_arch}"
@@ -761,22 +796,81 @@ check_upstream() {
 	_g "State saved to $STATE_FILE"
 }
 
+# --- Init / clone ---
+
+_clone_one() {
+	_name="$1" _url="$2"
+	_tgt="${CLONE_TEMP}/${_name}"
+	echo "==> Cloning ${_name} ..."
+	if [ -n "$CLONE_DEPTH" ]; then
+		git clone --depth "$CLONE_DEPTH" "$_url" "$_tgt" || fatal "cloning ${_name} failed"
+	else
+		git clone "$_url" "$_tgt" || fatal "cloning ${_name} failed"
+	fi
+	mkdir -p "$CLONE_DEST"
+	echo "==> Copying ${_name} to ${CLONE_DEST} ..."
+	cp -a "${_tgt}"/. "$CLONE_DEST"/ || fatal "copy failed for ${_name}"
+	rm -rf "$_tgt"
+}
+
+do_init() {
+	_clone_one "void-packages" "$VOID_URL"
+	echo "==> Creating branch ${OCO_BRANCH} in ${CLONE_DEST} ..."
+	git -C "$CLONE_DEST" checkout -b "$OCO_BRANCH" || fatal "failed to create branch ${OCO_BRANCH}"
+	_clone_one "oco" "$OCO_URL"
+	do_shlibs
+}
+
+# --- Shlibs ---
+
+_shlibs_remove() {
+	_shlibs=$1 _removefile=$2 _line=''
+	echo '==> Removing shlibs entries'
+	while IFS= read -r _line; do
+		[ -z "$_line" ] && continue
+		grep -vF "$_line" "$_shlibs" > "${_shlibs}.tmp" \
+			&& mv "${_shlibs}.tmp" "$_shlibs"
+		echo "   - $_line"
+	done < "$_removefile"
+}
+
+_shlibs_append() {
+	_shlibs=$1 _appendfile=$2 _line=''
+	echo '==> Adding shlibs entries'
+	while IFS= read -r _line; do
+		[ -z "$_line" ] && continue
+		if ! grep -qF "$_line" "$_shlibs"; then
+			echo "$_line" >> "$_shlibs"
+			echo "   + $_line"
+		fi
+	done < "$_appendfile"
+}
+
+do_shlibs() {
+	[ -f "$SHLIBS_FILE" ] || fatal "shlibs file not found: ${SHLIBS_FILE}"
+	[ -f "$SHLIBS_REMOVE" ] && _shlibs_remove "$SHLIBS_FILE" "$SHLIBS_REMOVE"
+	[ -f "$SHLIBS_APPEND" ] && _shlibs_append "$SHLIBS_FILE" "$SHLIBS_APPEND"
+}
+
 # --- Main ---
 
 main() {
 	case "${1:-}" in
-		help|--help)     set -- -h ;;
-		update)          set -- -u ;;
-		build|web)       set -- -w ;;
-		upload|publish)  set -- -p ;;
-		serve)           set -- -s ;;
-		archs)           set -- -a ;;
+		help|--help)          set -- -h ;;
+		update)               set -- -u ;;
+		build|web)            set -- -w ;;
+		upload|publish)       set -- -p ;;
+		serve)                set -- -s ;;
+		archs)                set -- -a ;;
 		check-upstream|check) set -- -c ;;
+		init|setup)           set -- -i ;;
+		shlibs)               set -- -l ;;
 	esac
 
 	_opt='' OPTIND=1 OPTARG=''
 	_do_update='' _do_packages='' _do_web='' _do_archs='' _do_check=''
-	while getopts 'huwpsac' _opt; do
+	_do_init='' _do_shlibs=''
+	while getopts 'huwpsacil' _opt; do
 		case "$_opt" in
 			h) usage; return 0 ;;
 			u) _do_update=1 ;;
@@ -785,17 +879,25 @@ main() {
 			s) target_serve; return 0 ;;
 			a) _do_archs=1 ;;
 			c) _do_check=1 ;;
+			i) _do_init=1 ;;
+			l) _do_shlibs=1 ;;
 			*) usage >&2; return 1 ;;
 		esac
 	done
 
-	[ -n "$_do_update$_do_packages$_do_web$_do_archs$_do_check" ] ||
+	[ -n "$_do_update$_do_packages$_do_web$_do_archs$_do_check$_do_init$_do_shlibs" ] ||
 		{ usage >&2; return 1; }
 
 	if [ "$_do_update" = 1 ] || [ "$_do_web" = 1 ] || [ "$_do_check" = 1 ]; then
 		[ -d "$SRCPKGS" ] || fatal "srcpkgs directory not found: ${SRCPKGS}"
 	fi
 
+	if [ "$_do_init" = 1 ]; then
+		do_init
+	fi
+	if [ "$_do_shlibs" = 1 ]; then
+		do_shlibs
+	fi
 	if [ "$_do_update" = 1 ]; then
 		[ -f "$README" ] || fatal "README not found: ${README}"
 		generate_list

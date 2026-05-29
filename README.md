@@ -44,9 +44,18 @@ are easy to understand READMEs
 Just pick your architecture
 
 ## How to contribute
+
+### Clone using ocoman script
+Running `./ocoman -i` will clone void-packages and oco into ~/void  
+PS: Destination could be changed look at `./ocoman -h`
+
+### Clone manualy
 Clone Codeberg repo  
 `git clone https://codeberg.org/oSoWoSo/oco`  
-Copy srcpkgs directory to cloned [void-packages](https://github.com/void-linux/void-packages)  
+Copy srcpkgs directory to cloned [void-packages](https://github.com/void-linux/void-packages)
+
+Then:
+
 Use `xnew <pkgname>` to create new template  
 Fill everyhing as needed and remove rest  
 Use `xlint <pkgname>` to lint templates  

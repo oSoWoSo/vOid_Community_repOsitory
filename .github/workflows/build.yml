@@ -511,7 +511,7 @@ jobs:
 
       - name: Merge templates and edit shlibs
         run: |
-          extra/shlibs-update -s /void-packages/common/shlibs
+          SHLIBS_FILE=/void-packages/common/shlibs extra/ocoman -l
 
           echo "==> Copying templates..."
           for template in extra/srcpkgs/*; do
@@ -589,7 +589,7 @@ jobs:
 
       - name: Merge templates and edit shlibs
         run: |
-          extra/shlibs-update -s /void-packages/common/shlibs
+          SHLIBS_FILE=/void-packages/common/shlibs extra/ocoman -l
 
           echo "==> Copying templates..."
           for template in extra/srcpkgs/*; do
