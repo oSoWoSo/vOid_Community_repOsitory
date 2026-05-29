@@ -44,9 +44,18 @@ are easy to understand READMEs
 Just pick your architecture
 
 ## How to contribute
+
+### Clone using ocoman script
+Running `./ocoman -i` will clone void-packages and oco into ~/void  
+PS: Destination could be changed look at `./ocoman -h`
+
+### Clone manualy
 Clone Codeberg repo  
 `git clone https://codeberg.org/oSoWoSo/oco`  
-Copy srcpkgs directory to cloned [void-packages](https://github.com/void-linux/void-packages)  
+Copy srcpkgs directory to cloned [void-packages](https://github.com/void-linux/void-packages)
+
+Then:
+
 Use `xnew <pkgname>` to create new template  
 Fill everyhing as needed and remove rest  
 Use `xlint <pkgname>` to lint templates  
@@ -57,7 +66,7 @@ We build for x86_64 and aarch64 + musl variants
 Add your changes  
 When you change any shlib from upstream void-packages, changes must be reflected in `shlibs_remove` and `shlibe_append`  
 When you add new shlib add it only to `shlibe_append`  
-After adding template, run `./update-repo -u` to regenerate templates list and table  
+After adding template, run `./ocoman -u` to regenerate templates list and table  
 One commit per template, mesage: `<pkgname> <version>`  
 
 Create PR
@@ -75,7 +84,12 @@ Create PR
 | brave-browser-bin | 1.90.122 | https://www.brave.com/ | zenobit | x86_64 |
 | brow6el | 0.3.4 | https://codeberg.org/janantos/brow6el | zenobit | x86_64 |
 | btrfs-progs | 6.17.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
+| bun-arm-bin | 1.3.14 | https://bun.sh | zenobit | aarch64 |
+| bun-arm-musl-bin | 1.3.14 | https://bun.sh | zenobit | aarch64-musl |
+| bun-bin | 1.3.14 | https://bun.sh | zenobit | x86_64 |
+| bun-musl-bin | 1.3.14 | https://bun.sh | zenobit | x86_64-musl |
 | candy-icons-git | 0.11.1 | https://www.opendesktop.org/p/1305251/ | Trve_AY |  |
+| cc-switch | 3.15.0 | https://github.com/farion1231/cc-switch | zenobit | x86_64* aarch64* |
 | clitest | 0.5.0 | https://github.com/aureliojargas/clitest | zenobit |  |
 | corekeyboard | 5.0.1 | https://gitlab.com/cubocore/coreapps/corekeyboard | zenobit |  |
 | cosmic-applets | 1.0.13 | https://github.com/pop-os/cosmic-applets | Bella Viola Wagner | x86_64* i686 |
@@ -105,7 +119,7 @@ Create PR
 | cosmic-tweaks | 0.2.2 | https://github.com/cosmic-utils/cosmic-tweaks | Bella Viola Wagner | x86_64 |
 | cosmic-wallpapers | 1.0.0 | https://github.com/pop-os/cosmic-wallpapers | Bella Viola Wagner |  |
 | cosmic-workspaces-epoch | 1.0.13 | https://github.com/pop-os/cosmic-workspaces-epoch | Bella Viola Wagner | x86_64* i686 |
-| crush | 0.70.0 | https://github.com/charmbracelet/crush | zenobit |  |
+| crush | 0.71.0 | https://github.com/charmbracelet/crush | zenobit |  |
 | cwal | 0.8.5 | https://github.com/nitinbhat972/cwal | zenobit |  |
 | dashy | 4.1.5 | https://github.com/Lissy93/dashy | zenobit |  |
 | desktop-tui | 0.3.2 | https://github.com/Julien-cpsn/desktop-tui | zenobit |  |
@@ -128,6 +142,22 @@ Create PR
 | glaze | 7.6.0 | https://github.com/stephenberry/glaze | zenobit |  |
 | gofer | 0.2.0 | https://codeberg.org/JakeAtLinux/Gofer | zenobit |  |
 | gradle | 9.5.0 | https://gradle.org/ | Bnyro |  |
+| graphite-gtk-theme | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-all | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-black | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-black-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-compact-all | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-dark | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-dark-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-light | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-light-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord-dark | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord-dark-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord-light | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
+| graphite-gtk-theme-nord-light-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
 | gum-panel | 0.17.0.003 | https://codeberg.org/oSoWoSo/gum | zenobit |  |
 | helium-browser-arm-bin | 0.12.2.1 | https://helium.computer | zenobit | aarch64 |
 | helium-browser-bin | 0.12.2.1 | https://helium.computer | zenobit | x86_64 |
@@ -158,7 +188,7 @@ Create PR
 | libspng | 0.7.4 | https://libspng.org/ | zenobit |  |
 | linuxcommandlibrary | 4.0.2 | http://linuxcommandlibrary.com/ | zenobit |  |
 | linuxcommandlibrary-desktop | 4.0.2 | http://linuxcommandlibrary.com/ | zenobit |  |
-| llama-cpp | 9204 | https://github.com/ggml-org/llama.cpp | zenobit |  |
+| llama.cpp | 9357 | https://github.com/ggml-org/llama.cpp | zenobit |  |
 | lunasvg | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
 | ly | 1.4.0 | https://codeberg.org/fairyglade/ly | zenobit | i686 x86_64 |
 | menu-themes | 0.8.0 | https://github.com/kando-menu/menu-themes | zenobit |  |
@@ -182,6 +212,8 @@ Create PR
 | odin2-lv2 | 2.4.1 | https://thewavewarden.com/pages/odin-2 | Trve_AY |  |
 | odin2-standalone | 2.4.1 | https://thewavewarden.com/pages/odin-2 | Trve_AY |  |
 | odin2-vst3 | 2.4.1 | https://thewavewarden.com/pages/odin-2 | Trve_AY |  |
+| opencode | 1.15.10 | https://github.com/anomalyco/opencode | zenobit | x86_64 |
+| opencode-arm | 1.15.6 | https://github.com/anomalyco/opencode | zenobit | aarch64* |
 | patchance | 1.4.0 | https://raysession.tuxfamily.org/ | Trve_AY |  |
 | pinguintv-installer | 1.0 | https://pinguin-tv.de/Downloads/Pinguin-Installer.zip | Bella Viola Wagner | x86_64 |
 | pop-fonts | 0.0.0 | https://github.com/pop-os/fonts | Bella Wagner |  |
@@ -212,8 +244,8 @@ Create PR
 | sfizz-lv2 | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |
 | sfizz-vst3 | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |
 | shattered-pixel-dungeon | 3.3.8 | https://github.com/00-Evan/shattered-pixel-dungeon | zenobit |  |
-| simplex-chat | 6.5.0 | https://simplex.chat | rayfadh | ~i686 ~*-musl |
-| simplex-chat-desktop | 6.5.0 | https://simplex.chat | rayfadh | ~i686 ~*-musl |
+| simplex-chat | 6.5.2 | https://simplex.chat | rayfadh | ~i686 ~*-musl |
+| simplex-chat-desktop | 6.5.2 | https://simplex.chat | rayfadh | ~i686 ~*-musl |
 | surge-xt | 1.3.4 | https://surge-synthesizer.github.io/ | Trve_AY |  |
 | surge-xt-clap | 1.3.4 | https://surge-synthesizer.github.io/ | Trve_AY |  |
 | surge-xt-common | 1.3.4 | https://surge-synthesizer.github.io/ | Trve_AY |  |
@@ -236,6 +268,7 @@ Create PR
 | xdg-desktop-portal-cosmic | 1.0.13 | https://github.com/pop-os/xdg-desktop-portal-cosmic | Bella Viola Wagner | x86_64* |
 | xdg-desktop-portal-hyprland | 1.3.11 | https://github.com/hyprwm/xdg-desktop-portal-hyprland | zenobit |  |
 | xut | 0.4.2 | https://codeberg.org/mobinmob/xut | mobinmob |  |
-| zen-browser-aarch64-bin | 1.19.13b | https://github.com/zen-browser/desktop | Bella Viola Wagner | aarch64 |
-| zen-browser-bin | 1.19.13b | https://github.com/zen-browser/desktop | Bella Viola Wagner | x86_64 |
+| xxtools-git | 0.0.0 | https://github.com/Piraty/xxtools | zenobit |  |
+| zen-browser-arm-bin | 1.20b | https://github.com/zen-browser/desktop | Bella Viola Wagner | aarch64 |
+| zen-browser-bin | 1.20b | https://github.com/zen-browser/desktop | Bella Viola Wagner | x86_64 |
 | zig | 0.16.0 | https://ziglang.org | Bella Viola Wagner | x86_64* aarch64* |

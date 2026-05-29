@@ -38,8 +38,18 @@ on:
         options:
         -
         __TEMPLATE_OPTIONS__
-# Apply changes in .github/build.yml.in instead.
-# .github/workflows/build.yml is generated from this file by `update-repo -u`.
+      runner:
+        description: 'Runner selection (optional)'
+        required: false
+        type: choice
+        default: auto
+        options:
+        - auto
+        - amd64
+        - arm64
+        - nativ
+# Apply changes in src/build.yml.in instead.
+# .github/workflows/build.yml is generated from this file by `ocoman -u`.
 
 permissions:
   contents: write
@@ -60,7 +70,7 @@ jobs:
       removed: ${{ steps.detect.outputs.removed }}
       matrix: ${{ steps.detect.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           # Need full history so we can diff against arbitrary base SHAs
           # (multi-commit pushes, force-pushes, PR bases).
@@ -72,13 +82,14 @@ jobs:
           INPUT_ALL: ${{ inputs.all }}
           INPUT_TEMPLATE: ${{ inputs.template }}
           INPUT_TEMPLATES: ${{ inputs.templates }}
+          INPUT_RUNNER: ${{ inputs.runner || 'auto' }}
           EVENT_NAME: ${{ github.event_name }}
           PUSH_BEFORE: ${{ github.event.before }}
           PUSH_AFTER: ${{ github.event.after }}
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          . .github/pkg-helpers.sh
+          . src/pkg-helpers.sh
           packages=""
           removed=""
 
@@ -103,15 +114,36 @@ jobs:
             fi
             if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "$ZERO_SHA" ] \
                 || ! git cat-file -e "$BASE_SHA" 2>/dev/null; then
-              echo "No usable diff base ($BASE_SHA); treating as full build"
-              packages=$(all_packages)
+              echo "No direct diff base; reading origin/main .gitignore for package list"
+              _main_list=$(git show origin/main:.gitignore 2>/dev/null | sed -n 's|^!/srcpkgs/\([^/]*\)/*$|\1|p' | sort -fu || true)
+              if [ -n "$_main_list" ]; then
+                _current_list=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort -f)
+                _main_list=$(printf '%s\n' "$_main_list" | sort -f)
+                _added=$(  comm -23 <(printf '%s\n' "$_current_list") <(printf '%s\n' "$_main_list"))
+                _removed=$(comm -13 <(printf '%s\n' "$_current_list") <(printf '%s\n' "$_main_list"))
+                removed=$(printf '%s\n' "$_removed" | tr '\n' ' ' | sed 's/ $//')
+                _common=$(comm -12 <(printf '%s\n' "$_current_list") <(printf '%s\n' "$_main_list"))
+                _modified=""
+                for _pkg in $_common; do
+                  if git show origin/main:srcpkgs/$_pkg/template 2>/dev/null \
+                      | diff -q - srcpkgs/$_pkg/template >/dev/null 2>&1; then
+                    :
+                  else
+                    _modified="$_modified$_pkg "
+                  fi
+                done
+                packages=$(printf '%s\n%s' "$_added" "$_modified" | grep -v '^$' | tr '\n' ' ' | sed 's/ $//')
+              else
+                echo "  templatesList from origin/main not available; treating as full build"
+                packages=$(all_packages)
+              fi
             else
               _diff=$(git diff --name-status "$BASE_SHA" "$HEAD_SHA" -- 'srcpkgs/*/template')
               packages=$(printf '%s\n' "$_diff" \
-                | awk '$1 ~ /^[ACMR]/ {print $2}' \
+                | awk '$1 ~ /^[ACMR]/ { if (substr($1,1,1)=="R") print $3; else print $2 }' \
                 | cut -d/ -f2 | sort -u | tr '\n' ' ' | sed 's/ $//')
               removed=$(printf '%s\n' "$_diff" \
-                | awk '$1=="D"{print $2}' \
+                | awk '$1=="D"{print $2} $1~/^R/{print $2}' \
                 | cut -d/ -f2 | sort -u | tr '\n' ' ' | sed 's/ $//')
             fi
           else
@@ -148,42 +180,46 @@ jobs:
           }
 
           needs_cross_aarch64() {
+            _cnc_visited=""
             local any_nocross=0
             for pkg in $packages; do
               local template="srcpkgs/${pkg}/template"
               [ -f "$template" ] || continue
               pkg_arch_ok "$pkg" "aarch64" || continue
-              grep -q '^nocross=' "$template" && any_nocross=1
+              _check_nocross_chain "$pkg" && any_nocross=1
             done
             [ "$any_nocross" = 0 ] && arch_needed "aarch64"
           }
 
           needs_cross_aarch64_musl() {
+            _cnc_visited=""
             local any_nocross=0
             for pkg in $packages; do
               local template="srcpkgs/${pkg}/template"
               [ -f "$template" ] || continue
               pkg_arch_ok "$pkg" "aarch64-musl" || continue
-              grep -q '^nocross=' "$template" && any_nocross=1
+              _check_nocross_chain "$pkg" && any_nocross=1
             done
             [ "$any_nocross" = 0 ] && arch_needed "aarch64-musl"
           }
 
           needs_native_aarch64() {
+            _cnc_visited=""
             for pkg in $packages; do
               local template="srcpkgs/${pkg}/template"
               [ -f "$template" ] || continue
-              grep -q '^nocross=' "$template" || continue
+              _check_nocross_chain "$pkg" || continue
               pkg_arch_ok "$pkg" "aarch64" && return 0
             done
             return 1
           }
 
           needs_native_aarch64_musl() {
+            _cnc_visited=""
             for pkg in $packages; do
               local template="srcpkgs/${pkg}/template"
               [ -f "$template" ] || continue
-              grep -q '^nocross=' "$template" || continue
+              _check_nocross_chain "$pkg" || continue
               pkg_arch_ok "$pkg" "aarch64-musl" && return 0
             done
             return 1
@@ -194,19 +230,55 @@ jobs:
             matrix_configs="${matrix_configs}{\"arch\":\"$1\",\"host\":\"$2\",\"runner\":\"$3\",\"platform\":\"$4\",\"test\":$5,\"native\":$6}"
           }
 
-          matrix_configs=""
-          if [ -n "$packages" ]; then
-            arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64"      "ubuntu-latest"    "linux/amd64" 1 false
-            needs_cross_aarch64      && add_cfg "aarch64"      "x86_64"      "ubuntu-latest"    "linux/amd64" 0 false
-            arch_needed "x86_64-musl"  && add_cfg "x86_64-musl"  "x86_64-musl" "ubuntu-latest"    "linux/amd64" 1 false
-            needs_cross_aarch64_musl && add_cfg "aarch64-musl" "x86_64-musl" "ubuntu-latest"    "linux/amd64" 0 false
-            needs_native_aarch64 && add_cfg "aarch64" "aarch64" "ubuntu-24.04-arm" "linux/arm64" 1 true
-            needs_native_aarch64_musl && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
-            if [ -z "$matrix_configs" ]; then
-              echo "Warning: no arch matched package list, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
-              add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
-            fi
-          fi
+          _RUNNER="${INPUT_RUNNER:-auto}"
+          case "$_RUNNER" in
+            amd64)
+              _amd64=$(arch_needed "x86_64"       && echo 1 || echo 0)
+              _musl=$( arch_needed "x86_64-musl"  && echo 1 || echo 0)
+              matrix_configs=""
+              [ "$_amd64" = 1 ] && add_cfg "x86_64"      "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+              [ "$_musl"  = 1 ] && add_cfg "x86_64-musl" "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+              if [ -z "$matrix_configs" ]; then
+                echo "Warning: no packages for amd64 archs, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
+                add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
+              fi
+              ;;
+            arm64)
+              _arm_native=$(arch_needed "aarch64"      && echo 1 || echo 0)
+              _arm_musl=$(   arch_needed "aarch64-musl" && echo 1 || echo 0)
+              matrix_configs=""
+              [ "$_arm_native" = 1 ] && add_cfg "aarch64"      "aarch64"      "ubuntu-24.04-arm" "linux/arm64" 1 true
+              [ "$_arm_musl"  = 1 ] && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
+              if [ -z "$matrix_configs" ]; then
+                echo "Warning: no packages for arm64 archs, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
+                add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
+              fi
+              ;;
+            nativ)
+              matrix_configs=""
+              arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+              arch_needed "aarch64"      && add_cfg "aarch64"      "aarch64" "ubuntu-24.04-arm" "linux/arm64" 1 true
+              arch_needed "x86_64-musl"  && add_cfg "x86_64-musl"  "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+              arch_needed "aarch64-musl" && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
+              if [ -z "$matrix_configs" ]; then
+                echo "Warning: no packages for any arch, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
+                add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
+              fi
+              ;;
+            auto|*)
+              matrix_configs=""
+              arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+              needs_cross_aarch64      && add_cfg "aarch64"      "x86_64" "ubuntu-latest"    "linux/amd64" 0 false
+              arch_needed "x86_64-musl"  && add_cfg "x86_64-musl"  "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+              needs_cross_aarch64_musl && add_cfg "aarch64-musl" "x86_64" "ubuntu-latest"    "linux/amd64" 0 false
+              needs_native_aarch64 && add_cfg "aarch64" "aarch64" "ubuntu-24.04-arm" "linux/arm64" 1 true
+              needs_native_aarch64_musl && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
+              if [ -z "$matrix_configs" ]; then
+                echo "Warning: no arch matched package list, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
+                add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
+              fi
+              ;;
+          esac
           echo "matrix={\"config\":[${matrix_configs}]}" >> "$GITHUB_OUTPUT"
 
   test-pr:
@@ -248,7 +320,7 @@ jobs:
 
       - name: Merge templates and edit shlibs
         run: |
-          extra/shlibs-update -s /void-packages/common/shlibs
+          SHLIBS_FILE=/void-packages/common/shlibs extra/ocoman -l
 
           echo "==> Copying templates..."
           for template in extra/srcpkgs/*; do
@@ -285,7 +357,7 @@ jobs:
       - name: Build packages
         env:
           PACKAGES: ${{ needs.detect.outputs.packages }}
-        run: sh "${GITHUB_WORKSPACE}/extra/.github/build-packages.sh"
+        run: sh "${GITHUB_WORKSPACE}/extra/src/build-packages.sh"
 
   build:
     name: Build and publish packages
@@ -326,7 +398,7 @@ jobs:
 
       - name: Merge templates and edit shlibs
         run: |
-          extra/shlibs-update -s /void-packages/common/shlibs
+          SHLIBS_FILE=/void-packages/common/shlibs extra/ocoman -l
 
           echo "==> Copying templates..."
           for template in extra/srcpkgs/*; do
@@ -361,7 +433,7 @@ jobs:
         id: build
         env:
           PACKAGES: ${{ needs.detect.outputs.packages }}
-        run: sh "${GITHUB_WORKSPACE}/extra/.github/build-packages.sh"
+        run: sh "${GITHUB_WORKSPACE}/extra/src/build-packages.sh"
 
       - name: Sign and index
         if: always() && steps.build.outputs.built == 'true'
@@ -383,7 +455,7 @@ jobs:
 
           echo "==> Updating and signing repo index"
           xbps-rindex -a ./*.xbps
-          xbps-rindex -s --signedby "zenobit <zenobit@disroot.org>" --privkey /tmp/private.pem .
+          xbps-rindex -s --signedby "zenobit <zen@osowoso.org>" --privkey /tmp/private.pem .
 
           rm -f /tmp/private.pem
           echo "Published to https://repo.osowoso.org/${XBPS_TARGET_ARCH}/" >> "$GITHUB_STEP_SUMMARY"
@@ -413,7 +485,7 @@ jobs:
           xbps-install -yu
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
 
@@ -427,29 +499,22 @@ jobs:
         run: |
           export PATH="/opt/xbps/usr/bin/:$PATH"
           export XBPS_TARGET_ARCH="${XBPS_ARCH}"
-          ./update-repo -p
+          ./ocoman -p
           echo "Pruned from https://repo.osowoso.org/${ARCH}/" >> $GITHUB_STEP_SUMMARY
 
   pages:
     name: Regenerate website
     needs: [build, prune]
-    # always() is required because `prune` is gated on detect.outputs.removed
-    # and may be skipped; without it the default `success()` would skip pages
-    # on any skipped dependency. We then explicitly require that AT LEAST one
-    # of build/prune actually succeeded -- pure-skip should not republish.
     if: always() && (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && (needs.build.result == 'success' || needs.prune.result == 'success')
     runs-on: ubuntu-latest
     container:
-      # Use the oco-builder image so we have pandoc + python3 + zstd +
-      # xbps-query natively. Single consistent environment across all
-      # repo jobs; no apt install needed.
       image: ghcr.io/osowoso/oco-builder-x86_64:latest
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout latest main
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: main
           fetch-depth: 1
@@ -458,7 +523,7 @@ jobs:
         env:
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
         run: |
-          ./update-repo -w
+          ./ocoman -w
           echo "Published to https://repo.osowoso.org/" >> $GITHUB_STEP_SUMMARY
 
       - name: Deploy to page branch
@@ -468,7 +533,7 @@ jobs:
           cd docs
           git init
           git config user.name "oSoWoso-bot"
-          git config user.email "osowoso@disroot.org"
+          git config user.email "mail@osowoso.org"
           git checkout -b page
           git add .
           git commit -m "Deploy: $(date -u '+%Y-%m-%d %H:%M UTC')"

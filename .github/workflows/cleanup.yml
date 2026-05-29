@@ -77,7 +77,7 @@ jobs:
             trap 'rm -f private.pem' EXIT INT TERM
             ( umask 077 && printf '%s\n' "$PRIV_KEY" > private.pem )
             xbps-rindex -a ./*.xbps
-            xbps-rindex -s --signedby "zenobit <zenobit@disroot.org>" --privkey private.pem .
+            xbps-rindex -s --signedby "zenobit <zen@osowoso.org>" --privkey private.pem .
             rm -f private.pem
             echo "Removed ${_removed} old file(s) from ${ARCH}" >> "$GITHUB_STEP_SUMMARY"
           else

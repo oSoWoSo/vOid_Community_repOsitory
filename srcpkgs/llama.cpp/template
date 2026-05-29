@@ -1,30 +1,25 @@
-# Template file for 'llama-cpp'
-pkgname=llama-cpp
-version=9204
+# Template file for 'llama.cpp'
+pkgname=llama.cpp
+version=9357
 revision=1
 build_style=cmake
-configure_args="-DGGML_NATIVE=OFF -DGGML_VULKAN=ON
- -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=OpenBLAS -DGGML_OPENCL=ON -DGGML_RPC=ON -DLLAMA_OPENSSL=ON"
+configure_args="-DGGML_NATIVE=OFF -DGGML_VULKAN=ON -DGGML_BLAS=ON
+ -DGGML_BLAS_VENDOR=OpenBLAS -DGGML_OPENCL=ON -DGGML_RPC=ON -DLLAMA_OPENSSL=ON"
 hostmakedepends="nodejs pkg-config shaderc"
 makedepends="openssl-devel libgomp-devel openblas-devel ocl-icd-devel OpenCL-Headers
  libcurl-devel vulkan-loader-devel SPIRV-Headers libgomp"
 checkdepends="python3-Jinja2"
 short_desc="LLM inference in C/C++"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/ggml-org/llama.cpp"
 distfiles="https://github.com/ggml-org/llama.cpp/archive/refs/tags/b${version}.tar.gz"
-checksum=1b14649229cfefd6b233191d550843ad01d92cc694eb0a813f51d73c1622c1cc
+checksum=5fbac8d2eaff748e67fc7e25b10217e4b295fb2898b1562ad417d33b17734dee
+replaces="llama-cpp>=0"
 
 case $ARCH in
 	aarch64) configure_args+=" -DGGML_CPU_KLEIDIAI=ON" ;;
 esac
-
-do_check() {
-	cd build
-	# Skipping tests with network access
-	ctest -E '(download-model|thread-safety|state-restore-fragmented|recurrent-state-rollback|eval-callback)'
-}
 
 post_install() {
 	vlicense LICENSE

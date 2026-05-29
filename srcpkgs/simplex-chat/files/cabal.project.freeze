@@ -1,3 +1,4 @@
+
 active-repositories: hackage.haskell.org:merge
 constraints: any.Cabal ==3.10.3.0,
              any.Cabal-syntax ==3.10.3.0,
@@ -178,7 +179,7 @@ constraints: any.Cabal ==3.10.3.0,
              any.simple-logger ==0.1.1,
              any.simple-sendfile ==0.2.32,
              simple-sendfile +allow-bsd -fallback,
-             any.simplexmq ==6.5.0.17,
+             any.simplexmq ==6.5.1.0,
              any.socks ==0.6.1,
              any.split ==0.2.4,
              any.splitmix ==0.1.0.5,

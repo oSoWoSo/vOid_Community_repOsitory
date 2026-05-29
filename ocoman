@@ -1,26 +1,42 @@
 #!/bin/sh
 #
-# Manage repository: templates, README, build.yml, website, and packages.
-# Merged from update-repo + create-web.
+# Manage the OCO repository: init, shlibs, update, website, and packages.
+# Merged from update-repo + CLONEme.sh + shlibs-update.
 #
-# Author: zenobit <zenobit@disroot.org>
+# Author: zenobit <zen@osowoso.org>
 # License: GPL-3.0-only
 
-[ -f .env ] && . .env
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+[ -f "${SCRIPT_DIR}/.env" ] && . "${SCRIPT_DIR}/.env"
 
+# --- Repo management ---
 SRCPKGS='srcpkgs'
-TEMPLATES_LIST='.github/templatesList'
-README='README.md'
-WORKFLOW='.github/workflows/build.yml'
-BUILD_TEMPLATE='.github/build.yml.in'
+TEMPLATES_LIST='/tmp/oco-templates-list'
+REPODATA_LIST_PY="${SCRIPT_DIR}/src/repodata-list.py"
+REPODATA_STRIP_PY="${SCRIPT_DIR}/src/repodata-strip.py"
+BUILD_TEMPLATE="${SCRIPT_DIR}/src/build.yml.in"
+README="${SCRIPT_DIR}/README.md"
+WORKFLOW="${SCRIPT_DIR}/.github/workflows/build.yml"
 
 SURFER_URL="https://repo.osowoso.org"
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
-SIGNED_BY="zenobit <zenobit@disroot.org>"
-SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SIGNED_BY="zenobit <zen@osowoso.org>"
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
 
-. "${SCRIPT_DIR}/.github/pkg-helpers.sh"
+. "${SCRIPT_DIR}/src/pkg-helpers.sh"
+
+# --- Init / clone (env-overridable) ---
+VOID_URL="https://github.com/void-linux/void-packages"
+OCO_URL="https://codeberg.org/oSoWoSo/oco"
+CLONE_DEST="${CLONE_DEST:-$HOME/void}"
+CLONE_TEMP="${CLONE_TEMP:-/tmp}"
+CLONE_DEPTH="${CLONE_DEPTH:-}"
+OCO_BRANCH="${OCO_BRANCH:-OCO}"
+
+# --- Shlibs (env-overridable) ---
+SHLIBS_FILE="${SHLIBS_FILE:-${CLONE_DEST}/common/shlibs}"
+SHLIBS_APPEND="${SCRIPT_DIR}/shlibs_append"
+SHLIBS_REMOVE="${SCRIPT_DIR}/shlibs_remove"
 
 # --- UI helpers (ANSI) ---
 
@@ -52,20 +68,34 @@ fatal() {
 usage() {
 	prog=${0##*/}
 	cat <<-EOF
-	Usage: $prog -h | -u | -w | -p | -s | -a
-	       $prog {update|build|upload|serve|archs|help}
+	Usage: $prog -h | -u | -w | -p | -s | -a | -c | -i | -o | -l
+	       $prog {update|build|upload|serve|archs|check-upstream|init|add-oco|shlibs|help}
 
-	Manage repository: templates, README, build.yml, website, and packages.
+	Manage the OCO repository.
 
 	Options
-	  -u, --update     update list, README, and build.yml
-	  -w, --build      regenerate website (requires pandoc)
-	  -p, --upload     upload built packages to WebDAV repository
-	  -s, --serve      serve website locally on port 8000
-	  -a, --archs      regenerate architecture pages only
-	  -h, --help       print this message
+	  -i, --init       Clone void-packages + OCO to CLONE_DEST, apply shlibs
+	  -o, --add-oco    Add OCO remote + branch to an existing void-packages checkout
+	  to-void <pkg...> Copy template(s) from OCO to master, commit "New package: name-ver"
+	  to-oco  <pkg...> Copy template(s) from master to OCO, commit "name ver"
+	  -u, --update     Update list, README, and build.yml
+
+	  -l, --shlibs     Apply shlibs patches to an existing checkout
+	  -a, --archs      Regenerate architecture pages only
+	  -c, --check      Check upstream Void Linux for newer versions and additions
+	  -w, --build      Regenerate website (requires pandoc)
+	  -s, --serve      Serve website locally on port 8000
+	  -p, --upload     Upload built packages to WebDAV repository
+	  -h, --help       Print this message
 
 	Compound: $prog -uw   (update + build)
+
+	Environment variables for -i and -l:
+	  CLONE_DEST    destination directory  (default: ~/void)
+	  CLONE_TEMP    temp directory         (default: /tmp)
+	  CLONE_DEPTH   git clone depth        (default: full)
+	  OCO_BRANCH    local and remote branch name for OCO  (default: OCO)
+	  SHLIBS_FILE   shlibs file to patch   (default: CLONE_DEST/common/shlibs)
 	EOF
 }
 
@@ -149,7 +179,7 @@ list_published_pkgs() {
 	if command -v python3 >/dev/null 2>&1; then
 		if curl -fsS -o "$_lpp_tmp" \
 				"${_lpp_url}/${_lpp_arch}-repodata" 2>/dev/null; then
-			python3 "${SCRIPT_DIR}/.github/repodata-list.py" "$_lpp_tmp"
+			python3 "${SCRIPT_DIR}/src/repodata-list.py" "$_lpp_tmp"
 			_lpp_rc=$?
 		else
 			_lpp_rc=1
@@ -234,7 +264,7 @@ _build_main_index() {
 	sed \
 		-e "s|__CSS_URL__|style.css|g" \
 		-e 's|__FAVICON__|<link rel="icon" href="favicon.ico" />|g' \
-		.github/main-index-template.html \
+		src/main-index-template.html \
 	| awk \
 		-v nav_arch="$_nav_arch_tmp" \
 		-v readme="$_readme_tmp" \
@@ -251,21 +281,33 @@ _build_main_index() {
 
 # --- Update ---
 
+list_templates() {
+	sed -n 's/^!\/srcpkgs\/\([^/]*\)[/]*$/\1/p' "${SCRIPT_DIR}/.gitignore" | sort -fu
+}
+
 generate_list() {
-	new_list=$(for _entry in "$SRCPKGS"/*/; do
+	_gitignore="${SCRIPT_DIR}/.gitignore"
+
+	_new_pkgs=$(for _entry in "${SCRIPT_DIR}/${SRCPKGS}"/*/; do
 		[ -d "$_entry" ] || [ -L "$_entry" ] || continue
-		_pkg=${_entry%/}
-		_pkg=${_pkg##*/}
+		_pkg=${_entry%/}; _pkg=${_pkg##*/}
 		echo "$_pkg"
 	done | sort -f)
 
-	mkdir -p "$(dirname "$TEMPLATES_LIST")"
-	if [ -f "$TEMPLATES_LIST" ] && [ "$new_list" = "$(cat "$TEMPLATES_LIST")" ]; then
-		echo 'templatesList: no changes'
+	_tmp=$(mktemp)
+	awk '/^# Start of templates list$/{print; exit} {print}' "$_gitignore" > "$_tmp"
+	printf '%s\n' "$_new_pkgs" | sed '/^$/d; s|^|!/srcpkgs/|' >> "$_tmp"
+
+	if diff -q "$_gitignore" "$_tmp" >/dev/null 2>&1; then
+		echo '.gitignore templates: no changes'
+		rm -f "$_tmp"
 	else
-		echo "$new_list" > "$TEMPLATES_LIST"
-		echo 'templatesList: updated'
+		mv "$_tmp" "$_gitignore"
+		echo '.gitignore templates: updated'
 	fi
+
+	list_templates > "$TEMPLATES_LIST"
+	echo "Templates list synchronized from .gitignore"
 }
 
 generate_readme() {
@@ -370,13 +412,10 @@ build_site() {
 }
 
 generate_arch_pages() {
-	_template="${SCRIPT_DIR}/.github/arch-index-template.html"
+	_template="${SCRIPT_DIR}/src/arch-index-template.html"
 	[ -f "$_template" ] || { echo "arch-index-template.html not found, skipping arch pages"; return 1; }
 
-	_pkg_list=$(for _entry in "$SRCPKGS"/*/; do
-		[ -d "$_entry" ] || [ -L "$_entry" ] || continue
-		_p=${_entry%/}; _p=${_p##*/}; echo "$_p"
-	done | sort -f)
+	_pkg_list=$(list_templates)
 
 	for _arch in $ARCHES; do
 		_out_dir="${SCRIPT_DIR}/docs/${_arch}"
@@ -566,7 +605,7 @@ do_upload() {
 			echo '==> Stripping orphan entries from local repodata'
 			if command -v python3 >/dev/null 2>&1; then
 				# xargs avoids unquoted-expansion globbing on orphan names
-				xargs python3 "${SCRIPT_DIR}/.github/repodata-strip.py" \
+				xargs python3 "${SCRIPT_DIR}/src/repodata-strip.py" \
 					"${ARCH}-repodata" < "${PWD}/orphans.txt" \
 					|| echo '  Warning: repodata-strip failed; index may reference deleted packages' >&2
 			else
@@ -602,22 +641,305 @@ do_upload() {
 	echo "==> Done: ${SURFER_URL}/${ARCH}/"
 }
 
+# --- Check upstream ---
+
+check_upstream() {
+	IGNORE_FILE="${SCRIPT_DIR}/src/ignore-pkgs"
+	STATE_FILE="${SCRIPT_DIR}/src/upstream-state"
+
+	_ignores=""
+	if [ -f "$IGNORE_FILE" ]; then
+		_ignores=$(grep -v '^#' "$IGNORE_FILE" | grep -v '^$' || true)
+	fi
+	_is_ignored() {
+		printf '%s\n' "$_ignores" | grep -xF "$1" >/dev/null 2>&1
+	}
+
+	_state_data=""
+	[ -f "$STATE_FILE" ] && _state_data=$(cat "$STATE_FILE")
+
+	echo '==> Fetching upstream commit feed...'
+	_feed=$(curl -sS "https://github.com/void-linux/void-packages/commits/master.atom" 2>/dev/null) || true
+
+	_recent=""
+	if [ -n "$_feed" ]; then
+		_tmp=$(mktemp)
+		echo "$_feed" | awk '
+			/<title>/ { if (in_title) next; in_title = 1; title = ""; next }
+			/<\/title>/ {
+				in_title = 0
+				gsub(/^[ \t]+|[ \t]+$/, "", title)
+				if (title != "" && title != "Recent Commits to void-packages:master") print title
+				title = ""; next
+			}
+			in_title { title = title $0 }
+		' 2>/dev/null | while IFS= read -r _msg; do
+			[ -z "$_msg" ] && continue
+			_p=$(echo "$_msg" | sed -n 's/^\([a-zA-Z0-9._+-][a-zA-Z0-9._+-]*\):.*/\1/p')
+			[ -n "$_p" ] && echo "$_p"
+			_p=$(echo "$_msg" | sed -n 's/^New package: \([a-zA-Z0-9._+-]*\)-.*/\1/p')
+			[ -n "$_p" ] && echo "$_p"
+		done > "$_tmp"
+		_recent=$(sort -u "$_tmp" 2>/dev/null | tr '\n' ' ')
+		rm -f "$_tmp"
+	fi
+
+	[ -n "$_recent" ] && echo "==> Recently changed upstream: $_recent" \
+		|| echo '==> (no packages parsed from feed)'
+
+	_old_state_field() {
+		echo "$_state_data" | grep "^${1}|" | head -n1 | cut -d'|' -f"${2}" 2>/dev/null || true
+	}
+
+	echo ''
+	echo '===================== Upstream check report ====================='
+	echo ''
+
+	_state_new=$(mktemp)
+	_newer_list='' _added_list='' _up_to_date=0 _no_upstream=0 _api_calls=0
+
+	for _d in "$SRCPKGS"/*/; do
+		[ -d "$_d" ] || continue
+		_pkg=${_d%/}; _pkg=${_pkg##*/}
+
+		_is_ignored "$_pkg" && {
+			printf '%s|ignored||ignored\n' "$_pkg" >> "$_state_new"
+			continue
+		}
+
+		_local_ver=$(grep '^version=' "$_d/template" 2>/dev/null \
+			| head -n1 | cut -d= -f2- | tr -d '"' | tr -d ' ')
+		[ -z "$_local_ver" ] && _local_ver='?'
+
+		_old_exists=$(_old_state_field "$_pkg" 2)
+		_old_ver=$(_old_state_field "$_pkg" 3)
+
+		_fetch=false
+		case " $_recent " in *" $_pkg "*) _fetch=true ;; esac
+		[ -z "$_old_exists" ] && _fetch=true
+		[ "$_old_exists" = "ignored" ] && _fetch=true
+
+		if $_fetch; then
+			_up_template=$(curl -sf \
+				"https://raw.githubusercontent.com/void-linux/void-packages/master/srcpkgs/${_pkg}/template" \
+				2>/dev/null) || true
+			_api_calls=$((_api_calls + 1))
+			if [ -n "$_up_template" ]; then
+				_up_ver=$(echo "$_up_template" | grep '^version=' | head -n1 \
+					| cut -d= -f2- | tr -d '"' | tr -d ' ')
+				_up_exists="yes"
+			else
+				_up_exists="no"
+				_up_ver=''
+			fi
+		else
+			_up_exists="$_old_exists"
+			_up_ver="$_old_ver"
+		fi
+
+		if [ "$_up_exists" = "yes" ] && [ -n "$_up_ver" ] && [ "$_local_ver" != "?" ]; then
+			if [ "$_up_ver" != "$_local_ver" ]; then
+				_lower=$(printf '%s\n%s' "$_up_ver" "$_local_ver" \
+					| sort -V 2>/dev/null | head -n1)
+				[ "$_lower" = "$_local_ver" ] && _newer_list="$_newer_list $_pkg"
+			fi
+		fi
+
+		_status='current'
+		if [ "$_up_exists" = "yes" ] && [ "$_old_exists" = "no" ]; then
+			_status='suggested_removal'
+			_added_list="$_added_list $_pkg"
+		fi
+
+		if [ "$_up_exists" = "yes" ]; then
+			_up_to_date=$((_up_to_date + 1))
+		elif [ "$_up_exists" = "no" ]; then
+			_no_upstream=$((_no_upstream + 1))
+		fi
+
+		printf '%s|%s|%s|%s\n' "$_pkg" "$_up_exists" "$_up_ver" "$_status" \
+			>> "$_state_new"
+	done
+
+	_ncnt=$(echo $_newer_list | wc -w | tr -d ' ')
+	_acnt=$(echo $_added_list | wc -w | tr -d ' ')
+	_icnt=$(grep -c '|ignored|' "$_state_new" 2>/dev/null) && _icnt="$_icnt" || _icnt=0
+
+	if [ "$_ncnt" -gt 0 ]; then
+		echo ""
+		for _p in $_newer_list; do
+			_nv=$(grep "^${_p}|" "$_state_new" | head -n1 | cut -d'|' -f3)
+			_lv=$(grep '^version=' "$SRCPKGS/$_p/template" 2>/dev/null \
+				| head -n1 | cut -d= -f2- | tr -d '"' | tr -d ' ')
+			printf '  '; _y "[NEWER] $_p: $_lv -> $_nv"
+		done
+	fi
+
+	if [ "$_acnt" -gt 0 ]; then
+		echo ""
+		for _p in $_added_list; do
+			_nv=$(grep "^${_p}|" "$_state_new" | head -n1 | cut -d'|' -f3)
+			printf '  '; _r "[ADDED] $_p (v$_nv) -- nyní existuje ve Void Linux!"
+			echo "         -> rm -rf srcpkgs/$_p/"
+			echo "         -> git rm srcpkgs/$_p/"
+		done
+	fi
+
+	echo ""
+	echo '================================================================='
+	echo ""
+	[ "$_ncnt" -gt 0 ] && printf '  %bNEWER%b:     %s\n' "$YELLOW" "$NC" "$_newer_list"
+	[ "$_acnt" -gt 0 ] && printf '  %bADDED%b:     %s\n' "$RED" "$NC" "$_added_list"
+	[ "$_icnt" -gt 0 ] && echo "  IGNORED:   $_icnt packages"
+	echo "  No change: $_up_to_date in repo, $_no_upstream not in Void Linux"
+	echo "  API calls: $_api_calls"
+
+	mv "$_state_new" "$STATE_FILE"
+	echo ''
+	_g "State saved to $STATE_FILE"
+}
+
+# --- Init / clone ---
+
+_clone_repo() {
+	_cr_name="$1" _cr_url="$2" _cr_dest="$3"
+	echo "==> Cloning ${_cr_name} ..."
+	if [ -n "$CLONE_DEPTH" ]; then
+		git clone --depth "$CLONE_DEPTH" "$_cr_url" "$_cr_dest" || fatal "cloning ${_cr_name} failed"
+	else
+		git clone "$_cr_url" "$_cr_dest" || fatal "cloning ${_cr_name} failed"
+	fi
+}
+
+do_init() {
+	# Clone void-packages directly to destination
+	rm -rf "$CLONE_DEST"
+	_clone_repo "void-packages" "$VOID_URL" "$CLONE_DEST"
+
+	# Set up remotes
+	echo "==> Setting up remotes ..."
+	git -C "$CLONE_DEST" remote rename origin void || fatal "failed to rename remote"
+	git -C "$CLONE_DEST" branch --set-upstream-to=void/master master
+	git -C "$CLONE_DEST" remote add OCO "$OCO_URL"
+
+	# Create OCO branch from the actual OCO remote
+	echo "==> Fetching OCO and creating ${OCO_BRANCH} branch ..."
+	git -C "$CLONE_DEST" fetch OCO
+	git -C "$CLONE_DEST" checkout -b "$OCO_BRANCH" --track "OCO/${OCO_BRANCH}" \
+		|| fatal "failed to create ${OCO_BRANCH} branch"
+
+	git -C "$CLONE_DEST" checkout master
+
+	# Overlay OCO files onto master (untracked) via git archive — skips .gitignore
+	echo "==> Overlaying OCO files onto master ..."
+	git -C "$CLONE_DEST" archive "OCO/${OCO_BRANCH}" \
+		| tar -x -C "$CLONE_DEST" --exclude='.gitignore'
+
+	# Apply shlibs on master
+	do_shlibs
+
+	echo "==> Initializing masterdir ..."
+	"${CLONE_DEST}/xbps-src" binary-bootstrap || fatal "binary-bootstrap failed"
+
+	_g "==> Done: ${CLONE_DEST}"
+	_g "    master  → void/master (void-packages)"
+	_g "    ${OCO_BRANCH}      → OCO/${OCO_BRANCH}"
+}
+
+# --- Shlibs ---
+
+_shlibs_remove() {
+	_shlibs=$1 _removefile=$2 _line=''
+	echo '==> Removing shlibs entries'
+	while IFS= read -r _line; do
+		[ -z "$_line" ] && continue
+		grep -vF "$_line" "$_shlibs" > "${_shlibs}.tmp" \
+			&& mv "${_shlibs}.tmp" "$_shlibs"
+		echo "   - $_line"
+	done < "$_removefile"
+}
+
+_shlibs_append() {
+	_shlibs=$1 _appendfile=$2 _line=''
+	echo '==> Adding shlibs entries'
+	while IFS= read -r _line; do
+		[ -z "$_line" ] && continue
+		if ! grep -qF "$_line" "$_shlibs"; then
+			echo "$_line" >> "$_shlibs"
+			echo "   + $_line"
+		fi
+	done < "$_appendfile"
+}
+
+do_add_oco() {
+	echo "==> Adding OCO remote ..."
+	git -C "$CLONE_DEST" remote add OCO "$OCO_URL" || fatal "OCO remote already exists or failed"
+	git -C "$CLONE_DEST" fetch OCO
+	echo "==> Creating ${OCO_BRANCH} branch from OCO/${OCO_BRANCH} ..."
+	git -C "$CLONE_DEST" checkout -b "$OCO_BRANCH" --track "OCO/${OCO_BRANCH}" \
+		|| fatal "failed to create branch ${OCO_BRANCH}"
+	git -C "$CLONE_DEST" checkout -
+}
+
+_pkg_version() {
+	grep '^version=' "${CLONE_DEST}/srcpkgs/${1}/template" 2>/dev/null \
+		| head -n1 | cut -d= -f2- | tr -d '"'
+}
+
+do_to_void() {
+	[ $# -gt 0 ] || fatal "usage: ocoman to-void <package...>"
+	_prev=$(git -C "$CLONE_DEST" rev-parse --abbrev-ref HEAD)
+	git -C "$CLONE_DEST" checkout master || fatal "failed to switch to master"
+	for _pkg in "$@"; do
+		git -C "$CLONE_DEST" checkout "$OCO_BRANCH" -- "srcpkgs/${_pkg}/" \
+			|| { _g "  skipping ${_pkg} (not found in ${OCO_BRANCH})"; continue; }
+		_ver=$(_pkg_version "$_pkg")
+		git -C "$CLONE_DEST" commit -m "New package: ${_pkg}-${_ver}"
+	done
+	git -C "$CLONE_DEST" checkout "$_prev"
+}
+
+do_to_oco() {
+	[ $# -gt 0 ] || fatal "usage: ocoman to-oco <package...>"
+	_prev=$(git -C "$CLONE_DEST" rev-parse --abbrev-ref HEAD)
+	git -C "$CLONE_DEST" checkout "$OCO_BRANCH" || fatal "failed to switch to ${OCO_BRANCH}"
+	for _pkg in "$@"; do
+		git -C "$CLONE_DEST" checkout master -- "srcpkgs/${_pkg}/" \
+			|| { _g "  skipping ${_pkg} (not found in master)"; continue; }
+		_ver=$(_pkg_version "$_pkg")
+		git -C "$CLONE_DEST" commit -m "${_pkg} ${_ver}"
+	done
+	git -C "$CLONE_DEST" checkout "$_prev"
+}
+
+do_shlibs() {
+	[ -f "$SHLIBS_FILE" ] || fatal "shlibs file not found: ${SHLIBS_FILE}"
+	[ -f "$SHLIBS_REMOVE" ] && _shlibs_remove "$SHLIBS_FILE" "$SHLIBS_REMOVE"
+	[ -f "$SHLIBS_APPEND" ] && _shlibs_append "$SHLIBS_FILE" "$SHLIBS_APPEND"
+}
+
 # --- Main ---
 
 main() {
-	# Map named targets to getopts-style args
 	case "${1:-}" in
-		help|--help)     set -- -h ;;
-		update)          set -- -u ;;
-		build|web)       set -- -w ;;
-		upload|publish)  set -- -p ;;
-		serve)           set -- -s ;;
-		archs)           set -- -a ;;
+		help|--help)          set -- -h ;;
+		update)               set -- -u ;;
+		build|web)            set -- -w ;;
+		upload|publish)       set -- -p ;;
+		serve)                set -- -s ;;
+		archs)                set -- -a ;;
+		check-upstream|check) set -- -c ;;
+		init|setup)           set -- -i ;;
+		add-oco)              set -- -o ;;
+		to-void)              shift; do_to_void "$@"; return 0 ;;
+		to-oco)               shift; do_to_oco  "$@"; return 0 ;;
+		shlibs)               set -- -l ;;
 	esac
 
 	_opt='' OPTIND=1 OPTARG=''
-	_do_update='' _do_packages='' _do_web='' _do_archs=''
-	while getopts 'huwpsa' _opt; do
+	_do_update='' _do_packages='' _do_web='' _do_archs='' _do_check=''
+	_do_init='' _do_add_oco='' _do_shlibs=''
+	while getopts 'huwpsaciol' _opt; do
 		case "$_opt" in
 			h) usage; return 0 ;;
 			u) _do_update=1 ;;
@@ -625,17 +947,30 @@ main() {
 			p) _do_packages=1 ;;
 			s) target_serve; return 0 ;;
 			a) _do_archs=1 ;;
+			c) _do_check=1 ;;
+			i) _do_init=1 ;;
+			o) _do_add_oco=1 ;;
+			l) _do_shlibs=1 ;;
 			*) usage >&2; return 1 ;;
 		esac
 	done
 
-	[ -n "$_do_update$_do_packages$_do_web$_do_archs" ] ||
+	[ -n "$_do_update$_do_packages$_do_web$_do_archs$_do_check$_do_init$_do_add_oco$_do_shlibs" ] ||
 		{ usage >&2; return 1; }
 
-	if [ "$_do_update" = 1 ] || [ "$_do_web" = 1 ]; then
+	if [ "$_do_update" = 1 ] || [ "$_do_web" = 1 ] || [ "$_do_check" = 1 ]; then
 		[ -d "$SRCPKGS" ] || fatal "srcpkgs directory not found: ${SRCPKGS}"
 	fi
 
+	if [ "$_do_init" = 1 ]; then
+		do_init
+	fi
+	if [ "$_do_add_oco" = 1 ]; then
+		do_add_oco
+	fi
+	if [ "$_do_shlibs" = 1 ]; then
+		do_shlibs
+	fi
 	if [ "$_do_update" = 1 ]; then
 		[ -f "$README" ] || fatal "README not found: ${README}"
 		generate_list
@@ -648,6 +983,9 @@ main() {
 	fi
 	if [ "$_do_archs" = 1 ] && [ "$_do_web" != 1 ]; then
 		generate_arch_pages
+	fi
+	if [ "$_do_check" = 1 ]; then
+		check_upstream
 	fi
 	if [ "$_do_packages" = 1 ]; then
 		do_upload
