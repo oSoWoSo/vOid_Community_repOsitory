@@ -279,7 +279,7 @@ _build_main_index() {
 # --- Update ---
 
 list_templates() {
-	sed -n 's/^!\/srcpkgs\/\([^/]*\)[/]*$/\1/p' "${SCRIPT_DIR}/.gitignore" | sort -u
+	sed -n 's/^!\/srcpkgs\/\([^/]*\)[/]*$/\1/p' "${SCRIPT_DIR}/.gitignore" | sort -fu
 }
 
 generate_list() {
@@ -289,7 +289,7 @@ generate_list() {
 		[ -d "$_entry" ] || [ -L "$_entry" ] || continue
 		_pkg=${_entry%/}; _pkg=${_pkg##*/}
 		echo "$_pkg"
-	done | sort)
+	done | sort -f)
 
 	_tmp=$(mktemp)
 	awk '/^# Start of templates list$/{print; exit} {print}' "$_gitignore" > "$_tmp"

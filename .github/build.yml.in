@@ -117,8 +117,8 @@ jobs:
               echo "No direct diff base; comparing against origin/main templatesList"
               _main_list=$(git show origin/main:.github/templatesList 2>/dev/null || true)
               if [ -n "$_main_list" ]; then
-                _current_list=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort)
-                _main_list=$(printf '%s\n' "$_main_list" | sort)
+                _current_list=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort -f)
+                _main_list=$(printf '%s\n' "$_main_list" | sort -f)
                 _added=$(  comm -23 <(printf '%s\n' "$_current_list") <(printf '%s\n' "$_main_list"))
                 _removed=$(comm -13 <(printf '%s\n' "$_current_list") <(printf '%s\n' "$_main_list"))
                 removed=$(printf '%s\n' "$_removed" | tr '\n' ' ' | sed 's/ $//')
