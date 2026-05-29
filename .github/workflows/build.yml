@@ -173,6 +173,7 @@ on:
         - opencode
         - opencode-arm
         - patchance
+        - pinguintv-installer
         - pop-fonts
         - pop-icons
         - pop-launcher

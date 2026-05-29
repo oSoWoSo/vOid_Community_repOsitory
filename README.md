@@ -215,6 +215,7 @@ Create PR
 | opencode | 1.15.10 | https://github.com/anomalyco/opencode | zenobit | x86_64 |
 | opencode-arm | 1.15.6 | https://github.com/anomalyco/opencode | zenobit | aarch64* |
 | patchance | 1.4.0 | https://raysession.tuxfamily.org/ | Trve_AY |  |
+| pinguintv-installer | 1.0 | https://pinguin-tv.de/Downloads/Pinguin-Installer.zip | Bella Viola Wagner | x86_64 |
 | pop-fonts | 0.0.0 | https://github.com/pop-os/fonts | Bella Wagner |  |
 | pop-icons | 3.5.1 | https://github.com/pop-os/icon-theme | Bella Wagner |  |
 | pop-launcher | 1.2.7 | https://github.com/pop-os/launcher | Bella Wagner | x86_64* i686 |
@@ -261,7 +262,7 @@ Create PR
 | vbm | 1.0.1 | https://codeberg.org/oSoWoSo/vbm | zenobit |  |
 | Vish | 1.1.3 | https://github.com/Lluciocc/Vish | zenobit |  |
 | vote | 0.90.1 | https://codeberg.org/oSoWoSo/vote | zenobit |  |
-| vtm | 2026.05.18 | https://github.com/directvt/vtm | zenobit |  |
+| vtm | 2026.05.28 | https://github.com/directvt/vtm | zenobit |  |
 | waterfox-bin | 6.6.12 | https://www.waterfox.net | zenobit | x86_64 |
 | wpgtk | 6.7.1 | https://github.com/deviantfero/wpgtk/ | zenobit |  |
 | xdg-desktop-portal-cosmic | 1.0.13 | https://github.com/pop-os/xdg-desktop-portal-cosmic | Bella Viola Wagner | x86_64* |
