@@ -427,8 +427,8 @@ jobs:
               _amd64=$(arch_needed "x86_64"       && echo 1 || echo 0)
               _musl=$( arch_needed "x86_64-musl"  && echo 1 || echo 0)
               matrix_configs=""
-[ "$_amd64" = 1 ] && add_cfg "x86_64"      "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
-[ "$_musl"  = 1 ] && add_cfg "x86_64-musl" "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+              [ "$_amd64" = 1 ] && add_cfg "x86_64"      "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+              [ "$_musl"  = 1 ] && add_cfg "x86_64-musl" "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
               if [ -z "$matrix_configs" ]; then
                 echo "Warning: no packages for amd64 archs, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
                 add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
