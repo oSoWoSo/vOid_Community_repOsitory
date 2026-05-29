@@ -19,5 +19,5 @@ do_build() {
 }
 
 do_install() {
-	vinstall pinguin-installer 755 usr/bin
+	vbin pinguin-installer
 }
