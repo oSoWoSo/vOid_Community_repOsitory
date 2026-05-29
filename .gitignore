@@ -11,18 +11,6 @@
 
 !/.github
 /.github/*
-!/.github/build.yml.in
-!/.github/arch-index-template.html
-!/.github/build-packages.sh
-!/.github/ignore-pkgs
-!/.github/main-index-template.html
-!/.github/pkg-helpers.sh
-!/.github/README-template.md
-!/.github/repodata-list.py
-!/.github/repodata-strip.py
-!/.github/templateList
-!/.github/upstream-state
-
 !/.github/workflows
 /.github/workflows/*
 !/.github/workflows/build.yml

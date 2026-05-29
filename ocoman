@@ -12,9 +12,9 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 # --- Repo management ---
 SRCPKGS='srcpkgs'
 TEMPLATES_LIST='/tmp/oco-templates-list'
-REPODATA_LIST_PY="${SCRIPT_DIR}/.github/repodata-list.py"
-REPODATA_STRIP_PY="${SCRIPT_DIR}/.github/repodata-strip.py"
-BUILD_TEMPLATE="${SCRIPT_DIR}/.github/build.yml.in"
+REPODATA_LIST_PY="${SCRIPT_DIR}/src/repodata-list.py"
+REPODATA_STRIP_PY="${SCRIPT_DIR}/src/repodata-strip.py"
+BUILD_TEMPLATE="${SCRIPT_DIR}/src/build.yml.in"
 README="${SCRIPT_DIR}/README.md"
 WORKFLOW="${SCRIPT_DIR}/.github/workflows/build.yml"
 
@@ -23,14 +23,14 @@ CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
 SIGNED_BY="zenobit <zen@osowoso.org>"
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
 
-. "${SCRIPT_DIR}/.github/pkg-helpers.sh"
+. "${SCRIPT_DIR}/src/pkg-helpers.sh"
 
 # --- Init / clone (env-overridable) ---
 VOID_URL="https://github.com/void-linux/void-packages"
 OCO_URL="https://codeberg.org/oSoWoSo/oco"
 CLONE_DEST="${CLONE_DEST:-$HOME/void}"
 CLONE_TEMP="${CLONE_TEMP:-/tmp}"
-CLONE_DEPTH="${CLONE_DEPTH:-1}"
+CLONE_DEPTH="${CLONE_DEPTH:-}"
 OCO_BRANCH="${OCO_BRANCH:-OCO}"
 
 # --- Shlibs (env-overridable) ---
@@ -68,13 +68,16 @@ fatal() {
 usage() {
 	prog=${0##*/}
 	cat <<-EOF
-	Usage: $prog -h | -u | -w | -p | -s | -a | -c | -i | -l
-	       $prog {update|build|upload|serve|archs|check-upstream|init|shlibs|help}
+	Usage: $prog -h | -u | -w | -p | -s | -a | -c | -i | -o | -l
+	       $prog {update|build|upload|serve|archs|check-upstream|init|add-oco|shlibs|help}
 
 	Manage the OCO repository.
 
 	Options
 	  -i, --init       Clone void-packages + OCO to CLONE_DEST, apply shlibs
+	  -o, --add-oco    Add OCO remote + branch to an existing void-packages checkout
+	  to-void <pkg...> Copy template(s) from OCO to master, commit "New package: name-ver"
+	  to-oco  <pkg...> Copy template(s) from master to OCO, commit "name ver"
 	  -u, --update     Update list, README, and build.yml
 
 	  -l, --shlibs     Apply shlibs patches to an existing checkout
@@ -90,8 +93,8 @@ usage() {
 	Environment variables for -i and -l:
 	  CLONE_DEST    destination directory  (default: ~/void)
 	  CLONE_TEMP    temp directory         (default: /tmp)
-	  CLONE_DEPTH   git clone depth        (default: 1)
-	  OCO_BRANCH    branch created after void-packages clone (default: OCO)
+	  CLONE_DEPTH   git clone depth        (default: full)
+	  OCO_BRANCH    local and remote branch name for OCO  (default: OCO)
 	  SHLIBS_FILE   shlibs file to patch   (default: CLONE_DEST/common/shlibs)
 	EOF
 }
@@ -176,7 +179,7 @@ list_published_pkgs() {
 	if command -v python3 >/dev/null 2>&1; then
 		if curl -fsS -o "$_lpp_tmp" \
 				"${_lpp_url}/${_lpp_arch}-repodata" 2>/dev/null; then
-			python3 "${SCRIPT_DIR}/.github/repodata-list.py" "$_lpp_tmp"
+			python3 "${SCRIPT_DIR}/src/repodata-list.py" "$_lpp_tmp"
 			_lpp_rc=$?
 		else
 			_lpp_rc=1
@@ -261,7 +264,7 @@ _build_main_index() {
 	sed \
 		-e "s|__CSS_URL__|style.css|g" \
 		-e 's|__FAVICON__|<link rel="icon" href="favicon.ico" />|g' \
-		.github/main-index-template.html \
+		src/main-index-template.html \
 	| awk \
 		-v nav_arch="$_nav_arch_tmp" \
 		-v readme="$_readme_tmp" \
@@ -409,7 +412,7 @@ build_site() {
 }
 
 generate_arch_pages() {
-	_template="${SCRIPT_DIR}/.github/arch-index-template.html"
+	_template="${SCRIPT_DIR}/src/arch-index-template.html"
 	[ -f "$_template" ] || { echo "arch-index-template.html not found, skipping arch pages"; return 1; }
 
 	_pkg_list=$(list_templates)
@@ -602,7 +605,7 @@ do_upload() {
 			echo '==> Stripping orphan entries from local repodata'
 			if command -v python3 >/dev/null 2>&1; then
 				# xargs avoids unquoted-expansion globbing on orphan names
-				xargs python3 "${SCRIPT_DIR}/.github/repodata-strip.py" \
+				xargs python3 "${SCRIPT_DIR}/src/repodata-strip.py" \
 					"${ARCH}-repodata" < "${PWD}/orphans.txt" \
 					|| echo '  Warning: repodata-strip failed; index may reference deleted packages' >&2
 			else
@@ -641,8 +644,8 @@ do_upload() {
 # --- Check upstream ---
 
 check_upstream() {
-	IGNORE_FILE="${SCRIPT_DIR}/.github/ignore-pkgs"
-	STATE_FILE="${SCRIPT_DIR}/.github/upstream-state"
+	IGNORE_FILE="${SCRIPT_DIR}/src/ignore-pkgs"
+	STATE_FILE="${SCRIPT_DIR}/src/upstream-state"
 
 	_ignores=""
 	if [ -f "$IGNORE_FILE" ]; then
@@ -798,27 +801,66 @@ check_upstream() {
 
 # --- Init / clone ---
 
-_clone_one() {
-	_name="$1" _url="$2"
-	_tgt="${CLONE_TEMP}/${_name}"
-	echo "==> Cloning ${_name} ..."
+_clone_repo() {
+	_cr_name="$1" _cr_url="$2" _cr_dest="$3"
+	echo "==> Cloning ${_cr_name} ..."
 	if [ -n "$CLONE_DEPTH" ]; then
-		git clone --depth "$CLONE_DEPTH" "$_url" "$_tgt" || fatal "cloning ${_name} failed"
+		git clone --depth "$CLONE_DEPTH" "$_cr_url" "$_cr_dest" || fatal "cloning ${_cr_name} failed"
 	else
-		git clone "$_url" "$_tgt" || fatal "cloning ${_name} failed"
+		git clone "$_cr_url" "$_cr_dest" || fatal "cloning ${_cr_name} failed"
 	fi
-	mkdir -p "$CLONE_DEST"
-	echo "==> Copying ${_name} to ${CLONE_DEST} ..."
-	cp -a "${_tgt}"/. "$CLONE_DEST"/ || fatal "copy failed for ${_name}"
-	rm -rf "$_tgt"
 }
 
 do_init() {
-	_clone_one "void-packages" "$VOID_URL"
-	echo "==> Creating branch ${OCO_BRANCH} in ${CLONE_DEST} ..."
-	git -C "$CLONE_DEST" checkout -b "$OCO_BRANCH" || fatal "failed to create branch ${OCO_BRANCH}"
-	_clone_one "oco" "$OCO_URL"
+	_tgt_void="${CLONE_TEMP}/void-packages"
+	_tgt_oco="${CLONE_TEMP}/oco"
+
+	# Clone both repos to temp
+	_clone_repo "void-packages" "$VOID_URL" "$_tgt_void"
+	_clone_repo "OCO" "$OCO_URL" "$_tgt_oco"
+
+	# Set up void-packages as base
+	mkdir -p "$CLONE_DEST"
+	rm -rf "${CLONE_DEST}/.git"
+	echo "==> Copying void-packages to ${CLONE_DEST} ..."
+	cp -a "${_tgt_void}"/. "$CLONE_DEST"/ || fatal "copy of void-packages failed"
+	rm -rf "$_tgt_void"
+
+	rm -rf "${_tgt_oco}/.git" "${_tgt_oco}/.gitignore"
+
+	# Copying OCO files onto master (srcpkgs merged, management files added)
+	echo "==> Copying OCO files onto master ..."
+	cp -a "${_tgt_oco}"/. "$CLONE_DEST"/ || fatal "copy of OCO files failed"
+	rm -rf "$_tgt_oco"
+
+	# Set up remotes
+	echo "==> Setting up remotes ..."
+	if git -C "$CLONE_DEST" remote | grep -q '^void$'; then
+		git -C "$CLONE_DEST" remote remove origin 2>/dev/null || true
+	else
+		git -C "$CLONE_DEST" remote rename origin void || fatal "failed to rename remote"
+	fi
+	git -C "$CLONE_DEST" branch --set-upstream-to=void/master master
+	git -C "$CLONE_DEST" remote add OCO "$OCO_URL" 2>/dev/null || true
+
+	# Apply shlibs on master
 	do_shlibs
+
+	# Create OCO branch — .gitignore gets /srcpkgs/* so nothing extra is visible
+	echo "==> Creating ${OCO_BRANCH} branch ..."
+	git -C "$CLONE_DEST" checkout -b "$OCO_BRANCH"
+	printf '\n/srcpkgs/*\n' >> "${CLONE_DEST}/.gitignore"
+	git -C "$CLONE_DEST" add .gitignore
+	git -C "$CLONE_DEST" commit -m "Ignore all srcpkgs"
+
+	git -C "$CLONE_DEST" checkout master
+
+	echo "==> Initializing masterdir ..."
+	"${CLONE_DEST}/xbps-src" binary-bootstrap || fatal "binary-bootstrap failed"
+
+	_g "==> Done: ${CLONE_DEST}"
+	_g "    master  → void/master (void-packages)"
+	_g "    ${OCO_BRANCH} branch → push to OCO remote"
 }
 
 # --- Shlibs ---
@@ -846,6 +888,47 @@ _shlibs_append() {
 	done < "$_appendfile"
 }
 
+do_add_oco() {
+	echo "==> Adding OCO remote ..."
+	git -C "$CLONE_DEST" remote add OCO "$OCO_URL" || fatal "OCO remote already exists or failed"
+	git -C "$CLONE_DEST" fetch OCO
+	echo "==> Creating ${OCO_BRANCH} branch from OCO/${OCO_BRANCH} ..."
+	git -C "$CLONE_DEST" checkout -b "$OCO_BRANCH" --track "OCO/${OCO_BRANCH}" \
+		|| fatal "failed to create branch ${OCO_BRANCH}"
+	git -C "$CLONE_DEST" checkout -
+}
+
+_pkg_version() {
+	grep '^version=' "${CLONE_DEST}/srcpkgs/${1}/template" 2>/dev/null \
+		| head -n1 | cut -d= -f2- | tr -d '"'
+}
+
+do_to_void() {
+	[ $# -gt 0 ] || fatal "usage: ocoman to-void <package...>"
+	_prev=$(git -C "$CLONE_DEST" rev-parse --abbrev-ref HEAD)
+	git -C "$CLONE_DEST" checkout master || fatal "failed to switch to master"
+	for _pkg in "$@"; do
+		git -C "$CLONE_DEST" checkout "$OCO_BRANCH" -- "srcpkgs/${_pkg}/" \
+			|| { _g "  skipping ${_pkg} (not found in ${OCO_BRANCH})"; continue; }
+		_ver=$(_pkg_version "$_pkg")
+		git -C "$CLONE_DEST" commit -m "New package: ${_pkg}-${_ver}"
+	done
+	git -C "$CLONE_DEST" checkout "$_prev"
+}
+
+do_to_oco() {
+	[ $# -gt 0 ] || fatal "usage: ocoman to-oco <package...>"
+	_prev=$(git -C "$CLONE_DEST" rev-parse --abbrev-ref HEAD)
+	git -C "$CLONE_DEST" checkout "$OCO_BRANCH" || fatal "failed to switch to ${OCO_BRANCH}"
+	for _pkg in "$@"; do
+		git -C "$CLONE_DEST" checkout master -- "srcpkgs/${_pkg}/" \
+			|| { _g "  skipping ${_pkg} (not found in master)"; continue; }
+		_ver=$(_pkg_version "$_pkg")
+		git -C "$CLONE_DEST" commit -m "${_pkg} ${_ver}"
+	done
+	git -C "$CLONE_DEST" checkout "$_prev"
+}
+
 do_shlibs() {
 	[ -f "$SHLIBS_FILE" ] || fatal "shlibs file not found: ${SHLIBS_FILE}"
 	[ -f "$SHLIBS_REMOVE" ] && _shlibs_remove "$SHLIBS_FILE" "$SHLIBS_REMOVE"
@@ -864,13 +947,16 @@ main() {
 		archs)                set -- -a ;;
 		check-upstream|check) set -- -c ;;
 		init|setup)           set -- -i ;;
+		add-oco)              set -- -o ;;
+		to-void)              shift; do_to_void "$@"; return 0 ;;
+		to-oco)               shift; do_to_oco  "$@"; return 0 ;;
 		shlibs)               set -- -l ;;
 	esac
 
 	_opt='' OPTIND=1 OPTARG=''
 	_do_update='' _do_packages='' _do_web='' _do_archs='' _do_check=''
-	_do_init='' _do_shlibs=''
-	while getopts 'huwpsacil' _opt; do
+	_do_init='' _do_add_oco='' _do_shlibs=''
+	while getopts 'huwpsaciol' _opt; do
 		case "$_opt" in
 			h) usage; return 0 ;;
 			u) _do_update=1 ;;
@@ -880,12 +966,13 @@ main() {
 			a) _do_archs=1 ;;
 			c) _do_check=1 ;;
 			i) _do_init=1 ;;
+			o) _do_add_oco=1 ;;
 			l) _do_shlibs=1 ;;
 			*) usage >&2; return 1 ;;
 		esac
 	done
 
-	[ -n "$_do_update$_do_packages$_do_web$_do_archs$_do_check$_do_init$_do_shlibs" ] ||
+	[ -n "$_do_update$_do_packages$_do_web$_do_archs$_do_check$_do_init$_do_add_oco$_do_shlibs" ] ||
 		{ usage >&2; return 1; }
 
 	if [ "$_do_update" = 1 ] || [ "$_do_web" = 1 ] || [ "$_do_check" = 1 ]; then
@@ -894,6 +981,9 @@ main() {
 
 	if [ "$_do_init" = 1 ]; then
 		do_init
+	fi
+	if [ "$_do_add_oco" = 1 ]; then
+		do_add_oco
 	fi
 	if [ "$_do_shlibs" = 1 ]; then
 		do_shlibs

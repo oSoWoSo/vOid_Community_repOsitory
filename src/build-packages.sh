@@ -2,7 +2,7 @@
 # Shared build loop used by both test-pr and build CI jobs.
 # Required env: PACKAGES, ARCH, BOOTSTRAP, TEST, NATIVE
 # Writes built=true/false to GITHUB_OUTPUT when that variable is set.
-. "${GITHUB_WORKSPACE}/extra/.github/pkg-helpers.sh"
+. "${GITHUB_WORKSPACE}/extra/src/pkg-helpers.sh"
 export PATH="/opt/xbps/usr/bin/:$PATH"
 cd /void-packages
 

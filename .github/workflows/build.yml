@@ -239,7 +239,7 @@ on:
         - amd64
         - arm64
         - nativ
-# Apply changes in .github/build.yml.in instead.
+# Apply changes in src/build.yml.in instead.
 # .github/workflows/build.yml is generated from this file by `ocoman -u`.
 
 permissions:
@@ -280,7 +280,7 @@ jobs:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          . .github/pkg-helpers.sh
+          . src/pkg-helpers.sh
           packages=""
           removed=""
 
@@ -305,8 +305,8 @@ jobs:
             fi
             if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "$ZERO_SHA" ] \
                 || ! git cat-file -e "$BASE_SHA" 2>/dev/null; then
-              echo "No direct diff base; comparing against origin/main templatesList"
-              _main_list=$(git show origin/main:.github/templatesList 2>/dev/null || true)
+              echo "No direct diff base; reading origin/main .gitignore for package list"
+              _main_list=$(git show origin/main:.gitignore 2>/dev/null | sed -n 's|^!/srcpkgs/\([^/]*\)/*$|\1|p' | sort -fu || true)
               if [ -n "$_main_list" ]; then
                 _current_list=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort -f)
                 _main_list=$(printf '%s\n' "$_main_list" | sort -f)
@@ -548,7 +548,7 @@ jobs:
       - name: Build packages
         env:
           PACKAGES: ${{ needs.detect.outputs.packages }}
-        run: sh "${GITHUB_WORKSPACE}/extra/.github/build-packages.sh"
+        run: sh "${GITHUB_WORKSPACE}/extra/src/build-packages.sh"
 
   build:
     name: Build and publish packages
@@ -624,7 +624,7 @@ jobs:
         id: build
         env:
           PACKAGES: ${{ needs.detect.outputs.packages }}
-        run: sh "${GITHUB_WORKSPACE}/extra/.github/build-packages.sh"
+        run: sh "${GITHUB_WORKSPACE}/extra/src/build-packages.sh"
 
       - name: Sign and index
         if: always() && steps.build.outputs.built == 'true'
@@ -724,7 +724,7 @@ jobs:
           cd docs
           git init
           git config user.name "oSoWoso-bot"
-          git config user.email "osowoso@disroot.org"
+          git config user.email "mail@osowoso.org"
           git checkout -b page
           git add .
           git commit -m "Deploy: $(date -u '+%Y-%m-%d %H:%M UTC')"
