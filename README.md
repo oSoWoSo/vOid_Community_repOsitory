@@ -66,7 +66,7 @@ We build for x86_64 and aarch64 + musl variants
 Add your changes  
 When you change any shlib from upstream void-packages, changes must be reflected in `shlibs_remove` and `shlibe_append`  
 When you add new shlib add it only to `shlibe_append`  
-After adding template, run `./update-repo -u` to regenerate templates list and table  
+After adding template, run `./ocoman -u` to regenerate templates list and table  
 One commit per template, mesage: `<pkgname> <version>`  
 
 Create PR

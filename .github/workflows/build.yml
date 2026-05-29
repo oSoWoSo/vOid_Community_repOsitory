@@ -240,7 +240,7 @@ on:
         - arm64
         - nativ
 # Apply changes in .github/build.yml.in instead.
-# .github/workflows/build.yml is generated from this file by `update-repo -u`.
+# .github/workflows/build.yml is generated from this file by `ocoman -u`.
 
 permissions:
   contents: write
@@ -690,7 +690,7 @@ jobs:
         run: |
           export PATH="/opt/xbps/usr/bin/:$PATH"
           export XBPS_TARGET_ARCH="${XBPS_ARCH}"
-          ./update-repo -p
+          ./ocoman -p
           echo "Pruned from https://repo.osowoso.org/${ARCH}/" >> $GITHUB_STEP_SUMMARY
 
   pages:
@@ -714,7 +714,7 @@ jobs:
         env:
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
         run: |
-          ./update-repo -w
+          ./ocoman -w
           echo "Published to https://repo.osowoso.org/" >> $GITHUB_STEP_SUMMARY
 
       - name: Deploy to page branch

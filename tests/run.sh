@@ -1,5 +1,5 @@
 #!/bin/sh
-# Test runner for update-repo helpers.
+# Test runner for ocoman helpers.
 # Usage: tests/run.sh
 # Exit status is the number of failed tests (0 on success).
 
@@ -52,7 +52,7 @@ eval "$(awk '
 	/^read_template_fields/{p=1}
 	p {print}
 	p && /^}$/             {p=0}
-' "$SCRIPT_DIR/update-repo")"
+' "$SCRIPT_DIR/ocoman")"
 
 echo '== pkg_name =='
 it 'plain name';            assert_eq "$(pkg_name 'foo-1.0_1.x86_64')"          'foo'
@@ -206,7 +206,7 @@ eval "$(awk '
 	/^delete_remote\(\)/ {p=1}
 	p {print}
 	p && /^}$/           {p=0}
-' "$SCRIPT_DIR/update-repo")"
+' "$SCRIPT_DIR/ocoman")"
 
 _DELETED=$(mktemp)
 delete_remote() { printf '%s\n' "$1" >> "$_DELETED"; }
