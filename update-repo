@@ -3,7 +3,7 @@
 # Manage repository: templates, README, build.yml, website, and packages.
 # Merged from update-repo + create-web.
 #
-# Author: zenobit <zenobit@disroot.org>
+# Author: zenobit <zen@osowoso.org>
 # License: GPL-3.0-only
 
 [ -f .env ] && . .env
@@ -16,7 +16,7 @@ BUILD_TEMPLATE='.github/build.yml.in'
 
 SURFER_URL="https://repo.osowoso.org"
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
-SIGNED_BY="zenobit <zenobit@disroot.org>"
+SIGNED_BY="zenobit <zen@osowoso.org>"
 SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
 

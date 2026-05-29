@@ -2,7 +2,7 @@
 #
 # Apply shlibs_remove and shlibs_append patches to a void-packages shlibs file.
 #
-# Author: zenobit <zenobit@disroot.org>
+# Author: zenobit <zen@osowoso.org>
 # License: GPL-3.0-only
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)

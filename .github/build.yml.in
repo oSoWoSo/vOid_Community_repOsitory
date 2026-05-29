@@ -179,33 +179,6 @@ jobs:
             return 1
           }
 
-          _check_nocross_chain() {
-            local _pkg="$1"
-            local _tpl="srcpkgs/${_pkg}/template"
-            [ -f "$_tpl" ] || return 1
-            grep -q '^nocross=' "$_tpl" 2>/dev/null && return 0
-            case " ${_cnc_visited:-} " in *" $_pkg "*) return 1 ;; esac
-            _cnc_visited="$_cnc_visited $_pkg"
-            local _deps=""
-            for _field in hostmakedepends makedepends depends; do
-              _line=$(grep -m1 "^${_field}=" "$_tpl" 2>/dev/null)
-              _line="${_line#*=}"
-              _line="${_line#\"}"; _line="${_line%\"}"
-              _line="${_line#'}"; _line="${_line%'}"
-              _deps="$_deps $_line"
-            done
-
-            local _dep _dep_name
-            for _dep in $_deps; do
-              _dep_name="${_dep%%[><=]*}"
-              [ -z "$_dep_name" ] && continue
-              [ -f "srcpkgs/${_dep_name}/template" ] || continue
-              _check_nocross_chain "$_dep_name" && return 0
-            done
-
-            return 1
-          }
-
           needs_cross_aarch64() {
             _cnc_visited=""
             local any_nocross=0
@@ -263,8 +236,8 @@ jobs:
               _amd64=$(arch_needed "x86_64"       && echo 1 || echo 0)
               _musl=$( arch_needed "x86_64-musl"  && echo 1 || echo 0)
               matrix_configs=""
-              [ "$_amd64" = 1 ] && add_cfg "x86_64"      "x86_64"      "ubuntu-latest"    "linux/amd64" 1 false
-              [ "$_musl"  = 1 ] && add_cfg "x86_64-musl" "x86_64-musl" "ubuntu-latest"    "linux/amd64" 1 false
+[ "$_amd64" = 1 ] && add_cfg "x86_64"      "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+[ "$_musl"  = 1 ] && add_cfg "x86_64-musl" "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
               if [ -z "$matrix_configs" ]; then
                 echo "Warning: no packages for amd64 archs, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
                 add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
@@ -283,9 +256,9 @@ jobs:
               ;;
             nativ)
               matrix_configs=""
-              arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64"      "ubuntu-latest"    "linux/amd64" 1 false
-              arch_needed "aarch64"      && add_cfg "aarch64"      "aarch64"      "ubuntu-24.04-arm" "linux/arm64" 1 true
-              arch_needed "x86_64-musl"  && add_cfg "x86_64-musl"  "x86_64-musl" "ubuntu-latest"    "linux/amd64" 1 false
+              arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+              arch_needed "aarch64"      && add_cfg "aarch64"      "aarch64" "ubuntu-24.04-arm" "linux/arm64" 1 true
+              arch_needed "x86_64-musl"  && add_cfg "x86_64-musl"  "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
               arch_needed "aarch64-musl" && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
               if [ -z "$matrix_configs" ]; then
                 echo "Warning: no packages for any arch, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
@@ -294,10 +267,10 @@ jobs:
               ;;
             auto|*)
               matrix_configs=""
-              arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64"      "ubuntu-latest"    "linux/amd64" 1 false
-              needs_cross_aarch64      && add_cfg "aarch64"      "x86_64"      "ubuntu-latest"    "linux/amd64" 0 false
-              arch_needed "x86_64-musl"  && add_cfg "x86_64-musl"  "x86_64-musl" "ubuntu-latest"    "linux/amd64" 1 false
-              needs_cross_aarch64_musl && add_cfg "aarch64-musl" "x86_64-musl" "ubuntu-latest"    "linux/amd64" 0 false
+              arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+              needs_cross_aarch64      && add_cfg "aarch64"      "x86_64" "ubuntu-latest"    "linux/amd64" 0 false
+              arch_needed "x86_64-musl"  && add_cfg "x86_64-musl"  "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
+              needs_cross_aarch64_musl && add_cfg "aarch64-musl" "x86_64" "ubuntu-latest"    "linux/amd64" 0 false
               needs_native_aarch64 && add_cfg "aarch64" "aarch64" "ubuntu-24.04-arm" "linux/arm64" 1 true
               needs_native_aarch64_musl && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
               if [ -z "$matrix_configs" ]; then
@@ -482,7 +455,7 @@ jobs:
 
           echo "==> Updating and signing repo index"
           xbps-rindex -a ./*.xbps
-          xbps-rindex -s --signedby "zenobit <zenobit@disroot.org>" --privkey /tmp/private.pem .
+          xbps-rindex -s --signedby "zenobit <zen@osowoso.org>" --privkey /tmp/private.pem .
 
           rm -f /tmp/private.pem
           echo "Published to https://repo.osowoso.org/${XBPS_TARGET_ARCH}/" >> "$GITHUB_STEP_SUMMARY"

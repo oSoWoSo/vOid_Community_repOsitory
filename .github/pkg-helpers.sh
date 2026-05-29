@@ -2,6 +2,36 @@
 # Returns 0 if pkg is compatible with target arch, 1 if excluded.
 # Source this file; do not execute directly.
 # Runs in a subshell so `set -f` is auto-restored on return.
+
+# Check if a package or any of its dependencies has nocross set.
+# Returns 0 if nocross found, 1 otherwise.
+_check_nocross_chain() {
+	local _pkg="$1"
+	local _tpl="srcpkgs/${_pkg}/template"
+	[ -f "$_tpl" ] || return 1
+	grep -q '^nocross=' "$_tpl" 2>/dev/null && return 0
+	case " ${_cnc_visited:-} " in *" $_pkg "*) return 1 ;; esac
+	_cnc_visited="$_cnc_visited $_pkg"
+	local _deps=""
+	for _field in hostmakedepends makedepends depends; do
+		_line=$(grep -m1 "^${_field}=" "$_tpl" 2>/dev/null)
+		_line="${_line#*=}"
+		_line="${_line#\"}"; _line="${_line%\"}"
+		_line="${_line#'}"; _line="${_line%'}"
+		_deps="$_deps $_line"
+	done
+
+	local _dep _dep_name
+	for _dep in $_deps; do
+		_dep_name="${_dep%%[><=]*}"
+		[ -z "$_dep_name" ] && continue
+		[ -f "srcpkgs/${_dep_name}/template" ] || continue
+		_check_nocross_chain "$_dep_name" && return 0
+	done
+
+	return 1
+}
+
 pkg_arch_ok() (
 	# Disable pathname expansion: we need `for _pao_pat in $_pao_archs`
 	# to split on whitespace WITHOUT globbing values like `*` or `*-musl`
