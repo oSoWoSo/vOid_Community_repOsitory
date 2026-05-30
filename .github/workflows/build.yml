@@ -306,8 +306,8 @@ jobs:
             fi
             if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "$ZERO_SHA" ] \
                 || ! git cat-file -e "$BASE_SHA" 2>/dev/null; then
-              echo "No direct diff base; reading origin/main .gitignore for package list"
-              _main_list=$(git show origin/main:.gitignore 2>/dev/null | sed -n 's|^!/srcpkgs/\([^/]*\)/*$|\1|p' | sort -fu || true)
+              echo "No direct diff base; reading origin/OCO .gitignore for package list"
+              _main_list=$(git show origin/OCO:.gitignore 2>/dev/null | sed -n 's|^!/srcpkgs/\([^/]*\)/*$|\1|p' | sort -fu || true)
               if [ -n "$_main_list" ]; then
                 _current_list=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort -f)
                 _main_list=$(printf '%s\n' "$_main_list" | sort -f)
@@ -317,7 +317,7 @@ jobs:
                 _common=$(comm -12 <(printf '%s\n' "$_current_list") <(printf '%s\n' "$_main_list"))
                 _modified=""
                 for _pkg in $_common; do
-                  if git show origin/main:srcpkgs/$_pkg/template 2>/dev/null \
+                  if git show origin/OCO:srcpkgs/$_pkg/template 2>/dev/null \
                       | diff -q - srcpkgs/$_pkg/template >/dev/null 2>&1; then
                     :
                   else
@@ -326,7 +326,7 @@ jobs:
                 done
                 packages=$(printf '%s\n%s' "$_added" "$_modified" | grep -v '^$' | tr '\n' ' ' | sed 's/ $//')
               else
-                echo "  templatesList from origin/main not available; treating as full build"
+                echo "  templatesList from origin/OCO not available; treating as full build"
                 packages=$(all_packages)
               fi
             else
@@ -705,10 +705,10 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout latest main
+      - name: Checkout latest OCO
         uses: actions/checkout@v6
         with:
-          ref: main
+          ref: OCO
           fetch-depth: 1
 
       - name: Regenerate and upload website
