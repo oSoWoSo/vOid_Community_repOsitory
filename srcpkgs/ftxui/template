@@ -6,7 +6,7 @@ build_style=cmake
 configure_args="-DFTXUI_BUILD_DOCS=ON -DFTXUI_BUILD_TESTS=OFF"
 hostmakedepends="pkg-config doxygen graphviz"
 short_desc="C++ Functional Terminal User Interface"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/ArthurSonzogni/FTXUI"
 changelog="https://raw.githubusercontent.com/ArthurSonzogni/FTXUI/refs/heads/main/CHANGELOG.md"

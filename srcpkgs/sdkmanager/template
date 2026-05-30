@@ -7,7 +7,7 @@ hostmakedepends="pkg-config gnupg openjdk17 python3-argcomplete python3-defusedx
  python3-packaging python3-requests python3-setuptools"
 depends="python3-argcomplete python3-looseversion python3-requests python3-urllib3"
 short_desc="Drop-in replacement for Android sdkmanager written in Python"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-or-later"
 homepage="https://gitlab.com/fdroid/sdkmanager"
 distfiles="https://gitlab.com/fdroid/sdkmanager/-/archive/${version}/sdkmanager-${version}.tar.gz"

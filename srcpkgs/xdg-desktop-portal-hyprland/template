@@ -10,7 +10,7 @@ makedepends="elogind-devel hyprland-protocols hyprlang hyprutils
  qt6-base-devel qt6-wayland-devel sdbus-c++ wayland-devel"
 depends="xdg-desktop-portal"
 short_desc="Backend of xdg-desktop-portal for Hyprland"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="BSD-3-Clause"
 homepage="https://github.com/hyprwm/xdg-desktop-portal-hyprland"
 distfiles="${homepage}/archive/refs/tags/v${version}.tar.gz"

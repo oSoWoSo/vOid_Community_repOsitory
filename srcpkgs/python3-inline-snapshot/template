@@ -10,7 +10,7 @@ depends="python3-asttokens python3-executing python3-pytest python3-rich
 checkdepends="black pyright python3 ${depends} python3-anyio python3-isort
  python3-dirty-equals python3-hypothesis python3-freezegun python3-mypy"
 short_desc="Boosts efficiency when writing tests"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="0BSD"
 homepage="https://15r10nk.github.io/inline-snapshot/latest"
 distfiles="https://github.com/15r10nk/inline-snapshot/archive/refs/tags/${version}.tar.gz"

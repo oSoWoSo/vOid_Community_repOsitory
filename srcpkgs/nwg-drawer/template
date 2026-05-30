@@ -8,7 +8,7 @@ hostmakedepends="pkg-config"
 makedepends="cairo-devel gdk-pixbuf-devel gtk+3-devel pango-devel
  gtk-layer-shell-devel libgirepository-devel libglib-devel"
 short_desc="Application drawer for wlroots-based Wayland compositors"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://nwg-piotr.github.io/nwg-shell/nwg-drawer"
 #changelog=""

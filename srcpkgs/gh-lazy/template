@@ -9,7 +9,7 @@ depends="python3-rich python3-PyGithub python3-dateutil python3-pydantic
  python3-linkify-it-py python3-uc-micro-py"
 checkdepends="${depends} python3-pytest python3-typing_extensions python3-idna python3-anyio"
 short_desc="Terminal UI for interacting with GitHub"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/gizmo385/gh-lazy"
 distfiles="https://github.com/gizmo385/gh-lazy/archive/refs/tags/v${version}.tar.gz"

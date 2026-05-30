@@ -7,7 +7,7 @@ hostmakedepends="pkg-config python3-setuptools python3-wheel python3-geopy pytho
 depends="python3 gtklock noto-fonts-ttf playerctl python3-geopy
  python3-gobject python3-i3ipc wlsunset"
 short_desc="Graphical user interface for configuring sway and Hyprland"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://nwg-piotr.github.io/nwg-shell/nwg-shell-config"
 #changelog=""

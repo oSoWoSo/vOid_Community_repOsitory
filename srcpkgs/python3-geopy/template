@@ -9,7 +9,7 @@ depends="python3-geographiclib"
 checkdepends="python3-aiohttp python3-pytest-asyncio python3-pytest-aiohttp
  python3-pytest python3-pytz python3-requests python3-urllib3 geocode-glib"
 short_desc="Geocoding library for Python"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/geopy/geopy"
 distfiles="https://github.com/geopy/geopy/archive/refs/tags/${version}.tar.gz"

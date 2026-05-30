@@ -12,7 +12,7 @@ makedepends="libsixel-devel libX11-devel libglib-devel nspr-devel nss-devel
  at-spi2-core-devel at-spi2-atk-devel expat-devel libdrm-devel MesaLib-devel
  gtk+3-devel"
 short_desc="Minimalistic graphical terminal web browser using sixels"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="MIT,BSD-3-Clause"
 homepage="https://codeberg.org/janantos/brow6el"
 distfiles="https://codeberg.org/janantos/brow6el/archive/v${version}.tar.gz"

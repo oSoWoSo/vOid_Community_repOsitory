@@ -44,7 +44,7 @@ depends="
 	wlsunset
 	xorg-server-xwayland"
 short_desc="GTK based shell for sway and Hyprland Wayland compositors"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://nwg-piotr.github.io/nwg-shell"
 changelog="https://github.com/nwg-piotr/nwg-shell/discussions/categories/changelog"

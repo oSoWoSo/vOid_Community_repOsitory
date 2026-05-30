@@ -8,7 +8,7 @@ hostmakedepends="pkg-config"
 makedepends="cairo-devel gdk-pixbuf-devel glib-devel gtk+3-devel
  gtk-layer-shell-devel pango-devel"
 short_desc="MenuStart plugin to nwg-panel, also capable of working standalone"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://nwg-piotr.github.io/nwg-shell/nwg-menu"
 #changelog=""

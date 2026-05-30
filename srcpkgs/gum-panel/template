@@ -7,7 +7,7 @@ build_helper=qemu
 go_import_path="github.com/charmbracelet/gum"
 go_ldflags="-X main.Version=${version}"
 short_desc="Modified version of gum with panel support"
-maintainer="zenobit <zenobit@disroot.org>"
+maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://codeberg.org/oSoWoSo/gum"
 changelog="https://github.com/charmbracelet/gum/releases"
