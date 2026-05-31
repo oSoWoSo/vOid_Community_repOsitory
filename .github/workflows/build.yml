@@ -13,6 +13,8 @@ run-name: >-
 
 on:
   push:
+    branches-ignore:
+      - 'WIP/**'
     paths:
       - 'srcpkgs/**'
   pull_request:
