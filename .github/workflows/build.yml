@@ -280,6 +280,7 @@ jobs:
           INPUT_TEMPLATES: ${{ inputs.templates }}
           INPUT_RUNNER: ${{ inputs.runner || 'auto' }}
           EVENT_NAME: ${{ github.event_name }}
+          CURRENT_BRANCH: ${{ github.ref_name }}
           PUSH_BEFORE: ${{ github.event.before }}
           PUSH_AFTER: ${{ github.event.after }}
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -305,8 +306,12 @@ jobs:
               BASE_SHA="$PR_BASE_SHA"
               HEAD_SHA="$PR_HEAD_SHA"
             else
-              BASE_SHA="$PUSH_BEFORE"
               HEAD_SHA="$PUSH_AFTER"
+              if [ "$CURRENT_BRANCH" = "OCO" ]; then
+                BASE_SHA="$PUSH_BEFORE"
+              else
+                BASE_SHA="$ZERO_SHA"
+              fi
             fi
             if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "$ZERO_SHA" ] \
                 || ! git cat-file -e "$BASE_SHA" 2>/dev/null; then
