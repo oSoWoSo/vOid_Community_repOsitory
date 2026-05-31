@@ -177,6 +177,7 @@ on:
         - omniroute
         - opencode
         - patchance
+        - pi-bin
         - pinguintv-installer
         - pop-fonts
         - pop-icons

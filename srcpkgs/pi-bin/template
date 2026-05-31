@@ -1,0 +1,39 @@
+# Template file for 'pi-bin'
+pkgname=pi-bin
+version=0.78.0
+revision=1
+archs="x86_64 aarch64"
+short_desc="AI coding agent CLI with TUI and multi-provider LLM support"
+maintainer="zenobit <zen@osowoso.org>"
+license="MIT"
+homepage="https://github.com/earendil-works/pi"
+nopie=yes
+nostrip=yes
+noverifyrdeps=yes
+
+case "$XBPS_TARGET_MACHINE" in
+	x86_64)
+		distfiles="https://github.com/earendil-works/pi/releases/download/v${version}/pi-linux-x64.tar.gz"
+		checksum=8ac03343d1e1228106e8172157f32d6b882829e46b34feaf577f171a5f1387cc
+		;;
+	aarch64*)
+		distfiles="https://github.com/earendil-works/pi/releases/download/v${version}/pi-linux-arm64.tar.gz"
+		checksum=49155173682473720d9decf4deecbed754fae84925ef003c0b66aac31d5f9005
+		;;
+esac
+
+do_install() {
+	vmkdir usr/lib/pi
+	vinstall pi 755 usr/lib/pi
+	vinstall package.json 644 usr/lib/pi
+	vinstall photon_rs_bg.wasm 644 usr/lib/pi
+	for _d in theme assets export-html node_modules docs examples; do
+		[ -d "$_d" ] && vcopy "$_d" usr/lib/pi
+	done
+	vmkdir usr/bin
+	ln -sf /usr/lib/pi/pi "${DESTDIR}/usr/bin/pi"
+}
+
+post_install() {
+	vlicense "$FILESDIR/LICENSE"
+}
