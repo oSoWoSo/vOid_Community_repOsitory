@@ -1,6 +1,6 @@
 # Template file for 'gum-panel'
 pkgname=gum-panel
-version=0.17.0.003
+version=0.17.0.005
 revision=1
 build_style=go
 build_helper=qemu
@@ -12,7 +12,7 @@ license="MIT"
 homepage="https://codeberg.org/oSoWoSo/gum"
 changelog="https://github.com/charmbracelet/gum/releases"
 distfiles="https://codeberg.org/oSoWoSo/gum/archive/${version}.tar.gz"
-checksum=f1f0e837e831f48dbc3fc7444bac189dbf78e91476b93f2c79a52eeccc8e1828
+checksum=03601f3b509511abcb1f6b7535022b21f290d66ed00e605e9a34d08b59da8b54
 conflicts=gum
 
 post_install() {
