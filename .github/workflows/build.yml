@@ -620,7 +620,7 @@ jobs:
           RCLONE_WEBDAV_PASS="$(rclone obscure "$SURFER_TOKEN")" \
           rclone mount :webdav: /void-packages/hostdir/binpkgs \
             --allow-other \
-            --vfs-cache-mode writes \
+            --vfs-cache-mode full \
             --uid "$(id -u builder)" \
             --gid "$(id -g builder)" \
             --log-file /tmp/rclone.log &

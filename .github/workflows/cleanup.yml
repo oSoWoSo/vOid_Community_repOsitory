@@ -37,7 +37,7 @@ jobs:
           RCLONE_WEBDAV_PASS="$(rclone obscure "$SURFER_TOKEN")" \
           rclone mount :webdav: /repo \
             --allow-other \
-            --vfs-cache-mode writes \
+            --vfs-cache-mode full \
             --log-file /tmp/rclone.log &
           until mountpoint -q /repo; do
             sleep 1
