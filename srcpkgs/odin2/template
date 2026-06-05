@@ -1,8 +1,9 @@
 # Template file for 'odin2'
 pkgname=odin2
 version=2.4.1
-revision=1
+revision=2
 build_style=cmake
+patch_args="-Np1 --binary"
 metapackage=yes
 hostmakedepends="pkg-config"
 makedepends="libX11-devel alsa-lib-devel MesaLib-devel libcurl-devel libwebkit2gtk41-devel lv2 gendesk"
