@@ -14,8 +14,8 @@ homepage="https://pinguin-tv.de/Downloads/Pinguin-Installer.zip"
 distfiles="https://codeberg.org/pinguin-void/Pinguin-Installer/archive/main.tar.gz"
 checksum=36985b1ef70ddab10d204d2acff9249052406929f15b6c7025ec514c2320d673
 
-do_build() {
-	gcc src/core/main.c src/ui/ui.c src/ui/ui_callbacks.c src/ui/ui_partition.c src/core/partition_utils.c src/core/utils.c src/core/installer.c src/core/installer_steps.c -o pinguin-installer -Iinclude `pkg-config --cflags --libs gtk+-3.0` -lpthread
+post_extract() {
+	rm $wrksrc/pinguin-installer
 }
 
 do_install() {

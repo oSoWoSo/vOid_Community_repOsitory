@@ -158,7 +158,7 @@ Create PR
 | graphite-gtk-theme-nord-dark-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
 | graphite-gtk-theme-nord-light | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
 | graphite-gtk-theme-nord-light-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
-| gum-panel | 0.17.0.003 | https://codeberg.org/oSoWoSo/gum | zenobit |  |
+| gum-panel | 0.17.0.005 | https://codeberg.org/oSoWoSo/gum | zenobit |  |
 | helium-browser-arm-bin | 0.12.2.1 | https://helium.computer | zenobit | aarch64 |
 | helium-browser-bin | 0.12.2.1 | https://helium.computer | zenobit | x86_64 |
 | hyprcursor | 0.1.13 | https://github.com/hyprwm/hyprcursor | zenobit |  |
@@ -261,7 +261,7 @@ Create PR
 | undelete-btrfs | 1.0 | https://github.com/danthem/undelete-btrfs | zenobit |  |
 | vbm | 1.0.1 | https://codeberg.org/oSoWoSo/vbm | zenobit |  |
 | Vish | 1.1.3 | https://github.com/Lluciocc/Vish | zenobit |  |
-| vote | 0.90.1 | https://codeberg.org/oSoWoSo/vote | zenobit |  |
+| vote | 0.91 | https://codeberg.org/oSoWoSo/vote | zenobit |  |
 | vtm | 2026.05.28 | https://github.com/directvt/vtm | zenobit |  |
 | waterfox-bin | 6.6.12 | https://www.waterfox.net | zenobit | x86_64 |
 | wpgtk | 6.7.1 | https://github.com/deviantfero/wpgtk/ | zenobit |  |
