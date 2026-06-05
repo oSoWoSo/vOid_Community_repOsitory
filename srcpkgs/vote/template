@@ -1,7 +1,7 @@
 # Template file for 'vote'
 pkgname=vote
 version=0.91
-revision=1
+revision=2
 depends="gum-panel xtools"
 #checkdepends="${depends} clitest jq perl"
 short_desc="XBPS package management helper for VoidLinux"
