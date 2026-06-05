@@ -488,7 +488,6 @@ jobs:
           rm -f /tmp/private.pem
 
           BUILDDIR="$NEW_PKGS_DIR" "${GITHUB_WORKSPACE}/extra/ocoman" -p
-          echo "==> New packages: $(ls "$NEW_PKGS_DIR"/*.xbps | wc -l)" >> $GITHUB_STEP_SUMMARY
 
   prune:
     name: Prune removed packages
