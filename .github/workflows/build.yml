@@ -624,11 +624,13 @@ jobs:
             --uid "$(id -u builder)" \
             --gid "$(id -g builder)" \
             --log-file /tmp/rclone.log &
+          echo $! > /tmp/rclone.pid
           until mountpoint -q /void-packages/hostdir/binpkgs; do
             sleep 1
             kill -0 $! 2>/dev/null || { cat /tmp/rclone.log >&2; exit 1; }
           done
-          echo "==> Mounted: $(ls /void-packages/hostdir/binpkgs/*.xbps 2>/dev/null | wc -l) packages already in repo"
+          ls /void-packages/hostdir/binpkgs/*.xbps 2>/dev/null | xargs -I{} basename {} > /tmp/pre-build-pkgs.txt || touch /tmp/pre-build-pkgs.txt
+          echo "==> Mounted: $(wc -l < /tmp/pre-build-pkgs.txt) packages already in repo"
 
       - name: Build packages
         id: build
@@ -636,11 +638,13 @@ jobs:
           PACKAGES: ${{ needs.detect.outputs.packages }}
         run: sh "${GITHUB_WORKSPACE}/extra/src/build-packages.sh"
 
-      - name: Sign and index
-        if: always() && steps.build.outputs.built == 'true'
+      - name: Sign and upload new packages
+        if: steps.build.outputs.built == 'true'
         env:
           PRIV_KEY: ${{ secrets.PRIV_KEY }}
+          ARCH: ${{ matrix.config.arch }}
           XBPS_TARGET_ARCH: ${{ matrix.config.arch }}
+          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
         working-directory: /void-packages/hostdir/binpkgs/
         run: |
           export PATH="/opt/xbps/usr/bin/:$PATH"
@@ -648,22 +652,45 @@ jobs:
           echo "==> Merging free + nonfree"
           [ -d nonfree ] && mv nonfree/*.xbps . 2>/dev/null || true
 
+          echo "==> Identifying newly built packages"
+          NEW_PKGS_DIR=$(mktemp -d)
+          for pkg in ./*.xbps; do
+            [ -f "$pkg" ] || continue
+            base=$(basename "$pkg")
+            grep -qxF "$base" /tmp/pre-build-pkgs.txt && continue
+            cp "$pkg" "$NEW_PKGS_DIR/"
+            [ -f "${pkg}.sig2" ] && cp "${pkg}.sig2" "$NEW_PKGS_DIR/" || true
+          done
+
+          if ! ls "$NEW_PKGS_DIR"/*.xbps 2>/dev/null; then
+            echo "==> No new packages to sign/upload"
+            rm -rf "$NEW_PKGS_DIR"
+            exit 0
+          fi
+
+          echo "==> New packages: $(ls "$NEW_PKGS_DIR"/*.xbps | wc -l)"
+
           trap 'rm -f /tmp/private.pem' EXIT INT TERM
           ( umask 077 && printf '%s\n' "$PRIV_KEY" > /tmp/private.pem )
 
-          echo "==> Signing packages"
-          xbps-rindex -S --privkey /tmp/private.pem ./*.xbps
-
-          echo "==> Updating and signing repo index"
-          xbps-rindex -a ./*.xbps
-          xbps-rindex -s --signedby "zenobit <zen@osowoso.org>" --privkey /tmp/private.pem .
-
+          echo "==> Signing new packages"
+          xbps-rindex -S --privkey /tmp/private.pem "$NEW_PKGS_DIR"/*.xbps
           rm -f /tmp/private.pem
-          echo "Published to https://repo.osowoso.org/${XBPS_TARGET_ARCH}/" >> "$GITHUB_STEP_SUMMARY"
+
+          echo "==> Uploading"
+          BUILDDIR="$NEW_PKGS_DIR" "${GITHUB_WORKSPACE}/ocoman" -p
+          rm -rf "$NEW_PKGS_DIR"
+          echo "Added to https://repo.osowoso.org/${ARCH}/" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Unmount binpkgs
         if: always()
-        run: fusermount -u /void-packages/hostdir/binpkgs 2>/dev/null || true
+        run: |
+          fusermount -u /void-packages/hostdir/binpkgs 2>/dev/null || true
+          if [ -f /tmp/rclone.pid ]; then
+            RCLONE_PID=$(cat /tmp/rclone.pid)
+            while kill -0 "$RCLONE_PID" 2>/dev/null; do sleep 1; done
+            cat /tmp/rclone.log >&2 || true
+          fi
 
   prune:
     name: Prune removed packages
