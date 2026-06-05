@@ -290,6 +290,16 @@ jobs:
           packages=""
           removed=""
 
+          # Debug output
+          echo "DEBUG: INPUT_ALL=$INPUT_ALL"
+          echo "DEBUG: INPUT_TEMPLATE=$INPUT_TEMPLATE"
+          echo "DEBUG: EVENT_NAME=$EVENT_NAME"
+          echo "DEBUG: CURRENT_BRANCH=$CURRENT_BRANCH"
+          echo "DEBUG: PUSH_BEFORE=$PUSH_BEFORE"
+          echo "DEBUG: PUSH_AFTER=$PUSH_AFTER"
+          echo "DEBUG: BASE_SHA=$BASE_SHA"
+          echo "DEBUG: HEAD_SHA=$HEAD_SHA"
+
           ZERO_SHA="0000000000000000000000000000000000000000"
           all_packages() {
             find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f " | sed 's/ $//'
@@ -308,7 +318,12 @@ jobs:
             else
               HEAD_SHA="$PUSH_AFTER"
               if [ "$CURRENT_BRANCH" = "OCO" ]; then
-                BASE_SHA="$PUSH_BEFORE"
+                # Handle empty PUSH_BEFORE - use git rev-parse HEAD^ as fallback
+                if [ -n "$PUSH_BEFORE" ] && [ "$PUSH_BEFORE" != "$ZERO_SHA" ]; then
+                  BASE_SHA="$PUSH_BEFORE"
+                else
+                  BASE_SHA=$(git rev-parse HEAD^ 2>/dev/null || echo "$ZERO_SHA")
+                fi
               else
                 BASE_SHA="$ZERO_SHA"
               fi
@@ -335,7 +350,7 @@ jobs:
                 done
                 packages=$(printf '%s\n%s' "$_added" "$_modified" | grep -v '^$' | tr '\n' ' ' | sed 's/ $//')
               else
-                echo "  templatesList from origin/OCO not available; treating as full build"
+                echo "  Warning: origin/OCO:.gitignore empty or not found; building all packages"
                 packages=$(all_packages)
               fi
             else
@@ -348,6 +363,12 @@ jobs:
                 | cut -d/ -f2 | sort -u | tr '\n' ' ' | sed 's/ $//')
             fi
           else
+            packages=$(all_packages)
+          fi
+
+          # Ensure packages is never empty - final fallback
+          if [ -z "$packages" ]; then
+            echo "  Warning: no packages detected, using all_packages fallback"
             packages=$(all_packages)
           fi
 
@@ -656,6 +677,8 @@ jobs:
           NEW_PKGS_DIR=$(mktemp -d)
           for pkg in ./*.xbps; do
             [ -f "$pkg" ] || continue
+            base=$(basename "$pkg")
+            grep -qxF "$base" /tmp/pre-build-pkgs.txt && continue
             mv "$pkg" "$NEW_PKGS_DIR/"
             [ -f "${pkg}.sig2" ] && mv "${pkg}.sig2" "$NEW_PKGS_DIR/" || true
           done
@@ -676,7 +699,7 @@ jobs:
           rm -f /tmp/private.pem
 
           echo "==> Uploading"
-          BUILDDIR="$NEW_PKGS_DIR" "${GITHUB_WORKSPACE}/ocoman" -p
+          BUILDDIR="$NEW_PKGS_DIR" "${GITHUB_WORKSPACE}/extra/ocoman" -p
           rm -rf "$NEW_PKGS_DIR"
           echo "Added to https://repo.osowoso.org/${ARCH}/" >> "$GITHUB_STEP_SUMMARY"
 
