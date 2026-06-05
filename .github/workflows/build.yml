@@ -656,8 +656,6 @@ jobs:
           NEW_PKGS_DIR=$(mktemp -d)
           for pkg in ./*.xbps; do
             [ -f "$pkg" ] || continue
-            base=$(basename "$pkg")
-            grep -qxF "$base" /tmp/pre-build-pkgs.txt && continue
             mv "$pkg" "$NEW_PKGS_DIR/"
             [ -f "${pkg}.sig2" ] && mv "${pkg}.sig2" "$NEW_PKGS_DIR/" || true
           done
