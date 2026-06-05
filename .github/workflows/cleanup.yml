@@ -88,11 +88,17 @@ jobs:
       - name: Unmount repo
         if: always()
         run: |
-          fusermount -u /repo 2>/dev/null || true
           if [ -f /tmp/rclone.pid ]; then
             RCLONE_PID=$(cat /tmp/rclone.pid)
-            echo "==> Waiting for rclone (PID $RCLONE_PID) to flush uploads..."
-            while kill -0 "$RCLONE_PID" 2>/dev/null; do sleep 1; done
-            echo "==> Rclone exited, uploads complete"
+            kill -TERM "$RCLONE_PID" 2>/dev/null || true
+            fusermount -u /repo 2>/dev/null || true
+            for _i in $(seq 30); do
+              kill -0 "$RCLONE_PID" 2>/dev/null || break
+              sleep 1
+            done
+            if kill -0 "$RCLONE_PID" 2>/dev/null; then
+              echo "==> WARNING: rclone did not exit after 30s, force-killing" >&2
+              kill -9 "$RCLONE_PID" 2>/dev/null || true
+            fi
             cat /tmp/rclone.log >&2 || true
           fi

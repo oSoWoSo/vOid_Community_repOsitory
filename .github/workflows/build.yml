@@ -658,8 +658,8 @@ jobs:
             [ -f "$pkg" ] || continue
             base=$(basename "$pkg")
             grep -qxF "$base" /tmp/pre-build-pkgs.txt && continue
-            cp "$pkg" "$NEW_PKGS_DIR/"
-            [ -f "${pkg}.sig2" ] && cp "${pkg}.sig2" "$NEW_PKGS_DIR/" || true
+            mv "$pkg" "$NEW_PKGS_DIR/"
+            [ -f "${pkg}.sig2" ] && mv "${pkg}.sig2" "$NEW_PKGS_DIR/" || true
           done
 
           if ! ls "$NEW_PKGS_DIR"/*.xbps 2>/dev/null; then
@@ -685,10 +685,18 @@ jobs:
       - name: Unmount binpkgs
         if: always()
         run: |
-          fusermount -u /void-packages/hostdir/binpkgs 2>/dev/null || true
           if [ -f /tmp/rclone.pid ]; then
             RCLONE_PID=$(cat /tmp/rclone.pid)
-            while kill -0 "$RCLONE_PID" 2>/dev/null; do sleep 1; done
+            kill -TERM "$RCLONE_PID" 2>/dev/null || true
+            fusermount -u /void-packages/hostdir/binpkgs 2>/dev/null || true
+            for _i in $(seq 30); do
+              kill -0 "$RCLONE_PID" 2>/dev/null || break
+              sleep 1
+            done
+            if kill -0 "$RCLONE_PID" 2>/dev/null; then
+              echo "==> WARNING: rclone did not exit after 30s, force-killing" >&2
+              kill -9 "$RCLONE_PID" 2>/dev/null || true
+            fi
             cat /tmp/rclone.log >&2 || true
           fi
 
