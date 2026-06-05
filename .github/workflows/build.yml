@@ -630,29 +630,6 @@ jobs:
           done
           chown -R builder:builder /void-packages/srcpkgs /void-packages/common
 
-      - name: Mount remote binpkgs via WebDAV
-        env:
-          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
-          ARCH: ${{ matrix.config.arch }}
-        run: |
-          echo user_allow_other >> /etc/fuse.conf
-          mkdir -p /void-packages/hostdir/binpkgs
-          RCLONE_WEBDAV_URL="https://repo.osowoso.org/_webdav/${ARCH}/" \
-          RCLONE_WEBDAV_PASS="$(rclone obscure "$SURFER_TOKEN")" \
-          rclone mount :webdav: /void-packages/hostdir/binpkgs \
-            --allow-other \
-            --vfs-cache-mode full \
-            --uid "$(id -u builder)" \
-            --gid "$(id -g builder)" \
-            --log-file /tmp/rclone.log &
-          echo $! > /tmp/rclone.pid
-          until mountpoint -q /void-packages/hostdir/binpkgs; do
-            sleep 1
-            kill -0 $! 2>/dev/null || { cat /tmp/rclone.log >&2; exit 1; }
-          done
-          ls /void-packages/hostdir/binpkgs/*.xbps 2>/dev/null | xargs -I{} basename {} > /tmp/pre-build-pkgs.txt || touch /tmp/pre-build-pkgs.txt
-          echo "==> Mounted: $(wc -l < /tmp/pre-build-pkgs.txt) packages already in repo"
-
       - name: Build packages
         id: build
         env:
@@ -663,12 +640,12 @@ jobs:
         if: steps.build.outputs.built == 'true'
         env:
           PRIV_KEY: ${{ secrets.PRIV_KEY }}
-          ARCH: ${{ matrix.config.arch }}
+          XBPS_ARCH: ${{ matrix.config.arch }}
           XBPS_TARGET_ARCH: ${{ matrix.config.arch }}
-          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
         working-directory: /void-packages/hostdir/binpkgs/
         run: |
           export PATH="/opt/xbps/usr/bin/:$PATH"
+          export XBPS_TARGET_ARCH="${XBPS_ARCH}"
 
           echo "==> Merging free + nonfree"
           [ -d nonfree ] && mv nonfree/*.xbps . 2>/dev/null || true
@@ -698,28 +675,20 @@ jobs:
           xbps-rindex -S --privkey /tmp/private.pem "$NEW_PKGS_DIR"/*.xbps
           rm -f /tmp/private.pem
 
-          echo "==> Uploading"
-          BUILDDIR="$NEW_PKGS_DIR" "${GITHUB_WORKSPACE}/extra/ocoman" -p
-          rm -rf "$NEW_PKGS_DIR"
-          echo "Added to https://repo.osowoso.org/${ARCH}/" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Unmount binpkgs
-        if: always()
+      - name: Upload
+        if: always() && steps.build.outputs.built == 'true'
+        working-directory: /void-packages/hostdir/binpkgs
+        env:
+          ARCH: ${{ matrix.config.arch }}
+          XBPS_ARCH: ${{ matrix.config.arch }}
+          XBPS_TARGET_ARCH: ${{ matrix.config.arch }}
+          PRIV_KEY: ${{ secrets.PRIV_KEY }}
+          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
         run: |
-          if [ -f /tmp/rclone.pid ]; then
-            RCLONE_PID=$(cat /tmp/rclone.pid)
-            kill -TERM "$RCLONE_PID" 2>/dev/null || true
-            fusermount -u /void-packages/hostdir/binpkgs 2>/dev/null || true
-            for _i in $(seq 30); do
-              kill -0 "$RCLONE_PID" 2>/dev/null || break
-              sleep 1
-            done
-            if kill -0 "$RCLONE_PID" 2>/dev/null; then
-              echo "==> WARNING: rclone did not exit after 30s, force-killing" >&2
-              kill -9 "$RCLONE_PID" 2>/dev/null || true
-            fi
-            cat /tmp/rclone.log >&2 || true
-          fi
+          export XBPS_TARGET_ARCH="${XBPS_ARCH}"
+          export PATH="/opt/xbps/usr/bin/:$PATH"
+          "${GITHUB_WORKSPACE}/extra/ocoman" -p
+          echo "Added to https://repo.osowoso.org/${ARCH}/" >> $GITHUB_STEP_SUMMARY
 
   prune:
     name: Prune removed packages
