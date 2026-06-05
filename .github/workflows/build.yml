@@ -331,10 +331,10 @@ jobs:
             if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "$ZERO_SHA" ] \
                 || ! git cat-file -e "$BASE_SHA" 2>/dev/null; then
               echo "No direct diff base; reading origin/OCO .gitignore for package list"
-              _main_list=$(git show origin/OCO:.gitignore 2>/dev/null | sed -n 's|^!/srcpkgs/\([^/]*\)/*$|\1|p' | sort -fu || true)
+              _main_list=$(git show origin/OCO:.gitignore 2>/dev/null | sed -n 's|^!/srcpkgs/\([^/]*\)/*$|\1|p' | sort -u || true)
               if [ -n "$_main_list" ]; then
-                _current_list=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort -f)
-                _main_list=$(printf '%s\n' "$_main_list" | sort -f)
+                _current_list=$(find srcpkgs -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort)
+                _main_list=$(printf '%s\n' "$_main_list" | sort)
                 _added=$(  comm -23 <(printf '%s\n' "$_current_list") <(printf '%s\n' "$_main_list"))
                 _removed=$(comm -13 <(printf '%s\n' "$_current_list") <(printf '%s\n' "$_main_list"))
                 removed=$(printf '%s\n' "$_removed" | tr '\n' ' ' | sed 's/ $//')
@@ -629,6 +629,10 @@ jobs:
             cp -rv "$template" /void-packages/srcpkgs/
           done
           chown -R builder:builder /void-packages/srcpkgs /void-packages/common
+
+      - name: Snapshot existing packages
+        run: |
+          ls /void-packages/hostdir/binpkgs/*.xbps 2>/dev/null | xargs -r -n1 basename > /tmp/pre-build-pkgs.txt || touch /tmp/pre-build-pkgs.txt
 
       - name: Build packages
         id: build
