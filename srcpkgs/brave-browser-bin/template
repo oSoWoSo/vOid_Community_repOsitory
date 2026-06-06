@@ -1,16 +1,28 @@
 # Template file for 'brave-browser-bin'
 pkgname=brave-browser-bin
-version=1.90.122
+version=1.91.168
 revision=1
-archs="x86_64"
+archs="x86_64 aarch64"
 hostmakedepends="rpmextract"
 short_desc="One of the most private browsers built on top off Chromium project"
 maintainer="zenobit <zen@osowoso.org>"
 license="MPL-2.0"
 homepage="https://www.brave.com/"
 changelog="https://raw.githubusercontent.com/brave/brave-browser/refs/heads/master/CHANGELOG_DESKTOP.md"
-distfiles="https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser-${version}-1.x86_64.rpm"
-checksum=af53f04ecb9062809a50ebb38738427cceb43d9daa0f9c340245449a7cbe9ee9
+distfiles="https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser-${version}-1.x86_64.rpm
+ https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser-${version}-1.aarch64.rpm"
+checksum="b8e0229d1e74c1e8e519f920e89ef3819feb9626d97fe10f33ee26a95e9c3c57
+ 4872e992dd08402ad3f9ea6bf16fe0cd420076360194712db5a4a8142ff239bb"
+replaces="brave-browser-arm-bin>=0"
+
+do_extract() {
+	local archiv
+	case "$XBPS_TARGET_MACHINE" in
+		x86_64)      archiv="brave-browser-${version}-1.x86_64.rpm" ;;
+		aarch64)     archiv="brave-browser-${version}-1.aarch64.rpm" ;;
+	esac
+	vextract "${XBPS_SRCDISTDIR}/${pkgname}-${version}/${archiv}"
+}
 
 do_install() {
 	rm -f etc/cron.daily/brave-browser

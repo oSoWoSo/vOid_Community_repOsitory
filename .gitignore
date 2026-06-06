@@ -36,7 +36,6 @@
 
 # Start of templates list
 !/srcpkgs/aquamarine
-!/srcpkgs/brave-browser-arm-bin
 !/srcpkgs/brave-browser-bin
 !/srcpkgs/brow6el
 !/srcpkgs/btrfs-progs

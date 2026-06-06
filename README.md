@@ -80,8 +80,7 @@ Create PR
 | package | version | homepage | maintainer | notes |
 |:--------|:--------|:---------|:-----------|:------|
 | aquamarine | 0.11.0 | https://github.com/hyprwm/aquamarine | zenobit |  |
-| brave-browser-arm-bin | 1.90.122 | https://www.brave.com/ | zenobit | aarch64 |
-| brave-browser-bin | 1.90.122 | https://www.brave.com/ | zenobit | x86_64 |
+| brave-browser-bin | 1.91.168 | https://www.brave.com/ | zenobit | x86_64 aarch64 |
 | brow6el | 0.3.4 | https://codeberg.org/janantos/brow6el | zenobit | x86_64 |
 | btrfs-progs | 6.17.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
 | bun | 1.3.14 | https://bun.sh | zenobit | aarch64* x86_64* |

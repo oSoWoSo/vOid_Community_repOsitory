@@ -42,7 +42,6 @@ on:
         options:
         -
         - aquamarine
-        - brave-browser-arm-bin
         - brave-browser-bin
         - brow6el
         - btrfs-progs
