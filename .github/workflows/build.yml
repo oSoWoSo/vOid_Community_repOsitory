@@ -118,7 +118,6 @@ on:
         - graphite-gtk-theme-nord-light
         - graphite-gtk-theme-nord-light-compact
         - gum-panel
-        - helium-browser-arm-bin
         - helium-browser-bin
         - hyprcursor
         - hyprdynamicmonitors
