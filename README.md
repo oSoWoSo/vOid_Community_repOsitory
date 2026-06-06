@@ -178,7 +178,7 @@ Create PR
 | hyprutils | 0.13.1 | https://github.com/hyprwm/hyprutils | zenobit |  |
 | hyprwayland-scanner | 0.4.5 | https://github.com/hyprwm/hyprwayland-scanner | zenobit |  |
 | kairo | 1.6.4 | https://github.com/programmersd21/kairo | nerdyslacker |  |
-| kando | 2.3.0 | https://kando.menu | zenobit | x86_64 aarch64 |
+| kando | 2.3.1 | https://kando.menu | zenobit | x86_64 aarch64 |
 | kew | 4.0.0 | https://codeberg.org/ravachol/kew | Mihail Ivanchev |  |
 | libcprime | 5.0.1 | https://gitlab.com/cubocore/libcprime | zenobit |  |
 | librewolf-bin | 151.0.3.1 | https://librewolf.net | zenobit | x86_64 aarch64 |
