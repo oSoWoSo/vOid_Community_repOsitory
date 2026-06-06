@@ -143,6 +143,7 @@ on:
         - kando
         - kew
         - libcprime
+        - librewolf-bin
         - libspng
         - linuxcommandlibrary
         - linuxcommandlibrary-desktop

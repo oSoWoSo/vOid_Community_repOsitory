@@ -181,6 +181,7 @@ Create PR
 | kando | 2.3.0 | https://kando.menu | zenobit | x86_64 aarch64 |
 | kew | 4.0.0 | https://codeberg.org/ravachol/kew | Mihail Ivanchev |  |
 | libcprime | 5.0.1 | https://gitlab.com/cubocore/libcprime | zenobit |  |
+| librewolf-bin | 151.0.3.1 | https://librewolf.net | zenobit | x86_64 aarch64 |
 | libspng | 0.7.4 | https://libspng.org/ | zenobit |  |
 | linuxcommandlibrary | 4.0.2 | http://linuxcommandlibrary.com/ | zenobit |  |
 | linuxcommandlibrary-desktop | 4.0.2 | http://linuxcommandlibrary.com/ | zenobit |  |
