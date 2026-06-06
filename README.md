@@ -262,6 +262,7 @@ Create PR
 | void-hardwaremanager-git | 0.0.0 | https://codeberg.org/pinguin-void/Void-Driver-App | zenobit |  |
 | void-software-store | 1.9.4 | https://codeberg.org/pinguin-void/void-software-store | zenobit |  |
 | void-src-builder-git | 0.0.0 | https://codeberg.org/pinguin-void/void-src-builder | zenobit |  |
+| void-user-manager-git | 0.0.0 | https://codeberg.org/pinguin-void/void-user-manager | zenobit | x86_64 |
 | vote | 0.91 | https://codeberg.org/oSoWoSo/vote | zenobit |  |
 | vtm | 2026.05.28 | https://github.com/directvt/vtm | zenobit |  |
 | waterfox-bin | 6.6.12 | https://www.waterfox.net | zenobit | x86_64 |

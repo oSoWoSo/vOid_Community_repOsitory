@@ -224,6 +224,7 @@ on:
         - void-hardwaremanager-git
         - void-software-store
         - void-src-builder-git
+        - void-user-manager-git
         - vote
         - vtm
         - waterfox-bin
