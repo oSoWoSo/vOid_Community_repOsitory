@@ -1,7 +1,8 @@
 # Template file for 'void-hardwaremanager-git'
 pkgname=void-hardwaremanager-git
 version=0.0.0
-revision=1
+revision=2
+archs="x86_64 aarch64"
 depends="python3-gobject gtk4 libadwaita pciutils python3-cups cups avahi nss-mdns dbus"
 short_desc="Modern GTK4 setup tool for Void Linux"
 maintainer="zenobit <zen@osowoso.org>"
