@@ -40,9 +40,11 @@
 !/srcpkgs/brave-browser-bin
 !/srcpkgs/brow6el
 !/srcpkgs/btrfs-progs
+!/srcpkgs/bun
 !/srcpkgs/bun-arm-bin
 !/srcpkgs/bun-arm-musl-bin
 !/srcpkgs/bun-bin
+!/srcpkgs/bun-bootstrap
 !/srcpkgs/bun-musl-bin
 !/srcpkgs/candy-icons-git
 !/srcpkgs/cc-switch

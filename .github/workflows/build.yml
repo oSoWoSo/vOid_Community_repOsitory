@@ -46,9 +46,11 @@ on:
         - brave-browser-bin
         - brow6el
         - btrfs-progs
+        - bun
         - bun-arm-bin
         - bun-arm-musl-bin
         - bun-bin
+        - bun-bootstrap
         - bun-musl-bin
         - candy-icons-git
         - cc-switch
