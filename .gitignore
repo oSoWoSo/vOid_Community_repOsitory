@@ -216,6 +216,7 @@
 !/srcpkgs/vbm
 !/srcpkgs/Vish
 !/srcpkgs/void-software-store
+!/srcpkgs/void-src-builder-git
 !/srcpkgs/vote
 !/srcpkgs/vtm
 !/srcpkgs/waterfox-bin

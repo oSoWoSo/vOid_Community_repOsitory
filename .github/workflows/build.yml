@@ -222,6 +222,7 @@ on:
         - vbm
         - Vish
         - void-software-store
+        - void-src-builder-git
         - vote
         - vtm
         - waterfox-bin
