@@ -222,6 +222,7 @@ on:
         - vbm
         - Vish
         - void-hardwaremanager-git
+        - void-live-creator-git
         - void-software-store
         - void-src-builder-git
         - void-user-manager-git

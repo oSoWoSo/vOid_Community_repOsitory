@@ -216,6 +216,7 @@
 !/srcpkgs/vbm
 !/srcpkgs/Vish
 !/srcpkgs/void-hardwaremanager-git
+!/srcpkgs/void-live-creator-git
 !/srcpkgs/void-software-store
 !/srcpkgs/void-src-builder-git
 !/srcpkgs/void-user-manager-git
