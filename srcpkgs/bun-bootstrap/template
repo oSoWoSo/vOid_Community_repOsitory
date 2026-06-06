@@ -1,7 +1,7 @@
 # Template file for 'bun-bootstrap'
 pkgname=bun-bootstrap
 version=1.3.14
-revision=3
+revision=4
 archs="x86_64* aarch64*"
 hostmakedepends="patchelf unzip"
 short_desc="Bootstrap package for bun (prebuilt binary)"
@@ -22,7 +22,6 @@ skip_extraction="bun-linux-x64.zip bun-linux-x64-musl.zip bun-linux-aarch64.zip 
 repository=bootstrap
 nostrip=yes
 nocross=yes
-conflicts="bun>=0 bun-bin>=0 bun-musl-bin>=0 bun-arm-musl-bin>=0"
 
 do_extract() {
 	local arch_zip
