@@ -221,6 +221,7 @@ on:
         - undelete-btrfs
         - vbm
         - Vish
+        - void-hardwaremanager-git
         - void-software-store
         - void-src-builder-git
         - vote

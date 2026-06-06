@@ -215,6 +215,7 @@
 !/srcpkgs/undelete-btrfs
 !/srcpkgs/vbm
 !/srcpkgs/Vish
+!/srcpkgs/void-hardwaremanager-git
 !/srcpkgs/void-software-store
 !/srcpkgs/void-src-builder-git
 !/srcpkgs/vote

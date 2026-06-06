@@ -1,0 +1,24 @@
+# Template file for 'void-hardwaremanager-git'
+pkgname=void-hardwaremanager-git
+version=0.0.0
+revision=1
+depends="python3-gobject gtk4 libadwaita pciutils python3-cups cups avahi nss-mdns dbus"
+short_desc="Modern GTK4 setup tool for Void Linux"
+maintainer="zenobit <zen@osowoso.org>"
+license="GPL-2.0-only"
+homepage="https://codeberg.org/pinguin-void/Void-Driver-App"
+distfiles="https://codeberg.org/pinguin-void/Void-Driver-App/archive/main.tar.gz"
+checksum=7004078df0bf4d18413bc9c68325a1846163a6d66bba039a6b8e95a7d1e4e295
+
+do_install() {
+	vmkdir usr/lib/void-hardwaremanager
+	vinstall driver.py 644 usr/lib/void-hardwaremanager
+
+	vmkdir usr/share/void-hardwaremanager
+	vcopy README.md usr/share/void-hardwaremanager
+
+	vmkdir usr/share/applications
+	vcopy "${FILESDIR}/void-hardwaremanager.desktop" usr/share/applications
+
+	vbin "${FILESDIR}/void-hardwaremanager"
+}
