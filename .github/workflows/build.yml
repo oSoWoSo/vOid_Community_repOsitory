@@ -223,6 +223,7 @@ on:
         - undelete-btrfs
         - vbm
         - Vish
+        - void-software-store
         - vote
         - vtm
         - waterfox-bin

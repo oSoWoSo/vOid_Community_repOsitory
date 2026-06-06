@@ -261,6 +261,7 @@ Create PR
 | undelete-btrfs | 1.0 | https://github.com/danthem/undelete-btrfs | zenobit |  |
 | vbm | 1.0.1 | https://codeberg.org/oSoWoSo/vbm | zenobit |  |
 | Vish | 1.1.3 | https://github.com/Lluciocc/Vish | zenobit |  |
+| void-software-store | 1.9.4 | https://codeberg.org/pinguin-void/void-software-store | zenobit |  |
 | vote | 0.91 | https://codeberg.org/oSoWoSo/vote | zenobit |  |
 | vtm | 2026.05.28 | https://github.com/directvt/vtm | zenobit |  |
 | waterfox-bin | 6.6.12 | https://www.waterfox.net | zenobit | x86_64 |
