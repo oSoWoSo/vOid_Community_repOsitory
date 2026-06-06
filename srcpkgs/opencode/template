@@ -1,16 +1,16 @@
 # Template file for 'opencode'
 pkgname=opencode
-version=1.15.10
+version=1.16.2
 revision=1
 archs="x86_64"
-hostmakedepends="bun-bin nodejs python3 git"
+hostmakedepends="bun nodejs python3 git"
 depends="ripgrep"
 short_desc="Open source AI coding agent"
 maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/anomalyco/opencode"
 distfiles="https://github.com/anomalyco/opencode/archive/refs/tags/v${version}.tar.gz"
-checksum=af407ac0a1f2985b0695b9bb92dafc0131c64a8e981f13d30a33af1e6f38267d
+checksum=2e120adae7dcc6992772ddabdafef9210a16f56df4484a209f879618b16054df
 nostrip_files="/usr/bin/opencode"
 nopie_files="/usr/bin/opencode"
 
@@ -22,7 +22,11 @@ do_build() {
 }
 
 do_install() {
-	vbin packages/opencode/dist/opencode-linux-x64/bin/opencode
+	case "${XBPS_ARCH}" in
+		x86_64) vbin packages/opencode/dist/opencode-linux-x64/bin/opencode ;;
+		aarch64) vbin packages/opencode/dist/opencode-linux-arm64/bin/opencode ;;
+
+	esac
 	vlicense LICENSE
 
 	$DESTDIR/usr/bin/opencode completion > opencode
