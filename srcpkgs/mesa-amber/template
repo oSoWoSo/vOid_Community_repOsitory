@@ -18,7 +18,7 @@ makedepends="elfutils-devel expat-devel libXdamage-devel
  libXrandr-devel libglvnd-devel libzstd-devel libxml2-devel lua54-devel
  libarchive-devel libXext-devel libpng-devel
  SPIRV-LLVM-Translator${_llvmver}-devel SPIRV-Tools-devel"
-#depends="libglvnd"
+depends="libglvnd"
 short_desc="Mesa for older hardware (legacy driver build)"
 maintainer="Bella Viola Wagner <belladev109@proton.me>"
 license="MIT, LGPL-2.1-or-later"
@@ -65,6 +65,7 @@ else
 fi
 
 if [ "$_have_amd" ]; then
+	_have_opencl=yes
 	_gallium_drivers+=",r300,r600,radeonsi"
 	_vulkan_drivers+=",amd"
 fi
@@ -96,6 +97,12 @@ if [ "$_have_vmware" ]; then
 	_gallium_drivers+=",svga"
 fi
 
+if [ "$_have_opencl" ]; then
+	hostmakedepends+=" clang${_llvmver} rust rust-bindgen"
+	makedepends+=" clang${_llvmver} libclc${_llvmver} rust"
+	configure_args+=" -Dgallium-rusticl=true -Drust_std=2021"
+fi
+
 configure_args+=" -Dgallium-va=enabled"
 
 _vulkan_drivers=${_vulkan_drivers/=,/=}
@@ -107,6 +114,12 @@ case "$XBPS_TARGET_MACHINE" in
 	ppc64le*) configure_args+=" -Dpower8=true" ;;
 	ppc*) configure_args+=" -Dpower8=false" ;;
 esac
+
+pre_configure() {
+	if [ "$CROSS_BUILD" ] && [ "$_have_opencl" ]; then
+		export PKG_CONFIG_PATH="${XBPS_CROSS_BASE}/usr/lib/llvm/${_llvmver}/share/pkgconfig"
+	fi
+}
 
 post_install() {
 	vlicense docs/license.rst
