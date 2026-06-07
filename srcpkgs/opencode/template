@@ -2,7 +2,7 @@
 pkgname=opencode
 version=1.16.2
 revision=1
-archs="x86_64"
+archs="x86_64 aarch64"
 hostmakedepends="bun nodejs python3 git"
 depends="ripgrep"
 short_desc="Open source AI coding agent"
@@ -13,22 +13,23 @@ distfiles="https://github.com/anomalyco/opencode/archive/refs/tags/v${version}.t
 checksum=2e120adae7dcc6992772ddabdafef9210a16f56df4484a209f879618b16054df
 nostrip_files="/usr/bin/opencode"
 nopie_files="/usr/bin/opencode"
+nocross="opencode build uses process.arch"
+replaces="opencode-arm>=0"
 
 do_build() {
 	export OPENCODE_VERSION="${version}"
-
-	bun install --frozen-lockfile
+	bun install --frozen-lockfile --ignore-scripts
 	bun run --cwd packages/opencode build -- --single --skip-install
 }
 
 do_install() {
-	case "${XBPS_ARCH}" in
-		x86_64) vbin packages/opencode/dist/opencode-linux-x64/bin/opencode ;;
-		aarch64) vbin packages/opencode/dist/opencode-linux-arm64/bin/opencode ;;
-
+	local _ARCH
+	case "$XBPS_TARGET_MACHINE" in
+		x86_64) _ARCH="x64" ;;
+		aarch64) _ARCH="aarch64" ;;
 	esac
-	vlicense LICENSE
-
-	$DESTDIR/usr/bin/opencode completion > opencode
+	vbin "packages/opencode/dist/opencode-linux-${_ARCH}/bin/opencode"
+	"$DESTDIR/usr/bin/opencode" completion > opencode
 	vcompletion opencode bash
+	vlicense LICENSE
 }
