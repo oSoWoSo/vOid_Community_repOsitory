@@ -1,6 +1,6 @@
 # Template file for 'mesa-amber'
 pkgname=mesa-amber
-version=21.3.9
+version=26.1.2
 revision=1
 build_style="meson"
 configure_args="-Damber=true -Dglx=dri"
@@ -13,7 +13,8 @@ makedepends="expat-devel libdrm-devel libglvnd-devel libunwind-devel libX11-deve
 short_desc="Mesa for older hardware"
 maintainer="Bella Viola Wagner <belladev109@proton.me>"
 license="GPL-3.0-only"
-homepage="https://gitlab.freedesktop.org/mesa/mesa/-/blob/amber/docs/relnotes/21.3.9.rst"
+homepage="https://gitlab.freedesktop.org/mesa/mesa"
+changelog="https://gitlab.freedesktop.org/mesa/mesa/-/raw/main/docs/relnotes/${version}.rst"
 distfiles="https://gitlab.freedesktop.org/mesa/mesa/-/archive/027ccc89b2ab83fdb9dbc42c9f5a31c175c7f554/mesa-027ccc89b2ab83fdb9dbc42c9f5a31c175c7f554.tar.gz"
 checksum=665163e9150902db0e571142bb242d1fba931c7bc44df094ed7da2c195e2340f
 conflicts="mesa"
