@@ -189,7 +189,7 @@ Create PR
 | lunasvg | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
 | ly | 1.4.0 | https://codeberg.org/fairyglade/ly | zenobit | i686 x86_64 |
 | menu-themes | 0.8.0 | https://github.com/kando-menu/menu-themes | zenobit |  |
-| mesa-amber | 26.1.2 | https://gitlab.freedesktop.org/mesa/mesa | Bella Viola Wagner |  |
+| mesa-amber | 26.1.2 | https://www.mesa3d.org/ | Bella Viola Wagner |  |
 | nebula-gtk | 1.3.7 | https://github.com/Letdown2491/nebula-gtk | zenobit |  |
 | nwg-clipman | 0.2.8 | https://github.com/nwg-piotr/nwg-clipman | zenobit |  |
 | nwg-displays | 0.4.1 | https://nwg-piotr.github.io/nwg-shell/nwg-displays | zenobit |  |
