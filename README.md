@@ -139,7 +139,7 @@ Create PR
 | gh-lazy | 0.6.6 | https://github.com/gizmo385/gh-lazy | zenobit |  |
 | glaze | 7.6.0 | https://github.com/stephenberry/glaze | zenobit |  |
 | gofer | 0.2.0 | https://codeberg.org/JakeAtLinux/Gofer | zenobit |  |
-| gradle | 9.5.0 | https://gradle.org/ | Bnyro |  |
+| gradle | 9.5.1 | https://gradle.org/ | Bnyro |  |
 | graphite-gtk-theme | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
 | graphite-gtk-theme-all | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
 | graphite-gtk-theme-black | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |

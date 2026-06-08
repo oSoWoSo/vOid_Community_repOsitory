@@ -1,7 +1,7 @@
 # Template file for 'gradle'
 pkgname=gradle
 reverts="8.14.1_1"
-version=9.5.0
+version=9.5.1
 revision=1
 depends="virtual?java-environment"
 short_desc="Build system for Java/C/C++ software"
@@ -10,7 +10,7 @@ license="Apache-2.0"
 homepage="https://gradle.org/"
 changelog="https://docs.gradle.org/${version}/release-notes.html"
 distfiles="https://services.gradle.org/distributions/gradle-${version}-bin.zip"
-checksum=553c78f50dafcd54d65b9a444649057857469edf836431389695608536d6b746
+checksum=bafc141b619ad6350fd975fc903156dd5c151998cc8b058e8c1044ab5f7b031f
 
 do_install() {
 	vmkdir "usr/lib/gradle"
