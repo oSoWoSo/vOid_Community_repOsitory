@@ -10,7 +10,7 @@ maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/diegosouzapw/OmniRoute"
 distfiles="https://github.com/diegosouzapw/OmniRoute/archive/refs/tags/v${version}.tar.gz"
-checksum=e97576c5f8737a85a7b9fd28982a5b6d76f0510fd8fd2efaed352eef244eae3c
+checksum=e40fb18bbee9a6f2da6175313ec47b95487737587b77eabb93847d01ee1f9352
 system_accounts="_omniroute"
 omniroute_homedir="/var/lib/omniroute"
 
