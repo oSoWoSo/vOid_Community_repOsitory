@@ -35,6 +35,7 @@
 /srcpkgs/*
 
 # Start of templates list
+!/srcpkgs/android-sdk
 !/srcpkgs/aquamarine
 !/srcpkgs/brave-browser-bin
 !/srcpkgs/brow6el

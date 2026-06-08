@@ -79,6 +79,7 @@ Create PR
 ## Available templates (packages when built successfully)
 | package | version | homepage | maintainer | notes |
 |:--------|:--------|:---------|:-----------|:------|
+| android-sdk | 36 | https://developer.android.com/studio | zenobit | x86_64 |
 | aquamarine | 0.11.0 | https://github.com/hyprwm/aquamarine | zenobit |  |
 | brave-browser-bin | 1.91.168 | https://www.brave.com/ | zenobit | x86_64 aarch64 |
 | brow6el | 0.3.4 | https://codeberg.org/janantos/brow6el | zenobit | x86_64 |

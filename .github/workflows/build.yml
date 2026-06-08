@@ -41,6 +41,7 @@ on:
         type: choice
         options:
         -
+        - android-sdk
         - aquamarine
         - brave-browser-bin
         - brow6el
