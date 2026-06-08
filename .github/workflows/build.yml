@@ -91,6 +91,7 @@ on:
         - dragonfly-reverb-vst
         - dragonfly-reverb-vst3
         - drako
+        - easybashgui
         - forgejo-runner
         - FreeTube
         - ftxui
