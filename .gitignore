@@ -208,6 +208,7 @@
 !/srcpkgs/surge-xt-standalone
 !/srcpkgs/surge-xt-vst3
 !/srcpkgs/tdf
+!/srcpkgs/tls-client
 !/srcpkgs/tomlplusplus
 !/srcpkgs/tomlplusplus-devel
 !/srcpkgs/tufw
