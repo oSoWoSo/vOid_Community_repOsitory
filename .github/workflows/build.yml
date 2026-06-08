@@ -172,6 +172,7 @@ on:
         - odin2-lv2
         - odin2-standalone
         - odin2-vst3
+        - omniroute
         - opencode
         - patchance
         - pinguintv-installer
