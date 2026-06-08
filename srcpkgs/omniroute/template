@@ -4,6 +4,7 @@ version=3.8.16
 revision=1
 hostmakedepends="nodejs python3"
 depends="openssl"
+checkdepends="${depends} tls-client"
 short_desc="Universal AI gateway with smart routing for multiple LLM providers"
 # Note: some native addons include musl-linked binaries; musl satisfies shlib detector
 maintainer="zenobit <zen@osowoso.org>"
@@ -78,6 +79,7 @@ do_check() {
 	# - cli-runtime-extended: path detection issues in chroot
 	# - React *.test.tsx: act() not defined errors
 	# - zed-* and xiaomi-*: spawn node subprocess which doesn't exist in chroot
+	# - web-cookie: tls-client-node native binary download requires network
 	#
 	# Node.js test runner doesn't support --exclude, so we rename files before running
 	# and restore them after (any build failures won't leave dirty state)
@@ -97,7 +99,8 @@ do_check() {
 		inspector-har-export \
 		inspector-http-proxy \
 		inspector-kind-detector \
-		build-next-isolated; do
+		build-next-isolated \
+		web-cookie; do
 		# build-next-isolated: unit tests for assembleStandalone require mock wreq-js
 		# .linux-x64-gnu.node in temp dir; binary not available in build chroot
 		if [ -f "tests/unit/${_test}.test.ts" ]; then
@@ -121,7 +124,8 @@ do_check() {
 		inspector-har-export \
 		inspector-http-proxy \
 		inspector-kind-detector \
-		build-next-isolated; do
+		build-next-isolated \
+		web-cookie; do
 		if [ -f "tests/unit/${_test}.test.ts.skip" ]; then
 			mv "tests/unit/${_test}.test.ts.skip" "tests/unit/${_test}.test.ts"
 		fi
