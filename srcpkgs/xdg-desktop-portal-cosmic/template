@@ -1,11 +1,11 @@
 # Template file for 'xdg-desktop-portal-cosmic'
 pkgname=xdg-desktop-portal-cosmic
-version=1.0.13
+version=1.0.15
 revision=1
 archs="x86_64*"
 build_style=gnu-makefile
 build_helper="rust"
-hostmakedepends="pkg-config cargo $(vopt_if sccache "rust-sccache")"
+hostmakedepends="pkg-config cargo"
 makedepends="libxkbcommon-devel libzstd-devel pipewire-devel clang libglib-devel libgbm-devel"
 depends="libgbm libpipewire glib libxkbcommon libdrm expat zlib libmount libffi libpcre2 libblkid xdg-desktop-portal"
 short_desc="Cosmic backend for xdg-desktop-portal"
@@ -13,14 +13,8 @@ maintainer="Bella Viola Wagner <belladev109@proton.me>"
 license="GPL-3.0-only"
 homepage="https://github.com/pop-os/xdg-desktop-portal-cosmic"
 distfiles="https://github.com/pop-os/xdg-desktop-portal-cosmic/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=78c8d4d85ebfc8810ed1cae686290f9217405ae78aecc4b7bf26bdbd86bf2caa
+checksum=99e744935f0327a99e32662f76e4c3917621bc1d9fb7658eaf4bc286a9d3265d
 build_options="sccache"
 
 export VERGEN_GIT_COMMIT_DATE="${version}_${revision}"
 export VERGEN_GIT_SHA="${version}_${revision}"
-
-if [ $(vopt_if sccache "true" "false") == "true" ]; then
-	pre_build() {
-		export RUSTC_WRAPPER=/usr/bin/sccache
-	}
-fi
