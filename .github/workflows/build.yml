@@ -709,4 +709,3 @@ jobs:
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
         run: |
           "${GITHUB_WORKSPACE}/extra/ocoman" -a
-          echo "Updated ${ARCH} page at https://repo.osowoso.org/${ARCH}/" >> $GITHUB_STEP_SUMMARY
