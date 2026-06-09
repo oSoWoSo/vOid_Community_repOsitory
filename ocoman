@@ -68,8 +68,8 @@ fatal() {
 usage() {
 	prog=${0##*/}
 	cat <<-EOF
-	Usage: $prog -h | -u | -w | -p | -s | -a | -c | -i | -o | -l
-	       $prog {update|build|upload|serve|archs|check-upstream|init|add-oco|shlibs|help}
+	Usage: $prog -h | -u | -w | -m | -p | -s | -a | -c | -i | -o | -l
+	       $prog {update|build|main|upload|serve|archs|check-upstream|init|add-oco|shlibs|help}
 
 	Manage the OCO repository.
 
@@ -81,7 +81,8 @@ usage() {
 	  -u, --update     Update list, README, and build.yml
 
 	  -l, --shlibs     Apply shlibs patches to an existing checkout
-	  -a, --archs      Regenerate architecture pages only
+	  -a, --archs      Regenerate architecture pages only (single arch if ARCH is set)
+	  -m, --main       Regenerate main index page only (no arch pages; requires pandoc)
 	  -c, --check      Check upstream Void Linux for newer versions and additions
 	  -w, --build      Regenerate website (requires pandoc)
 	  -s, --serve      Serve website locally on port 8000
@@ -411,6 +412,36 @@ build_site() {
 	fi
 }
 
+build_main() {
+	_title="${1:-Void Community Repository}"
+
+	if ! command -v pandoc >/dev/null 2>&1; then
+		echo "pandoc: not installed, skipping website"
+		return
+	fi
+
+	if [ -f docs/CNAME ]; then
+		cp docs/CNAME src/
+	fi
+	mkdir -p docs
+	cp -r src/* docs/
+	rm -f docs/toggle.html docs/toc.html docs/svg-color.html docs/footer.html
+
+	_build_main_index "$_title"
+	_g "Finished"
+
+	if [ -n "${SURFER_TOKEN:-}" ]; then
+		_webdav="${SURFER_URL}/_webdav"
+		echo '==> Uploading website assets'
+		_ws_failed=0
+		for _file in "${SCRIPT_DIR}/docs"/*; do
+			[ -f "$_file" ] || continue
+			upload_file "$_file" "${_webdav}/$(basename "$_file")" || _ws_failed=1
+		done
+		[ "$_ws_failed" -eq 0 ] || echo '==> Warning: some website asset uploads failed'
+	fi
+}
+
 generate_arch_pages() {
 	_template="${SCRIPT_DIR}/src/arch-index-template.html"
 	[ -f "$_template" ] || { echo "arch-index-template.html not found, skipping arch pages"; return 1; }
@@ -418,6 +449,7 @@ generate_arch_pages() {
 	_pkg_list=$(list_templates)
 
 	for _arch in $ARCHES; do
+		[ -z "${ARCH:-}" ] || [ "$_arch" = "$ARCH" ] || continue
 		_out_dir="${SCRIPT_DIR}/docs/${_arch}"
 		_out="${_out_dir}/index.html"
 		_repo_url="${SURFER_URL}/${_arch}"
@@ -925,6 +957,7 @@ main() {
 		help|--help)          set -- -h ;;
 		update)               set -- -u ;;
 		build|web)            set -- -w ;;
+		main)                 set -- -m ;;
 		upload|publish)       set -- -p ;;
 		serve)                set -- -s ;;
 		archs)                set -- -a ;;
@@ -937,13 +970,14 @@ main() {
 	esac
 
 	_opt='' OPTIND=1 OPTARG=''
-	_do_update='' _do_packages='' _do_web='' _do_archs='' _do_check=''
+	_do_update='' _do_packages='' _do_web='' _do_main='' _do_archs='' _do_check=''
 	_do_init='' _do_add_oco='' _do_shlibs=''
-	while getopts 'huwpsaciol' _opt; do
+	while getopts 'huwmpsaciol' _opt; do
 		case "$_opt" in
 			h) usage; return 0 ;;
 			u) _do_update=1 ;;
 			w) _do_web=1 ;;
+			m) _do_main=1 ;;
 			p) _do_packages=1 ;;
 			s) target_serve; return 0 ;;
 			a) _do_archs=1 ;;
@@ -955,10 +989,10 @@ main() {
 		esac
 	done
 
-	[ -n "$_do_update$_do_packages$_do_web$_do_archs$_do_check$_do_init$_do_add_oco$_do_shlibs" ] ||
+	[ -n "$_do_update$_do_packages$_do_web$_do_main$_do_archs$_do_check$_do_init$_do_add_oco$_do_shlibs" ] ||
 		{ usage >&2; return 1; }
 
-	if [ "$_do_update" = 1 ] || [ "$_do_web" = 1 ] || [ "$_do_check" = 1 ]; then
+	if [ "$_do_update" = 1 ] || [ "$_do_web" = 1 ] || [ "$_do_main" = 1 ] || [ "$_do_check" = 1 ]; then
 		[ -d "$SRCPKGS" ] || fatal "srcpkgs directory not found: ${SRCPKGS}"
 	fi
 
@@ -980,6 +1014,9 @@ main() {
 	fi
 	if [ "$_do_web" = 1 ]; then
 		build_site
+	fi
+	if [ "$_do_main" = 1 ] && [ "$_do_web" != 1 ]; then
+		build_main
 	fi
 	if [ "$_do_archs" = 1 ] && [ "$_do_web" != 1 ]; then
 		generate_arch_pages

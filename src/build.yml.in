@@ -391,7 +391,7 @@ jobs:
   build:
     name: Build and publish packages
     needs: detect
-    if: (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && needs.detect.outputs.packages != ''
+    if: (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && (needs.detect.outputs.packages != '' || needs.detect.outputs.removed != '')
     runs-on: ${{ matrix.config.runner }}
     container:
       image: ghcr.io/osowoso/oco-builder-${{ matrix.config.host }}:latest
@@ -438,11 +438,13 @@ jobs:
           chown -R builder:builder /void-packages/srcpkgs /void-packages/common
 
       - name: Snapshot existing packages
+        if: needs.detect.outputs.packages != ''
         run: |
           ls /void-packages/hostdir/binpkgs/*.xbps 2>/dev/null | xargs -r -n1 basename > /tmp/pre-build-pkgs.txt || touch /tmp/pre-build-pkgs.txt
 
       - name: Build packages
         id: build
+        if: needs.detect.outputs.packages != ''
         env:
           PACKAGES: ${{ needs.detect.outputs.packages }}
         run: sh "${GITHUB_WORKSPACE}/extra/src/build-packages.sh"
@@ -489,77 +491,25 @@ jobs:
 
           BUILDDIR="$NEW_PKGS_DIR" "${GITHUB_WORKSPACE}/extra/ocoman" -p
 
-  prune:
-    name: Prune removed packages
-    needs: [detect, build]
-    if: always() && (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && needs.detect.outputs.removed != ''
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/osowoso/oco-builder-x86_64:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: [x86_64, x86_64-musl, aarch64, aarch64-musl]
-    steps:
-      - name: Prepare container
-        run: |
-          xbps-install -Syu xbps
-          xbps-install -yu
-
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 1
-
-      - name: Prune orphaned packages
+      - name: Prune removed packages
+        if: needs.detect.outputs.removed != ''
         env:
-          ARCH: ${{ matrix.arch }}
-          XBPS_ARCH: ${{ matrix.arch }}
-          XBPS_TARGET_ARCH: ${{ matrix.arch }}
+          ARCH: ${{ matrix.config.arch }}
+          XBPS_ARCH: ${{ matrix.config.arch }}
+          XBPS_TARGET_ARCH: ${{ matrix.config.arch }}
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
           PRIV_KEY: ${{ secrets.PRIV_KEY }}
         run: |
           export PATH="/opt/xbps/usr/bin/:$PATH"
           export XBPS_TARGET_ARCH="${XBPS_ARCH}"
-          ./ocoman -p
+          "${GITHUB_WORKSPACE}/extra/ocoman" -p
           echo "Pruned from https://repo.osowoso.org/${ARCH}/" >> $GITHUB_STEP_SUMMARY
 
-  pages:
-    name: Regenerate website
-    needs: [build, prune]
-    if: always() && (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && (needs.build.result == 'success' || needs.prune.result == 'success')
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/osowoso/oco-builder-x86_64:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout latest OCO
-        uses: actions/checkout@v6
-        with:
-          ref: OCO
-          fetch-depth: 1
-
-      - name: Regenerate and upload website
+      - name: Regenerate arch page
+        if: steps.build.outputs.built == 'true'
         env:
+          ARCH: ${{ matrix.config.arch }}
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
         run: |
-          ./ocoman -w
-          echo "Published to https://repo.osowoso.org/" >> $GITHUB_STEP_SUMMARY
-
-      - name: Deploy to page branch
-        env:
-          TOKEN: ${{ secrets.WORKFLOWS }}
-        run: |
-          cd docs
-          git init
-          git config user.name "oSoWoso-bot"
-          git config user.email "mail@osowoso.org"
-          git checkout -b page
-          git add .
-          git commit -m "Deploy: $(date -u '+%Y-%m-%d %H:%M UTC')"
-          git push --force "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git" page
+          "${GITHUB_WORKSPACE}/extra/ocoman" -a
+          echo "Updated ${ARCH} page at https://repo.osowoso.org/${ARCH}/" >> $GITHUB_STEP_SUMMARY
