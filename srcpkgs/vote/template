@@ -1,15 +1,15 @@
 # Template file for 'vote'
 pkgname=vote
-version=0.91
-revision=2
+version=0.92
+revision=1
 depends="gum-panel xtools"
 #checkdepends="${depends} clitest jq perl"
 short_desc="XBPS package management helper for VoidLinux"
-maintainer="zenobit <zen@osowoso.org>"
+maintainer="zenobit <zenobit@disroot.org>"
 license="AGPL-3.0-only"
 homepage="https://codeberg.org/oSoWoSo/vote"
 distfiles="https://codeberg.org/oSoWoSo/vote/archive/${version}.tar.gz"
-checksum=01b846fce038a1a430f6a32dd19c32b466ebc3f6fda72cfb33e9ecff46ee54f2
+checksum=a012caf6af36776b6e671e68e3c57278ccdf824e3388cd3d287844e089dea817
 
 do_install() {
 	vmkdir usr/share/vote
