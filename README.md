@@ -137,6 +137,7 @@ Create PR
 | ftxui-devel | 6.1.9 | https://github.com/ArthurSonzogni/FTXUI | zenobit |  |
 | gama | 1.2.1 | https://github.com/termkit/gama | zenobit |  |
 | gh-dash | 4.24.0 | https://github.com/dlvhdr/gh-dash | zenobit |  |
+| ghgrab | 2.0.1 | https://github.com/abhixdd/ghgrab | zenobit |  |
 | gh-lazy | 0.6.6 | https://github.com/gizmo385/gh-lazy | zenobit |  |
 | glaze | 7.6.0 | https://github.com/stephenberry/glaze | zenobit |  |
 | gofer | 0.2.0 | https://codeberg.org/JakeAtLinux/Gofer | zenobit |  |

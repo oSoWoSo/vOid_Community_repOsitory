@@ -99,6 +99,7 @@ on:
         - ftxui-devel
         - gama
         - gh-dash
+        - ghgrab
         - gh-lazy
         - glaze
         - gofer
