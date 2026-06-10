@@ -1,6 +1,8 @@
 # Template file for 'vm-curator'
 pkgname=vm-curator
 version=1.0.0
+hostmakedepends="pkg-config"
+makedepends="eudev-libudev-devel"
 revision=1
 build_style=cargo
 short_desc="TUI to build and manage QEMU/KVM virtual machines"
