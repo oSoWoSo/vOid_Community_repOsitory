@@ -145,6 +145,7 @@ on:
         - kairo
         - kando
         - kew
+        - lemonade-server
         - libcprime
         - librewolf-bin
         - libspng
