@@ -326,8 +326,8 @@ jobs:
             else
               HEAD_SHA="$PUSH_AFTER"
               if [ "$CURRENT_BRANCH" = "OCO" ]; then
-                # Handle empty PUSH_BEFORE - use git rev-parse HEAD^ as fallback
-                if [ -n "$PUSH_BEFORE" ] && [ "$PUSH_BEFORE" != "$ZERO_SHA" ]; then
+                if [ -n "$PUSH_BEFORE" ] && [ "$PUSH_BEFORE" != "$ZERO_SHA" ] \
+                    && git cat-file -e "$PUSH_BEFORE" 2>/dev/null; then
                   BASE_SHA="$PUSH_BEFORE"
                 else
                   BASE_SHA=$(git rev-parse HEAD^ 2>/dev/null || echo "$ZERO_SHA")
