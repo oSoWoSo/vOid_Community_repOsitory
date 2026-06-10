@@ -224,6 +224,7 @@ on:
         - undelete-btrfs
         - vbm
         - Vish
+        - vm-curator
         - void-hardwaremanager-git
         - void-live-creator-git
         - void-software-store

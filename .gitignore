@@ -218,6 +218,7 @@
 !/srcpkgs/undelete-btrfs
 !/srcpkgs/vbm
 !/srcpkgs/Vish
+!/srcpkgs/vm-curator
 !/srcpkgs/void-hardwaremanager-git
 !/srcpkgs/void-live-creator-git
 !/srcpkgs/void-software-store
