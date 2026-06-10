@@ -2,6 +2,7 @@
 pkgname=Trilium
 version=0.103.0
 revision=1
+hostmakedepends="nodejs pnpm"
 short_desc="Build your personal knowledge base with Trilium Notes"
 maintainer="zenobit <zen@osowoso.org>"
 license="AGPL-3.0-only"
