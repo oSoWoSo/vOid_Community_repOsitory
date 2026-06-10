@@ -213,7 +213,16 @@ delete_remote() {
 
 upload_file() {
 	_file="$1" _dest="$2"
-	echo "  Uploading: $(basename "$_file")"
+	_fname="$(basename "$_file")"
+	_local_mtime=$(stat -c %Y "$_file")
+	_remote_date=$(curl -sI "$_dest" -u ":${SURFER_TOKEN}" | grep -i '^last-modified:' | cut -d' ' -f2-)
+	if [ -n "$_remote_date" ]; then
+		_remote_mtime=$(date -d "$_remote_date" +%s 2>/dev/null || echo 0)
+		if [ "$_local_mtime" -le "$_remote_mtime" ]; then
+			return 0
+		fi
+	fi
+	echo "  Uploading: ${_fname}"
 	curl -s -T "$_file" "$_dest" -u ":${SURFER_TOKEN}" \
 		|| { echo "  Warning: failed to upload $(basename "$_file")"; return 1; }
 }
