@@ -213,6 +213,7 @@
 !/srcpkgs/tls-client
 !/srcpkgs/tomlplusplus
 !/srcpkgs/tomlplusplus-devel
+!/srcpkgs/Trilium
 !/srcpkgs/tufw
 !/srcpkgs/tuisic
 !/srcpkgs/typobuster

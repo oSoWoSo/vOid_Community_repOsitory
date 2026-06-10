@@ -219,6 +219,7 @@ on:
         - tls-client
         - tomlplusplus
         - tomlplusplus-devel
+        - Trilium
         - tufw
         - tuisic
         - typobuster
