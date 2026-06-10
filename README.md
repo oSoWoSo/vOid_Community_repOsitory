@@ -252,6 +252,7 @@ Create PR
 | surge-xt-lv2 | 1.3.4 | https://surge-synthesizer.github.io/ | Trve_AY |  |
 | surge-xt-standalone | 1.3.4 | https://surge-synthesizer.github.io/ | Trve_AY |  |
 | surge-xt-vst3 | 1.3.4 | https://surge-synthesizer.github.io/ | Trve_AY |  |
+| svi | 0.2.2 | https://codeberg.org/LinuxNation/svi | zenobit |  |
 | tdf | 0.5.0 | https://github.com/itsjunetime/tdf | zenobit |  |
 | tls-client | 1.15.1 | https://github.com/bogdanfinn/tls-client | zenobit |  |
 | tomlplusplus | 3.4.0 | https://marzer.github.io/tomlplusplus/ | zenobit |  |

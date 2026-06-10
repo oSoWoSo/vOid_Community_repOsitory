@@ -214,6 +214,7 @@ on:
         - surge-xt-lv2
         - surge-xt-standalone
         - surge-xt-vst3
+        - svi
         - tdf
         - tls-client
         - tomlplusplus
