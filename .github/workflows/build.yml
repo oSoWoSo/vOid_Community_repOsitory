@@ -27,7 +27,7 @@ on:
   workflow_dispatch:
     inputs:
       runner:
-        description: 'Runner selection (optional)'
+        description: 'Runner'
         required: false
         type: choice
         default: auto
@@ -37,17 +37,17 @@ on:
         - arm64
         - nativ
       all:
-        description: 'Rebuild everything'
+        description: 'Everything'
         required: false
         default: false
         type: boolean
       force:
-        description: 'Force rebuild (ignore available dependencies, xbps-src -f)'
+        description: 'Force rebuild'
         required: false
         default: false
         type: boolean
       template:
-        description: 'Build single package'
+        description: 'Single build'
         required: false
         type: choice
         options:
@@ -255,7 +255,7 @@ on:
         - zen-browser-bin
         - zig
       templates:
-        description: 'Build multiple packages'
+        description: 'Multi build'
         required: false
         type: string
 # Apply changes in src/build.yml.in instead.
