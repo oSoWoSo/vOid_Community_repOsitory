@@ -191,6 +191,44 @@ jobs:
             version=$(grep '^version=' "srcpkgs/${pkg}/template" | cut -d '=' -f2)
             echo "| $pkg | $version | [template](${repo}/blob/${ref}/srcpkgs/${pkg}/template) |" >> "$GITHUB_STEP_SUMMARY"
           done
+
+          # Topological build order: show inter-package deps within the detected set
+          _topo_pkg_deps() {
+            local _pkg="$1" _tpl="srcpkgs/$1/template" _field _line _dep _dep_name
+            [ -f "$_tpl" ] || return 0
+            for _field in hostmakedepends makedepends depends; do
+              _line=$(grep -m1 "^${_field}=" "$_tpl" 2>/dev/null || true)
+              _line="${_line#*=}"; _line="${_line#\"}"; _line="${_line%\"}"; _line="${_line#\'}"; _line="${_line%\'}"
+              for _dep in $_line; do
+                _dep_name="${_dep%%[><=]*}"
+                [ -z "$_dep_name" ] && continue
+                case " $packages " in *" $_dep_name "*) echo "$_dep_name" ;; esac
+              done
+            done
+          }
+          _topo_visited=""; _topo_sorted=""
+          _topo_visit() {
+            local _v="$1"
+            case " $_topo_visited " in *" $_v "*) return ;; esac
+            _topo_visited="$_topo_visited $_v"
+            for _d in $(_topo_pkg_deps "$_v"); do _topo_visit "$_d"; done
+            _topo_sorted="$_topo_sorted $_v"
+          }
+          for _p in $packages; do _topo_visit "$_p"; done
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Build order with dependencies" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          _ord=1
+          for _p in $_topo_sorted; do
+            _deps=$(_topo_pkg_deps "$_p" | sort -u | tr '\n' ' ' | sed 's/ $//')
+            if [ -n "$_deps" ]; then
+              echo "${_ord}. **${_p}** ← ${_deps}" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "${_ord}. ${_p}" >> "$GITHUB_STEP_SUMMARY"
+            fi
+            _ord=$((_ord + 1))
+          done
+
           if [ -n "$removed" ]; then
             echo "" >> "$GITHUB_STEP_SUMMARY"
             echo "### Removed" >> "$GITHUB_STEP_SUMMARY"
@@ -311,7 +349,7 @@ jobs:
           echo "matrix={\"config\":[${matrix_configs}]}" >> "$GITHUB_OUTPUT"
 
   test-pr:
-    name: Test PR changes
+    name: ${{ matrix.config.arch }} on ${{ matrix.config.host }}
     needs: detect
     if: github.event_name == 'pull_request' && needs.detect.outputs.packages != ''
     runs-on: ${{ matrix.config.runner }}
@@ -335,6 +373,7 @@ jobs:
     steps:
       - name: Prepare container
         run: |
+          echo y | xbps-install -S
           xbps-install -Syu xbps
           xbps-install -yu
           sudo -Eu builder git -C /void-packages pull --ff-only
@@ -389,7 +428,7 @@ jobs:
         run: sh "${GITHUB_WORKSPACE}/extra/src/build-packages.sh"
 
   build:
-    name: Build and publish packages
+    name: ${{ matrix.config.arch }} on ${{ matrix.config.host }}
     needs: detect
     if: (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && (needs.detect.outputs.packages != '' || needs.detect.outputs.removed != '')
     runs-on: ${{ matrix.config.runner }}
@@ -413,6 +452,7 @@ jobs:
     steps:
       - name: Prepare container
         run: |
+          echo y | xbps-install -S
           xbps-install -Syu xbps
           xbps-install -yu
           sudo -Eu builder git -C /void-packages pull --ff-only
