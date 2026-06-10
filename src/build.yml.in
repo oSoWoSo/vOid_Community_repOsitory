@@ -184,7 +184,7 @@ jobs:
           echo "packages=$packages" >> "$GITHUB_OUTPUT"
           echo "removed=$removed" >> "$GITHUB_OUTPUT"
           repo="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
-          ref="${GITHUB_REF_NAME}"
+          ref="${GITHUB_REF_NAME//\//%2F}"
           echo "| Package | version | template |" >> "$GITHUB_STEP_SUMMARY"
           echo "|---------|---------|----------|" >> "$GITHUB_STEP_SUMMARY"
           for pkg in $packages; do
