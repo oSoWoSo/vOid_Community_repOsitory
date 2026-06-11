@@ -16,6 +16,11 @@
 .github/__pycache__/
 !/src
 
+# Repository signing keys
+!/oco-public.pem
+!/oco-repo-key.plist
+!/keys/
+
 # Scripts
 !/ocoman
 !/xut

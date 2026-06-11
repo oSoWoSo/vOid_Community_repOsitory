@@ -13,7 +13,18 @@ force_flag=''
 [ "$FORCE" = 'true' ] && force_flag='-N'
 
 echo "==> Resolving dependencies for: $PACKAGES"
-PKGS=$(sudo -Eu builder ./xbps-src $xbps_test sort-dependencies $PACKAGES)
+PKGS=""
+_retry=0
+while [ -z "$PKGS" ] && [ "$_retry" -lt 3 ]; do
+	_retry=$((_retry + 1))
+	echo "==> sort-dependencies attempt $_retry/3"
+	PKGS=$(sudo -Eu builder ./xbps-src $xbps_test sort-dependencies $PACKAGES 2>/dev/null) || PKGS=""
+	[ -z "$PKGS" ] && sleep 5
+done
+if [ -z "$PKGS" ]; then
+	echo "==> ERROR: sort-dependencies failed after 3 attempts"
+	exit 1
+fi
 
 echo "==> Build order with dependencies:"
 echo "$PKGS"

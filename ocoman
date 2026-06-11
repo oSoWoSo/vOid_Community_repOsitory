@@ -22,7 +22,7 @@ WORKFLOW="${SCRIPT_DIR}/.github/workflows/build.yml"
 
 SURFER_URL="https://repo.osowoso.org"
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
-SIGNED_BY="zenobit <zen@osowoso.org>"
+SIGNED_BY="oSOWoSo <mail@osowoso.org>"
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
 
 . "${SCRIPT_DIR}/src/pkg-helpers.sh"

@@ -39,9 +39,18 @@ We provide repackaged binaries, they all have `-bin` after <pkgname>
 (You can use AppImages[AM](https://github.com/ivan-hc/AM) and flatpaks they are usualy always latest)  
 
 ## How to use
-in https://repo.osowoso.org/`(architecture)`  
-are easy to understand READMEs  
+in https://repo.osowoso.org/`(architecture)`
+are easy to understand READMEs
 Just pick your architecture
+
+### Install repository key
+```sh
+curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/keys/oco-repo-key.plist" \
+  -o /tmp/oco-repo-key.plist 2>/dev/null || \
+curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/keys/oco-repo-key.plist" \
+  -o /tmp/oco-repo-key.plist
+sudo cp /tmp/oco-repo-key.plist /var/db/xbps/keys/oco-repo-key.plist
+```
 
 ## How to contribute
 
