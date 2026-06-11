@@ -6,6 +6,8 @@
 # Author: zenobit <zen@osowoso.org>
 # License: GPL-3.0-only
 
+# Pin collation so sort output is identical on CI (C locale) and local
+export LC_ALL=C
 SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 [ -f "${SCRIPT_DIR}/.env" ] && . "${SCRIPT_DIR}/.env"
 

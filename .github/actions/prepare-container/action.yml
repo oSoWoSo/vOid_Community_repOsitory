@@ -1,0 +1,13 @@
+name: Prepare container
+description: Update host packages, configure OCO repo in xbps-src, run bootstrap-update
+runs:
+  using: composite
+  steps:
+    - name: Update host and configure xbps-src
+      shell: sh
+      run: |
+        echo y | xbps-install -S
+        xbps-install -Syu xbps
+        xbps-install -yu
+        echo "XBPS_INSTALL_ARGS=\"-R https://repo.osowoso.org/${BOOTSTRAP}\"" >> /void-packages/etc/conf
+        sudo -Eu builder sh -c "cd /void-packages && ./xbps-src bootstrap-update"

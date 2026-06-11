@@ -110,8 +110,8 @@ on:
         - ftxui-devel
         - gama
         - gh-dash
-        - ghgrab
         - gh-lazy
+        - ghgrab
         - glaze
         - gofer
         - gradle
@@ -379,12 +379,6 @@ jobs:
             packages=$(all_packages)
           fi
 
-          # Ensure packages is never empty - final fallback
-          if [ -z "$packages" ]; then
-            echo "  Warning: no packages detected, using all_packages fallback"
-            packages=$(all_packages)
-          fi
-
           echo "Packages: ${packages:-<none>}"
           echo "Removed: ${removed:-<none>}"
           echo "packages=$packages" >> "$GITHUB_OUTPUT"
@@ -452,48 +446,27 @@ jobs:
             return 1
           }
 
-          needs_cross_aarch64() {
+          needs_cross() {
+            local target="$1"
             _cnc_visited=""
             local any_nocross=0
             for pkg in $packages; do
               local template="srcpkgs/${pkg}/template"
               [ -f "$template" ] || continue
-              pkg_arch_ok "$pkg" "aarch64" || continue
+              pkg_arch_ok "$pkg" "$target" || continue
               _check_nocross_chain "$pkg" && any_nocross=1
             done
-            [ "$any_nocross" = 0 ] && arch_needed "aarch64"
+            [ "$any_nocross" = 0 ] && arch_needed "$target"
           }
 
-          needs_cross_aarch64_musl() {
-            _cnc_visited=""
-            local any_nocross=0
-            for pkg in $packages; do
-              local template="srcpkgs/${pkg}/template"
-              [ -f "$template" ] || continue
-              pkg_arch_ok "$pkg" "aarch64-musl" || continue
-              _check_nocross_chain "$pkg" && any_nocross=1
-            done
-            [ "$any_nocross" = 0 ] && arch_needed "aarch64-musl"
-          }
-
-          needs_native_aarch64() {
+          needs_native() {
+            local target="$1"
             _cnc_visited=""
             for pkg in $packages; do
               local template="srcpkgs/${pkg}/template"
               [ -f "$template" ] || continue
               _check_nocross_chain "$pkg" || continue
-              pkg_arch_ok "$pkg" "aarch64" && return 0
-            done
-            return 1
-          }
-
-          needs_native_aarch64_musl() {
-            _cnc_visited=""
-            for pkg in $packages; do
-              local template="srcpkgs/${pkg}/template"
-              [ -f "$template" ] || continue
-              _check_nocross_chain "$pkg" || continue
-              pkg_arch_ok "$pkg" "aarch64-musl" && return 0
+              pkg_arch_ok "$pkg" "$target" && return 0
             done
             return 1
           }
@@ -541,11 +514,11 @@ jobs:
             auto|*)
               matrix_configs=""
               arch_needed "x86_64"       && add_cfg "x86_64"       "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
-              needs_cross_aarch64      && add_cfg "aarch64"      "x86_64" "ubuntu-latest"    "linux/amd64" 0 false
+              needs_cross "aarch64"      && add_cfg "aarch64"      "x86_64" "ubuntu-latest"    "linux/amd64" 0 false
               arch_needed "x86_64-musl"  && add_cfg "x86_64-musl"  "x86_64" "ubuntu-latest"    "linux/amd64" 1 false
-              needs_cross_aarch64_musl && add_cfg "aarch64-musl" "x86_64" "ubuntu-latest"    "linux/amd64" 0 false
-              needs_native_aarch64 && add_cfg "aarch64" "aarch64" "ubuntu-24.04-arm" "linux/arm64" 1 true
-              needs_native_aarch64_musl && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
+              needs_cross "aarch64-musl" && add_cfg "aarch64-musl" "x86_64" "ubuntu-latest"    "linux/amd64" 0 false
+              needs_native "aarch64"      && add_cfg "aarch64"      "aarch64"      "ubuntu-24.04-arm" "linux/arm64" 1 true
+              needs_native "aarch64-musl" && add_cfg "aarch64-musl" "aarch64-musl" "ubuntu-24.04-arm" "linux/arm64" 1 true
               if [ -z "$matrix_configs" ]; then
                 echo "Warning: no arch matched package list, defaulting to x86_64" >> "$GITHUB_STEP_SUMMARY"
                 add_cfg "x86_64" "x86_64" "ubuntu-latest" "linux/amd64" 1 false
@@ -577,20 +550,14 @@ jobs:
       matrix: ${{ fromJSON(needs.detect.outputs.matrix) }}
 
     steps:
-      - name: Prepare container
-        run: |
-          echo y | xbps-install -S
-          xbps-install -Syu xbps
-          xbps-install -yu
-          sudo -Eu builder git -C /void-packages pull --ff-only
-          sudo -Eu builder sh -c "cd /void-packages && ./xbps-src bootstrap-update"
-
       - name: Checkout repo (PR head)
-        run: |
-          git clone "https://github.com/${{ github.repository }}.git" extra
-          cd extra
-          git fetch --no-tags origin "${{ github.event.pull_request.head.sha }}" --depth 1
-          git checkout --detach "${{ github.event.pull_request.head.sha }}"
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: extra
+
+      - name: Prepare container
+        uses: ./extra/.github/actions/prepare-container
 
       - name: Merge templates and edit shlibs
         run: |
@@ -657,20 +624,13 @@ jobs:
       matrix: ${{ fromJSON(needs.detect.outputs.matrix) }}
 
     steps:
-      - name: Prepare container
-        run: |
-          echo y | xbps-install -S
-          xbps-install -Syu xbps
-          xbps-install -yu
-          sudo -Eu builder git -C /void-packages pull --ff-only
-          sudo -Eu builder sh -c "cd /void-packages && ./xbps-src bootstrap-update"
-
       - name: Checkout this repo
-        run: |
-          git clone "https://github.com/${{ github.repository }}.git" extra
-          cd extra
-          git fetch --no-tags origin "${{ github.sha }}" --depth 1
-          git checkout --detach "${{ github.sha }}"
+        uses: actions/checkout@v6
+        with:
+          path: extra
+
+      - name: Prepare container
+        uses: ./extra/.github/actions/prepare-container
 
       - name: Merge templates and edit shlibs
         run: |
