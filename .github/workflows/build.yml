@@ -528,7 +528,7 @@ jobs:
           echo "matrix={\"config\":[${matrix_configs}]}" >> "$GITHUB_OUTPUT"
 
   test-pr:
-    name: ${{ matrix.config.arch }} on ${{ matrix.config.host }}
+    name: ${{ matrix.config.arch || '' }} on ${{ matrix.config.host || '' }}
     needs: detect
     if: github.event_name == 'pull_request' && needs.detect.outputs.packages != ''
     runs-on: ${{ matrix.config.runner }}
@@ -601,7 +601,7 @@ jobs:
         run: sh "${GITHUB_WORKSPACE}/extra/src/build-packages.sh"
 
   build:
-    name: ${{ matrix.config.arch }} on ${{ matrix.config.host }}
+    name: ${{ matrix.config.arch || '' }} on ${{ matrix.config.host || '' }}
     needs: detect
     if: (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && (needs.detect.outputs.packages != '' || needs.detect.outputs.removed != '')
     runs-on: ${{ matrix.config.runner }}
