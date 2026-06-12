@@ -1,0 +1,19 @@
+# Template file for 'void-live-creator-git'
+pkgname=void-live-creator-git
+version=0.0.0
+revision=1
+#archs="i686 x86_64"
+depends="gtkmm4 libsigc++3 dracut grub squashfs-tools xorriso rsync"
+# grub-x86_64-efi dosfstools mtools polkit"
+short_desc="Create a live ISO from a running system"
+maintainer="zenobit <zen@osowoso.org>"
+license="GPL-2.0-only"
+homepage="https://codeberg.org/pinguin-void/void-live-creator"
+distfiles="https://codeberg.org/pinguin-void/void-live-creator/archive/main.tar.gz"
+checksum=52a8f338742c203ae0a12f46bb41ba8ad2c45deec113cafe54eaf7df64a4ca6f
+
+do_install() {
+	vbin void-live-creator
+	vmkdir usr/share/applications
+	vcopy "${FILESDIR}/void-live-creator.desktop" usr/share/applications
+}

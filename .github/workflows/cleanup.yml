@@ -37,8 +37,9 @@ jobs:
           RCLONE_WEBDAV_PASS="$(rclone obscure "$SURFER_TOKEN")" \
           rclone mount :webdav: /repo \
             --allow-other \
-            --vfs-cache-mode writes \
+            --vfs-cache-mode full \
             --log-file /tmp/rclone.log &
+          echo $! > /tmp/rclone.pid
           until mountpoint -q /repo; do
             sleep 1
             kill -0 $! 2>/dev/null || { cat /tmp/rclone.log >&2; exit 1; }
@@ -86,4 +87,18 @@ jobs:
 
       - name: Unmount repo
         if: always()
-        run: fusermount -u /repo 2>/dev/null || true
+        run: |
+          if [ -f /tmp/rclone.pid ]; then
+            RCLONE_PID=$(cat /tmp/rclone.pid)
+            kill -TERM "$RCLONE_PID" 2>/dev/null || true
+            fusermount -u /repo 2>/dev/null || true
+            for _i in $(seq 30); do
+              kill -0 "$RCLONE_PID" 2>/dev/null || break
+              sleep 1
+            done
+            if kill -0 "$RCLONE_PID" 2>/dev/null; then
+              echo "==> WARNING: rclone did not exit after 30s, force-killing" >&2
+              kill -9 "$RCLONE_PID" 2>/dev/null || true
+            fi
+            cat /tmp/rclone.log >&2 || true
+          fi

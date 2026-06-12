@@ -35,15 +35,13 @@
 /srcpkgs/*
 
 # Start of templates list
+!/srcpkgs/android-sdk
 !/srcpkgs/aquamarine
-!/srcpkgs/brave-browser-arm-bin
 !/srcpkgs/brave-browser-bin
 !/srcpkgs/brow6el
 !/srcpkgs/btrfs-progs
-!/srcpkgs/bun-arm-bin
-!/srcpkgs/bun-arm-musl-bin
-!/srcpkgs/bun-bin
-!/srcpkgs/bun-musl-bin
+!/srcpkgs/bun
+!/srcpkgs/bun-bootstrap
 !/srcpkgs/candy-icons-git
 !/srcpkgs/cc-switch
 !/srcpkgs/clitest
@@ -88,6 +86,7 @@
 !/srcpkgs/dragonfly-reverb-vst
 !/srcpkgs/dragonfly-reverb-vst3
 !/srcpkgs/drako
+!/srcpkgs/easybashgui
 !/srcpkgs/forgejo-runner
 !/srcpkgs/FreeTube
 !/srcpkgs/ftxui
@@ -95,6 +94,7 @@
 !/srcpkgs/gama
 !/srcpkgs/gh-dash
 !/srcpkgs/gh-lazy
+!/srcpkgs/ghgrab
 !/srcpkgs/glaze
 !/srcpkgs/gofer
 !/srcpkgs/gradle
@@ -115,7 +115,6 @@
 !/srcpkgs/graphite-gtk-theme-nord-light
 !/srcpkgs/graphite-gtk-theme-nord-light-compact
 !/srcpkgs/gum-panel
-!/srcpkgs/helium-browser-arm-bin
 !/srcpkgs/helium-browser-bin
 !/srcpkgs/hyprcursor
 !/srcpkgs/hyprdynamicmonitors
@@ -140,7 +139,9 @@
 !/srcpkgs/kairo
 !/srcpkgs/kando
 !/srcpkgs/kew
+!/srcpkgs/lemonade-server
 !/srcpkgs/libcprime
+!/srcpkgs/librewolf-bin
 !/srcpkgs/libspng
 !/srcpkgs/linuxcommandlibrary
 !/srcpkgs/linuxcommandlibrary-desktop
@@ -168,8 +169,8 @@
 !/srcpkgs/odin2-lv2
 !/srcpkgs/odin2-standalone
 !/srcpkgs/odin2-vst3
+!/srcpkgs/omniroute
 !/srcpkgs/opencode
-!/srcpkgs/opencode-arm
 !/srcpkgs/patchance
 !/srcpkgs/pinguintv-installer
 !/srcpkgs/pop-fonts
@@ -193,6 +194,7 @@
 !/srcpkgs/raysession
 !/srcpkgs/rgc
 !/srcpkgs/runkit
+!/srcpkgs/rustdesk
 !/srcpkgs/sdkmanager
 !/srcpkgs/sfizz-cli
 !/srcpkgs/sfizz-git
@@ -208,15 +210,24 @@
 !/srcpkgs/surge-xt-lv2
 !/srcpkgs/surge-xt-standalone
 !/srcpkgs/surge-xt-vst3
+!/srcpkgs/svi
 !/srcpkgs/tdf
+!/srcpkgs/tls-client
 !/srcpkgs/tomlplusplus
 !/srcpkgs/tomlplusplus-devel
+!/srcpkgs/Trilium
 !/srcpkgs/tufw
 !/srcpkgs/tuisic
 !/srcpkgs/typobuster
 !/srcpkgs/undelete-btrfs
 !/srcpkgs/vbm
 !/srcpkgs/Vish
+!/srcpkgs/vm-curator
+!/srcpkgs/void-hardwaremanager-git
+!/srcpkgs/void-live-creator-git
+!/srcpkgs/void-software-store
+!/srcpkgs/void-src-builder-git
+!/srcpkgs/void-user-manager-git
 !/srcpkgs/vote
 !/srcpkgs/vtm
 !/srcpkgs/waterfox-bin
@@ -225,6 +236,5 @@
 !/srcpkgs/xdg-desktop-portal-hyprland
 !/srcpkgs/xut
 !/srcpkgs/xxtools-git
-!/srcpkgs/zen-browser-arm-bin
 !/srcpkgs/zen-browser-bin
 !/srcpkgs/zig

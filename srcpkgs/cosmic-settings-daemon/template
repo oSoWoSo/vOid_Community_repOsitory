@@ -1,11 +1,11 @@
 # Template file for 'cosmic-settings-daemon'
 pkgname=cosmic-settings-daemon
-version=1.0.13
+version=1.0.15
 revision=1
 archs="x86_64* i686"
 build_style=gnu-makefile
 build_helper="rust"
-hostmakedepends="pkg-config cargo $(vopt_if sccache "rust-sccache")"
+hostmakedepends="pkg-config cargo"
 makedepends="eudev-libudev-devel libinput-devel geoclue2-devel libpulseaudio openssl-devel"
 depends="geoclue2 dbus-libs eudev-libudev lame libpulseaudio libxkbcommon libpulseaudio libsndfile libxcb libasyncns libflac libvorbis libogg libmpg123 libXau libXdmcp opus pop-sounds-theme"
 short_desc="COSMIC settings daemon"
@@ -13,13 +13,6 @@ maintainer="Bella Viola Wagner <belladev109@proton.me>"
 license="GPL-3.0-or-later"
 homepage="https://github.com/pop-os/cosmic-settings-daemon"
 distfiles="https://github.com/pop-os/cosmic-settings-daemon/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=7b6658d1de8122b4e9887e5053a9bb8b4c1a432aae884808a20edd9fcbc88803
-build_options="sccache"
+checksum=df837f2f1e805c25512dfcfeacb4a76a452f5e498a86447dbd3f9683ff1bc42b
 
 export GEOCLUE_AGENT="/usr/libexec/geoclue-2.0/demos/agent"
-
-if [ $(vopt_if sccache "true" "false") == "true" ]; then
-	pre_build() {
-		export RUSTC_WRAPPER=/usr/bin/sccache
-	}
-fi

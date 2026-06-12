@@ -1,30 +1,35 @@
 # Template file for 'opencode'
 pkgname=opencode
-version=1.15.10
+version=1.16.2
 revision=1
-archs="x86_64"
-hostmakedepends="bun-bin nodejs python3 git"
+archs="x86_64 aarch64"
+hostmakedepends="bun nodejs python3 git"
 depends="ripgrep"
 short_desc="Open source AI coding agent"
 maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/anomalyco/opencode"
 distfiles="https://github.com/anomalyco/opencode/archive/refs/tags/v${version}.tar.gz"
-checksum=af407ac0a1f2985b0695b9bb92dafc0131c64a8e981f13d30a33af1e6f38267d
+checksum=2e120adae7dcc6992772ddabdafef9210a16f56df4484a209f879618b16054df
 nostrip_files="/usr/bin/opencode"
 nopie_files="/usr/bin/opencode"
+nocross="opencode build uses process.arch"
+replaces="opencode-arm>=0"
 
 do_build() {
 	export OPENCODE_VERSION="${version}"
-
-	bun install --frozen-lockfile
+	bun install --frozen-lockfile --ignore-scripts
 	bun run --cwd packages/opencode build -- --single --skip-install
 }
 
 do_install() {
-	vbin packages/opencode/dist/opencode-linux-x64/bin/opencode
-	vlicense LICENSE
-
-	$DESTDIR/usr/bin/opencode completion > opencode
+	local _ARCH
+	case "$XBPS_TARGET_MACHINE" in
+		x86_64) _ARCH="x64" ;;
+		aarch64) _ARCH="aarch64" ;;
+	esac
+	vbin "packages/opencode/dist/opencode-linux-${_ARCH}/bin/opencode"
+	"$DESTDIR/usr/bin/opencode" completion > opencode
 	vcompletion opencode bash
+	vlicense LICENSE
 }
