@@ -496,25 +496,4 @@ jobs:
           rm -f /tmp/private.pem
 
           BUILDDIR="$NEW_PKGS_DIR" "${GITHUB_WORKSPACE}/extra/ocoman" -p
-
-      - name: Prune removed packages
-        if: needs.detect.outputs.removed != ''
-        env:
-          ARCH: ${{ matrix.config.arch }}
-          XBPS_ARCH: ${{ matrix.config.arch }}
-          XBPS_TARGET_ARCH: ${{ matrix.config.arch }}
-          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
-          PRIV_KEY: ${{ secrets.PRIV_KEY }}
-        run: |
-          export PATH="/opt/xbps/usr/bin/:$PATH"
-          export XBPS_TARGET_ARCH="${XBPS_ARCH}"
-          "${GITHUB_WORKSPACE}/extra/ocoman" -p
-          echo "Pruned from https://repo.osowoso.org/${ARCH}/" >> $GITHUB_STEP_SUMMARY
-
-      - name: Regenerate arch page
-        if: steps.build.outputs.built == 'true'
-        env:
-          ARCH: ${{ matrix.config.arch }}
-          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
-        run: |
           "${GITHUB_WORKSPACE}/extra/ocoman" -a
