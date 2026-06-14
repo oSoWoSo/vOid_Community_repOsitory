@@ -277,7 +277,7 @@ Create PR
 | vm-curator | 1.0.0 | https://github.com/mroboff/vm-curator | zenobit |  |
 | void-hardwaremanager-git | 0.0.0 | https://codeberg.org/pinguin-void/Void-Driver-App | zenobit | x86_64 aarch64 |
 | void-live-creator-git | 0.0.0 | https://codeberg.org/pinguin-void/void-live-creator | zenobit |  |
-| void-software-store | 1.9.4 | https://codeberg.org/pinguin-void/void-software-store | zenobit |  |
+| void-software-store | 1.9.4.02 | https://codeberg.org/oSoWoSo/void-software-store | zenobit |  |
 | void-src-builder-git | 0.0.0 | https://codeberg.org/pinguin-void/void-src-builder | zenobit |  |
 | void-user-manager-git | 0.0.0 | https://codeberg.org/pinguin-void/void-user-manager | zenobit | x86_64 |
 | vote | 0.92 | https://codeberg.org/oSoWoSo/vote | zenobit |  |
