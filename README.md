@@ -247,6 +247,7 @@ Create PR
 | raysession | 0.18.0 | https://raysession.tuxfamily.org/ | Trve_AY |  |
 | rgc | 1.1.0 | https://github.com/flameshikari/rgc | zenobit |  |
 | runkit | 1.4.0 | https://github.com/Letdown2491/runkit | zenobit |  |
+| rustdesk | 1.4.7 | https://github.com/rustdesk/rustdesk | Bella Viola Wagner |  |
 | sdkmanager | 0.7.0 | https://gitlab.com/fdroid/sdkmanager | zenobit |  |
 | sfizz-cli | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |
 | sfizz-git | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |
@@ -288,5 +289,5 @@ Create PR
 | xdg-desktop-portal-hyprland | 1.3.11 | https://github.com/hyprwm/xdg-desktop-portal-hyprland | zenobit |  |
 | xut | 0.4.2 | https://codeberg.org/mobinmob/xut | mobinmob |  |
 | xxtools-git | 0.0.0 | https://github.com/Piraty/xxtools | zenobit |  |
-| zen-browser-bin | 1.20.2b | https://github.com/zen-browser/desktop | Bella Viola Wagner | x86_64 aarch64 |
+| zen-browser-bin | 1.21b | https://github.com/zen-browser/desktop | Bella Viola Wagner | x86_64 aarch64 |
 | zig | 0.16.0 | https://ziglang.org | Bella Viola Wagner | x86_64* aarch64* |

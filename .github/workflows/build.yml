@@ -211,6 +211,7 @@ on:
         - raysession
         - rgc
         - runkit
+        - rustdesk
         - sdkmanager
         - sfizz-cli
         - sfizz-git
