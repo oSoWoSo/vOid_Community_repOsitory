@@ -1,6 +1,6 @@
 #!/bin/sh
 # Shared build loop used by both test-pr and build CI jobs.
-# Required env: PACKAGES, ARCH, BOOTSTRAP, TEST, NATIVE
+# Required env: PACKAGES, ARCH, BOOTSTRAP, TEST, NATIVE, FORCE
 # Writes built=true/false to GITHUB_OUTPUT when that variable is set.
 . "${GITHUB_WORKSPACE}/extra/src/pkg-helpers.sh"
 export PATH="/opt/xbps/usr/bin/:$PATH"
@@ -9,8 +9,22 @@ cd /void-packages
 xbps_test=''
 [ "$TEST" = 1 ] && xbps_test='-Q'
 
+force_flag=''
+[ "$FORCE" = 'true' ] && force_flag='-N'
+
 echo "==> Resolving dependencies for: $PACKAGES"
-PKGS=$(sudo -Eu builder ./xbps-src $xbps_test sort-dependencies $PACKAGES)
+PKGS=""
+_retry=0
+while [ -z "$PKGS" ] && [ "$_retry" -lt 3 ]; do
+	_retry=$((_retry + 1))
+	echo "==> sort-dependencies attempt $_retry/3"
+	PKGS=$(sudo -Eu builder ./xbps-src $xbps_test sort-dependencies $PACKAGES 2>/dev/null) || PKGS=""
+	[ -z "$PKGS" ] && sleep 5
+done
+if [ -z "$PKGS" ]; then
+	echo "==> ERROR: sort-dependencies failed after 3 attempts"
+	exit 1
+fi
 
 echo "==> Build order with dependencies:"
 echo "$PKGS"
@@ -42,7 +56,7 @@ for pkg in $PKGS; do
 	fi
 
 	echo "==> Building ${pkg}"
-	if sudo -Eu builder ./xbps-src -j"$(nproc)" -s $arch_flag $xbps_test pkg "$pkg"; then
+	if sudo -Eu builder ./xbps-src -j"$(nproc)" -s $force_flag $arch_flag $xbps_test pkg "$pkg"; then
 		BUILT=true
 	else
 		FAILED=true

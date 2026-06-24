@@ -1,8 +1,3 @@
-*.swo
-*.swp
-*~
-\#*#
-
 # Exclude everything except needed
 /*
 !/.editorconfig
@@ -10,12 +5,6 @@
 !/.gitignore
 
 !/.github
-/.github/*
-!/.github/workflows
-/.github/workflows/*
-!/.github/workflows/build.yml
-!/.github/workflows/cleanup.yml
-!/.github/workflows/update.yml
 
 !/LICENSE
 !/README.md
@@ -26,6 +15,11 @@
 !/tests
 .github/__pycache__/
 !/src
+
+# Repository signing keys
+!/oco-public.pem
+!/oco-repo-key.plist
+!/keys/
 
 # Scripts
 !/ocoman
@@ -93,8 +87,8 @@
 !/srcpkgs/ftxui-devel
 !/srcpkgs/gama
 !/srcpkgs/gh-dash
-!/srcpkgs/ghgrab
 !/srcpkgs/gh-lazy
+!/srcpkgs/ghgrab
 !/srcpkgs/glaze
 !/srcpkgs/gofer
 !/srcpkgs/gradle
@@ -139,6 +133,7 @@
 !/srcpkgs/kairo
 !/srcpkgs/kando
 !/srcpkgs/kew
+!/srcpkgs/lemonade-server
 !/srcpkgs/libcprime
 !/srcpkgs/librewolf-bin
 !/srcpkgs/libspng
@@ -193,6 +188,7 @@
 !/srcpkgs/raysession
 !/srcpkgs/rgc
 !/srcpkgs/runkit
+!/srcpkgs/rustdesk
 !/srcpkgs/sdkmanager
 !/srcpkgs/sfizz-cli
 !/srcpkgs/sfizz-git
@@ -208,16 +204,19 @@
 !/srcpkgs/surge-xt-lv2
 !/srcpkgs/surge-xt-standalone
 !/srcpkgs/surge-xt-vst3
+!/srcpkgs/svi
 !/srcpkgs/tdf
 !/srcpkgs/tls-client
 !/srcpkgs/tomlplusplus
 !/srcpkgs/tomlplusplus-devel
+!/srcpkgs/Trilium
 !/srcpkgs/tufw
 !/srcpkgs/tuisic
 !/srcpkgs/typobuster
 !/srcpkgs/undelete-btrfs
 !/srcpkgs/vbm
 !/srcpkgs/Vish
+!/srcpkgs/vm-curator
 !/srcpkgs/void-hardwaremanager-git
 !/srcpkgs/void-live-creator-git
 !/srcpkgs/void-software-store
