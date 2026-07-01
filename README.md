@@ -248,7 +248,7 @@ Create PR
 | raysession | 0.18.0 | https://raysession.tuxfamily.org/ | Trve_AY |  |
 | rgc | 1.1.0 | https://github.com/flameshikari/rgc | zenobit |  |
 | runkit | 1.4.0 | https://github.com/Letdown2491/runkit | zenobit |  |
-| rustdesk | 1.4.7 | https://github.com/rustdesk/rustdesk | Bella Viola Wagner |  |
+| rustdesk | 1.4.8 | https://github.com/rustdesk/rustdesk | Bella Viola Wagner | x86_64* |
 | sdkmanager | 0.7.0 | https://gitlab.com/fdroid/sdkmanager | zenobit |  |
 | sfizz-cli | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |
 | sfizz-git | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |
