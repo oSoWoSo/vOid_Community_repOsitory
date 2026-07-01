@@ -76,6 +76,7 @@ on:
         - cosmic-idle
         - cosmic-initial-setup
         - cosmic-launcher
+        - cosmic-monitor
         - cosmic-notifications
         - cosmic-osd
         - cosmic-panel
