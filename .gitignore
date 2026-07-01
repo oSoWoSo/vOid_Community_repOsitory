@@ -53,6 +53,7 @@
 !/srcpkgs/cosmic-idle
 !/srcpkgs/cosmic-initial-setup
 !/srcpkgs/cosmic-launcher
+!/srcpkgs/cosmic-monitor
 !/srcpkgs/cosmic-notifications
 !/srcpkgs/cosmic-osd
 !/srcpkgs/cosmic-panel
