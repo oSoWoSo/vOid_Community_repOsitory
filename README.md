@@ -99,34 +99,34 @@ Create PR
 | cc-switch | 3.15.0 | https://github.com/farion1231/cc-switch | zenobit | x86_64* aarch64* |
 | clitest | 0.5.0 | https://github.com/aureliojargas/clitest | zenobit |  |
 | corekeyboard | 5.0.1 | https://gitlab.com/cubocore/coreapps/corekeyboard | zenobit |  |
-| cosmic-applets | 1.1.0 | https://github.com/pop-os/cosmic-applets | Bella Viola Wagner | x86_64* i686 |
-| cosmic-applibrary | 1.1.0 | https://github.com/pop-os/cosmic-applibrary | Bella Viola Wagner | x86_64* i686 |
-| cosmic-bg | 1.1.0 | https://github.com/pop-os/cosmic-bg | Bella Viola Wagner | x86_64* i686 |
-| cosmic-comp | 1.1.0 | https://github.com/pop-os/cosmic-comp | Bella Viola Wagner | x86_64* i686 |
-| cosmic-desktop-full | 1.1.0 | https://github.com/pop-os/cosmic-epoch | Bella Viola Wagner | x86_64* |
-| cosmic-desktop-minimal | 1.1.0 | https://github.com/pop-os/cosmic-epoch | Bella Viola Wagner | x86_64* |
-| cosmic-edit | 1.1.0 | https://github.com/pop-os/cosmic-edit | Bella Viola Wagner | x86_64* |
-| cosmic-files | 1.1.0 | https://github.com/pop-os/cosmic-files | Bella Viola Wagner | x86_64* |
-| cosmic-greeter | 1.1.0 | https://github.com/pop-os/cosmic-greeter | Bella Viola Wagner | x86_64* i686 |
-| cosmic-icons | 1.1.0 | https://github.com/pop-os/cosmic-icons | Bella Viola Wagner |  |
-| cosmic-idle | 1.1.0 | https://github.com/pop-os/cosmic-idle | Bella Viola Wagner | x86_64* i686 |
-| cosmic-initial-setup | 1.0.13 | https://github.com/pop-os/cosmic-initial-setup | Bella Viola Wagner | x86_64* i686 |
-| cosmic-launcher | 1.1.0 | https://github.com/pop-os/cosmic-launcher | Bella Viola Wagner | x86_64* i686 |
-| cosmic-monitor | 1.1.0 | https://github.com/pop-os/cosmic-monitor | Bella Viola Wagner | x86_64* |
-| cosmic-notifications | 1.1.0 | https://github.com/pop-os/cosmic-notifications | Bella Viola Wagner | x86_64* i686 |
-| cosmic-osd | 1.1.0 | https://github.com/pop-os/cosmic-osd | Bella Viola Wagner | x86_64* i686 |
-| cosmic-panel | 1.1.0 | https://github.com/pop-os/cosmic-panel | Bella Viola Wagner | x86_64* i686 |
-| cosmic-player | 1.1.0 | https://github.com/pop-os/cosmic-player | Bella Viola Wagner | x86_64* i686 |
-| cosmic-randr | 1.1.0 | https://github.com/pop-os/cosmic-randr | Bella Viola Wagner | x86_64* i686 |
-| cosmic-screenshot | 1.1.0 | https://github.com/pop-os/cosmic-screenshot | Bella Viola Wagner | x86_64* i686 |
-| cosmic-session | 1.1.0 | https://github.com/pop-os/cosmic-session | Bella Viola Wagner | x86_64* i686 |
-| cosmic-settings | 1.1.0 | https://github.com/pop-os/cosmic-settings | Bella Viola Wagner | x86_64* i686 |
-| cosmic-settings-daemon | 1.1.0 | https://github.com/pop-os/cosmic-settings-daemon | Bella Viola Wagner | x86_64* i686 |
-| cosmic-term | 1.1.0 | https://github.com/pop-os/cosmic-term | Bella Viola Wagner | x86_64* |
+| cosmic-applets | 1.1.0 | https://github.com/pop-os/cosmic-applets | Bella109 | x86_64* i686 |
+| cosmic-applibrary | 1.1.0 | https://github.com/pop-os/cosmic-applibrary | Bella109 | x86_64* i686 |
+| cosmic-bg | 1.1.0 | https://github.com/pop-os/cosmic-bg | Bella109 | x86_64* i686 |
+| cosmic-comp | 1.1.0 | https://github.com/pop-os/cosmic-comp | Bella109 | x86_64* i686 |
+| cosmic-desktop-full | 1.1.0 | https://github.com/pop-os/cosmic-epoch | Bella109 | x86_64* |
+| cosmic-desktop-minimal | 1.1.0 | https://github.com/pop-os/cosmic-epoch | Bella109 | x86_64* |
+| cosmic-edit | 1.1.0 | https://github.com/pop-os/cosmic-edit | Bella109 | x86_64* |
+| cosmic-files | 1.1.0 | https://github.com/pop-os/cosmic-files | Bella109 | x86_64* |
+| cosmic-greeter | 1.1.0 | https://github.com/pop-os/cosmic-greeter | Bella109 | x86_64* i686 |
+| cosmic-icons | 1.1.0 | https://github.com/pop-os/cosmic-icons | Bella109 |  |
+| cosmic-idle | 1.1.0 | https://github.com/pop-os/cosmic-idle | Bella109 | x86_64* i686 |
+| cosmic-initial-setup | 1.0.13 | https://github.com/pop-os/cosmic-initial-setup | Bella109 | x86_64* i686 |
+| cosmic-launcher | 1.1.0 | https://github.com/pop-os/cosmic-launcher | Bella109 | x86_64* i686 |
+| cosmic-monitor | 1.1.0 | https://github.com/pop-os/cosmic-monitor | Bella109 | x86_64* |
+| cosmic-notifications | 1.1.0 | https://github.com/pop-os/cosmic-notifications | Bella109 | x86_64* i686 |
+| cosmic-osd | 1.1.0 | https://github.com/pop-os/cosmic-osd | Bella109 | x86_64* i686 |
+| cosmic-panel | 1.1.0 | https://github.com/pop-os/cosmic-panel | Bella109 | x86_64* i686 |
+| cosmic-player | 1.1.0 | https://github.com/pop-os/cosmic-player | Bella109 | x86_64* i686 |
+| cosmic-randr | 1.1.0 | https://github.com/pop-os/cosmic-randr | Bella109 | x86_64* i686 |
+| cosmic-screenshot | 1.1.0 | https://github.com/pop-os/cosmic-screenshot | Bella109 | x86_64* i686 |
+| cosmic-session | 1.1.0 | https://github.com/pop-os/cosmic-session | Bella109 | x86_64* i686 |
+| cosmic-settings | 1.1.0 | https://github.com/pop-os/cosmic-settings | Bella109 | x86_64* i686 |
+| cosmic-settings-daemon | 1.1.0 | https://github.com/pop-os/cosmic-settings-daemon | Bella109 | x86_64* i686 |
+| cosmic-term | 1.1.0 | https://github.com/pop-os/cosmic-term | Bella109 | x86_64* |
 | cosmic-theme-editor | 0.0.0 | https://github.com/pop-os/cosmic-theme-editor | Bella Wagner | x86_64* i686 |
-| cosmic-tweaks | 0.2.2 | https://github.com/cosmic-utils/cosmic-tweaks | Bella Viola Wagner | x86_64 |
-| cosmic-wallpapers | 1.1.0 | https://github.com/pop-os/cosmic-wallpapers | Bella Viola Wagner |  |
-| cosmic-workspaces-epoch | 1.1.0 | https://github.com/pop-os/cosmic-workspaces-epoch | Bella Viola Wagner | x86_64* i686 |
+| cosmic-tweaks | 0.2.2 | https://github.com/cosmic-utils/cosmic-tweaks | Bella109 | x86_64 |
+| cosmic-wallpapers | 1.1.0 | https://github.com/pop-os/cosmic-wallpapers | Bella109 |  |
+| cosmic-workspaces-epoch | 1.1.0 | https://github.com/pop-os/cosmic-workspaces-epoch | Bella109 | x86_64* i686 |
 | crush | 0.71.0 | https://github.com/charmbracelet/crush | zenobit |  |
 | cwal | 0.8.5 | https://github.com/nitinbhat972/cwal | zenobit |  |
 | dashy | 4.1.5 | https://github.com/Lissy93/dashy | zenobit |  |
@@ -142,7 +142,7 @@ Create PR
 | drako | 0.2.10 | https://github.com/lucky7xz/drako | zenobit |  |
 | easybashgui | 15.0.2 | https://github.com/BashGui/easybashgui | zenobit |  |
 | forgejo-runner | 12.10.1 | https://code.forgejo.org/forgejo/runner | zenobit |  |
-| FreeTube | 0.24.0 | https://github.com/FreeTubeApp/FreeTube/tree/development | Bella Viola Wagner | x86_64 |
+| FreeTube | 0.24.0 | https://github.com/FreeTubeApp/FreeTube/tree/development | Bella109 | x86_64 |
 | ftxui | 6.1.9 | https://github.com/ArthurSonzogni/FTXUI | zenobit |  |
 | ftxui-devel | 6.1.9 | https://github.com/ArthurSonzogni/FTXUI | zenobit |  |
 | gama | 1.2.1 | https://github.com/termkit/gama | zenobit |  |
@@ -203,7 +203,7 @@ Create PR
 | lunasvg | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
 | ly | 1.4.0 | https://codeberg.org/fairyglade/ly | zenobit | i686 x86_64 |
 | menu-themes | 0.8.0 | https://github.com/kando-menu/menu-themes | zenobit |  |
-| mesa-amber | 26.1.2 | https://www.mesa3d.org/ | Bella Viola Wagner |  |
+| mesa-amber | 26.1.2 | https://www.mesa3d.org/ | Bella109 |  |
 | nebula-gtk | 1.3.7 | https://github.com/Letdown2491/nebula-gtk | zenobit |  |
 | nwg-clipman | 0.2.8 | https://github.com/nwg-piotr/nwg-clipman | zenobit |  |
 | nwg-displays | 0.4.1 | https://nwg-piotr.github.io/nwg-shell/nwg-displays | zenobit |  |
@@ -226,7 +226,7 @@ Create PR
 | omniroute | 3.8.24 | https://github.com/diegosouzapw/OmniRoute | zenobit |  |
 | opencode | 1.17.3 | https://github.com/anomalyco/opencode | zenobit | x86_64 aarch64 |
 | patchance | 1.4.0 | https://raysession.tuxfamily.org/ | Trve_AY |  |
-| pinguintv-installer | 1.0 | https://pinguin-tv.de/Downloads/Pinguin-Installer.zip | Bella Viola Wagner | x86_64 |
+| pinguintv-installer | 1.0 | https://pinguin-tv.de/Downloads/Pinguin-Installer.zip | Bella109 | x86_64 |
 | pop-fonts | 0.0.0 | https://github.com/pop-os/fonts | Bella Wagner |  |
 | pop-icons | 3.5.1 | https://github.com/pop-os/icon-theme | Bella Wagner |  |
 | pop-launcher | 1.2.7 | https://github.com/pop-os/launcher | Bella Wagner | x86_64* i686 |
@@ -248,7 +248,7 @@ Create PR
 | raysession | 0.18.0 | https://raysession.tuxfamily.org/ | Trve_AY |  |
 | rgc | 1.1.0 | https://github.com/flameshikari/rgc | zenobit |  |
 | runkit | 1.4.0 | https://github.com/Letdown2491/runkit | zenobit |  |
-| rustdesk | 1.4.8 | https://github.com/rustdesk/rustdesk | Bella Viola Wagner | x86_64* |
+| rustdesk | 1.4.8 | https://github.com/rustdesk/rustdesk | Bella109 | x86_64* |
 | sdkmanager | 0.7.0 | https://gitlab.com/fdroid/sdkmanager | zenobit |  |
 | sfizz-cli | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |
 | sfizz-git | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |
@@ -286,9 +286,9 @@ Create PR
 | vtm | 2026.05.28 | https://github.com/directvt/vtm | zenobit |  |
 | waterfox-bin | 6.6.14 | https://www.waterfox.net | zenobit | x86_64 |
 | wpgtk | 6.7.1 | https://github.com/deviantfero/wpgtk/ | zenobit |  |
-| xdg-desktop-portal-cosmic | 1.1.0 | https://github.com/pop-os/xdg-desktop-portal-cosmic | Bella Viola Wagner | x86_64* |
+| xdg-desktop-portal-cosmic | 1.1.0 | https://github.com/pop-os/xdg-desktop-portal-cosmic | Bella109 | x86_64* |
 | xdg-desktop-portal-hyprland | 1.3.11 | https://github.com/hyprwm/xdg-desktop-portal-hyprland | zenobit |  |
 | xut | 0.4.2 | https://codeberg.org/mobinmob/xut | mobinmob |  |
 | xxtools-git | 0.0.0 | https://github.com/Piraty/xxtools | zenobit |  |
-| zen-browser-bin | 1.21.3b | https://github.com/zen-browser/desktop | Bella Viola Wagner | x86_64 aarch64 |
-| zig | 0.16.0 | https://ziglang.org | Bella Viola Wagner | x86_64* aarch64* |
+| zen-browser-bin | 1.21.3b | https://github.com/zen-browser/desktop | Bella109 | x86_64 aarch64 |
+| zig | 0.16.0 | https://ziglang.org | Bella109 | x86_64* aarch64* |
