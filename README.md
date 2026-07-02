@@ -110,7 +110,6 @@ Create PR
 | cosmic-greeter | 1.1.0 | https://github.com/pop-os/cosmic-greeter | Bella109 | x86_64* i686 |
 | cosmic-icons | 1.1.0 | https://github.com/pop-os/cosmic-icons | Bella109 |  |
 | cosmic-idle | 1.1.0 | https://github.com/pop-os/cosmic-idle | Bella109 | x86_64* i686 |
-| cosmic-initial-setup | 1.0.13 | https://github.com/pop-os/cosmic-initial-setup | Bella109 | x86_64* i686 |
 | cosmic-launcher | 1.1.0 | https://github.com/pop-os/cosmic-launcher | Bella109 | x86_64* i686 |
 | cosmic-monitor | 1.1.0 | https://github.com/pop-os/cosmic-monitor | Bella109 | x86_64* |
 | cosmic-notifications | 1.1.0 | https://github.com/pop-os/cosmic-notifications | Bella109 | x86_64* i686 |
@@ -123,7 +122,6 @@ Create PR
 | cosmic-settings | 1.1.0 | https://github.com/pop-os/cosmic-settings | Bella109 | x86_64* i686 |
 | cosmic-settings-daemon | 1.1.0 | https://github.com/pop-os/cosmic-settings-daemon | Bella109 | x86_64* i686 |
 | cosmic-term | 1.1.0 | https://github.com/pop-os/cosmic-term | Bella109 | x86_64* |
-| cosmic-theme-editor | 0.0.0 | https://github.com/pop-os/cosmic-theme-editor | Bella Wagner | x86_64* i686 |
 | cosmic-tweaks | 0.2.2 | https://github.com/cosmic-utils/cosmic-tweaks | Bella109 | x86_64 |
 | cosmic-wallpapers | 1.1.0 | https://github.com/pop-os/cosmic-wallpapers | Bella109 |  |
 | cosmic-workspaces-epoch | 1.1.0 | https://github.com/pop-os/cosmic-workspaces-epoch | Bella109 | x86_64* i686 |
@@ -227,10 +225,10 @@ Create PR
 | opencode | 1.17.3 | https://github.com/anomalyco/opencode | zenobit | x86_64 aarch64 |
 | patchance | 1.4.0 | https://raysession.tuxfamily.org/ | Trve_AY |  |
 | pinguintv-installer | 1.0 | https://pinguin-tv.de/Downloads/Pinguin-Installer.zip | Bella109 | x86_64 |
-| pop-fonts | 0.0.0 | https://github.com/pop-os/fonts | Bella Wagner |  |
-| pop-icons | 3.5.1 | https://github.com/pop-os/icon-theme | Bella Wagner |  |
-| pop-launcher | 1.2.7 | https://github.com/pop-os/launcher | Bella Wagner | x86_64* i686 |
-| pop-sounds-theme | 5.5.1 | https://github.com/pop-os/gtk-theme | Bella Wagner |  |
+| pop-fonts | 0.0.0 | https://github.com/pop-os/fonts | Bella109 |  |
+| pop-icons | 3.5.1 | https://github.com/pop-os/icon-theme | Bella109 |  |
+| pop-launcher | 1.2.7 | https://github.com/pop-os/launcher | Bella109 | x86_64* i686 |
+| pop-sounds-theme | 5.5.1 | https://github.com/pop-os/gtk-theme | Bella109 |  |
 | python3-anysqlite | 0.0.5 | https://github.com/karpetrosyan/anysqlite | zenobit |  |
 | python3-dasbus | 1.7 | https://github.com/dasbus-project/dasbus | zenobit |  |
 | python3-geographiclib | 2.1 | https://geographiclib.sourceforge.io/ | zenobit |  |
@@ -290,5 +288,5 @@ Create PR
 | xdg-desktop-portal-hyprland | 1.3.11 | https://github.com/hyprwm/xdg-desktop-portal-hyprland | zenobit |  |
 | xut | 0.4.2 | https://codeberg.org/mobinmob/xut | mobinmob |  |
 | xxtools-git | 0.0.0 | https://github.com/Piraty/xxtools | zenobit |  |
-| zen-browser-bin | 1.21.3b | https://github.com/zen-browser/desktop | Bella109 | x86_64 aarch64 |
+| zen-browser-bin | 1.21.5b | https://github.com/zen-browser/desktop | Bella109 | x86_64 aarch64 |
 | zig | 0.16.0 | https://ziglang.org | Bella109 | x86_64* aarch64* |
