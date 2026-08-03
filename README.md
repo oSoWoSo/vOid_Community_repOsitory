@@ -274,7 +274,7 @@ Create PR
 | tuisic | 2.0.0 | https://github.com/Dark-Kernel/tuisic | zenobit |  |
 | typobuster | 1.0.0 | https://github.com/nwg-piotr/typobuster | zenobit |  |
 | undelete-btrfs | 1.0 | https://github.com/danthem/undelete-btrfs | zenobit |  |
-| vbm | 1.0.1 | https://codeberg.org/oSoWoSo/vbm | zenobit |  |
+| vbm | 1.0.2 | https://codeberg.org/oSoWoSo/vbm | zenobit |  |
 | Vish | 1.1.3 | https://github.com/Lluciocc/Vish | zenobit |  |
 | vm-curator | 1.0.0 | https://github.com/mroboff/vm-curator | zenobit |  |
 | void-hardwaremanager-git | 0.0.0 | https://codeberg.org/pinguin-void/Void-Driver-App | zenobit | x86_64 aarch64 |
