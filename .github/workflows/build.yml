@@ -698,39 +698,5 @@ jobs:
           xbps-rindex -S --privkey /tmp/private.pem "$NEW_PKGS_DIR"/*.xbps
           rm -f /tmp/private.pem
 
-          echo "==> Uploading packages"
           BUILDDIR="$NEW_PKGS_DIR" "${GITHUB_WORKSPACE}/extra/ocoman" -p
-
-      - name: Update package list
-        if: steps.build.outputs.built == 'true'
-        env:
-          SURFER_URL: https://repo.osowoso.org
-          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ARCH: ${{ matrix.config.arch }}
-        run: |
-          cd "${GITHUB_WORKSPACE}/extra"
-
-          echo "==> Waiting for repodata to propagate"
-          for i in 1 2 3 4 5; do
-            if curl -sfI "${SURFER_URL}/${ARCH}/${ARCH}-repodata" -u ":${SURFER_TOKEN}" > /dev/null 2>&1; then
-              echo "Repodata available after ${i} attempts"
-              break
-            fi
-            echo "Waiting for repodata to propagate... (attempt ${i}/5)"
-            sleep 5
-          done
-
-          echo "==> Regenerating package list pages"
-          ./ocoman -a
-
-          echo "==> Committing updated docs"
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/
-          if git diff --cached --quiet; then
-            echo "No docs changes to commit"
-          else
-            git commit -m "CI: update package list"
-            git push
-          fi
+          "${GITHUB_WORKSPACE}/extra/ocoman" -a
