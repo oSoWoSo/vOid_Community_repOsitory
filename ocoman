@@ -9,6 +9,7 @@
 # Pin collation so sort output is identical on CI (C locale) and local
 export LC_ALL=C
 SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+# shellcheck source=/dev/null
 [ -f "${SCRIPT_DIR}/.env" ] && . "${SCRIPT_DIR}/.env"
 
 # --- Repo management ---
@@ -20,16 +21,17 @@ BUILD_TEMPLATE="${SCRIPT_DIR}/src/build.yml.in"
 README="${SCRIPT_DIR}/README.md"
 WORKFLOW="${SCRIPT_DIR}/.github/workflows/build.yml"
 
-SURFER_URL="https://repo.osowoso.org"
+SURFER_URL='https://repo.osowoso.org'
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
-SIGNED_BY="oSOWoSo <mail@osowoso.org>"
+SIGNED_BY='oSOWoSo <mail@osowoso.org>'
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
 
+# shellcheck source=src/pkg-helpers.sh
 . "${SCRIPT_DIR}/src/pkg-helpers.sh"
 
 # --- Init / clone (env-overridable) ---
-VOID_URL="https://github.com/void-linux/void-packages"
-OCO_URL="https://codeberg.org/oSoWoSo/oco"
+VOID_URL='https://github.com/void-linux/void-packages'
+OCO_URL='https://codeberg.org/oSoWoSo/oco'
 CLONE_DEST="${CLONE_DEST:-$HOME/void}"
 CLONE_TEMP="${CLONE_TEMP:-/tmp}"
 CLONE_DEPTH="${CLONE_DEPTH:-}"
@@ -49,11 +51,18 @@ if [ -z "$NO_COLOR" ]; then
 	BLUE=$(printf '\033[0;34m')
 	NC=$(printf '\033[0m')
 fi
-_r()  { echo "${RED}${1}${NC}"; }
-_re() { echo "${RED}${1}${NC}" >&2; exit 1; }
-_g()  { echo "${GREEN}${1}${NC}"; }
-_b()  { echo "${BLUE}${1}${NC}"; }
-_y()  { echo "${YELLOW}${1}${NC}"; }
+_r() {
+	echo "${RED}${@}${NC}"
+}
+_g() {
+	echo "${GREEN}${1}${NC}"
+}
+_b() {
+	echo "${BLUE}${1}${NC}"
+}
+_y() {
+	echo "${YELLOW}${1}${NC}"
+}
 ask() {
 	printf '%s%s [Y/n] %s' "$YELLOW" "$1" "$NC"
 	read -r _ans || _ans=y
@@ -63,8 +72,12 @@ ask() {
 # --- Core helpers ---
 
 fatal() {
-	echo '[FATAL]' "$@" >&2
+	_r '[FATAL]:' "$@" >&2
 	exit 1
+}
+
+_re() {
+	fatal "${RED}${@}${NC}"
 }
 
 usage() {
@@ -119,12 +132,17 @@ read_template_fields() {
 			archs=*)      [ -z "$_tpl_archs" ]      && _tpl_archs=${_ln#archs=} ;;
 		esac
 	done < "$1"
-	_tpl_version=${_tpl_version#\"};   _tpl_version=${_tpl_version%\"}
-	_tpl_homepage=${_tpl_homepage#\"}; _tpl_homepage=${_tpl_homepage%\"}
-	_tpl_maintainer=${_tpl_maintainer#\"}; _tpl_maintainer=${_tpl_maintainer%\"}
+	_tpl_version=${_tpl_version#\"}
+	_tpl_version=${_tpl_version%\"}
+	_tpl_homepage=${_tpl_homepage#\"}
+	_tpl_homepage=${_tpl_homepage%\"}
+	_tpl_maintainer=${_tpl_maintainer#\"}
+	_tpl_maintainer=${_tpl_maintainer%\"}
 	_tpl_maintainer=${_tpl_maintainer%% <*}
-	_tpl_short_desc=${_tpl_short_desc#\"}; _tpl_short_desc=${_tpl_short_desc%\"}
-	_tpl_archs=${_tpl_archs#\"}; _tpl_archs=${_tpl_archs%\"}
+	_tpl_short_desc=${_tpl_short_desc#\"}
+	_tpl_short_desc=${_tpl_short_desc%\"}
+	_tpl_archs=${_tpl_archs#\"}
+	_tpl_archs=${_tpl_archs%\"}
 }
 
 # --- Package helpers ---
@@ -182,7 +200,7 @@ list_published_pkgs() {
 	if command -v python3 >/dev/null 2>&1; then
 		if curl -fsS -o "$_lpp_tmp" \
 				"${_lpp_url}/${_lpp_arch}-repodata" 2>/dev/null; then
-			python3 "${SCRIPT_DIR}/src/repodata-list.py" "$_lpp_tmp"
+			python3 "${REPODATA_LIST_PY}" "$_lpp_tmp"
 			_lpp_rc=$?
 		else
 			_lpp_rc=1
@@ -204,8 +222,7 @@ fetch_remote_list() {
 		echo "Error: PROPFIND ${1} failed (rc=${_frl_rc}): ${_frl_body}" >&2
 		return "$_frl_rc"
 	fi
-	printf '%s' "$_frl_body" \
-		| grep -o '<D:href>[^<]*\.xbps</D:href>' \
+	printf '%s' "$_frl_body" | grep -o '<D:href>[^<]*\.xbps</D:href>' \
 		| sed 's|<D:href>||;s|</D:href>||;s|.*/||'
 }
 
@@ -225,8 +242,9 @@ upload_file() {
 		fi
 	fi
 	echo "  Uploading: ${_fname}"
-	curl -s -T "$_file" "$_dest" -u ":${SURFER_TOKEN}" \
-		|| { echo "  Warning: failed to upload $(basename "$_file")"; return 1; }
+	if ! curl -s -T "$_file" "$_dest" -u ":${SURFER_TOKEN}"; then
+		fatal "Failed to upload $(basename "$_file")"
+	fi
 }
 
 prune_orphans() {
@@ -319,7 +337,7 @@ generate_list() {
 	fi
 
 	list_templates > "$TEMPLATES_LIST"
-	echo "Templates list synchronized from .gitignore"
+	echo 'Templates list synchronized from .gitignore'
 }
 
 generate_readme() {
@@ -340,7 +358,7 @@ generate_readme() {
 	} >> "$_tmp"
 
 	mv "$_tmp" "$README"
-	echo "README: updated"
+	echo 'README: updated'
 }
 
 generate_build_yml() {
@@ -365,7 +383,7 @@ generate_build_yml() {
 	' "$BUILD_TEMPLATE" > "$WORKFLOW"
 
 	rm -f "$_opts"
-	echo "build.yml: updated"
+	echo 'build.yml: updated'
 }
 
 detect_changes() {
@@ -394,7 +412,7 @@ detect_changes() {
 
 generate_arch_pages() {
 	_template="${SCRIPT_DIR}/src/arch-index-template.html"
-	[ -f "$_template" ] || { echo "arch-index-template.html not found, skipping arch pages"; return 1; }
+	[ -f "$_template" ] || fatal "arch-index-template.html not found!"
 
 	_pkg_list=$(list_templates)
 
@@ -490,9 +508,12 @@ generate_arch_pages() {
 
 		if [ -n "${SURFER_TOKEN:-}" ]; then
 			_webdav_arch="${SURFER_URL}/_webdav/${_arch}"
-			curl -s -X MKCOL "${_webdav_arch}/" -u ":${SURFER_TOKEN}" || true
-			upload_file "$_out" "${_webdav_arch}/index.html" \
-				|| echo "  Warning: failed to upload ${_arch}/index.html"
+			curl -s -X MKCOL "${_webdav_arch}/" -u ":${SURFER_TOKEN}"
+			if ! upload_file "$_out" "${_webdav_arch}/index.html"; then
+				fatal "Failed to upload ${_arch}/index.html!"
+			fi
+		else
+			fatal 'Invalid or no SURFER_TOKEN!'
 		fi
 	done
 }
@@ -501,8 +522,7 @@ build_site() {
 	_title="${1:-Void Community Repository}"
 
 	if ! command -v pandoc >/dev/null 2>&1; then
-		echo "pandoc: not installed, skipping website"
-		return
+		fatal 'pandoc not installed!'
 	fi
 
 	if [ -f docs/CNAME ]; then
@@ -532,8 +552,7 @@ build_main() {
 	_title="${1:-Void Community Repository}"
 
 	if ! command -v pandoc >/dev/null 2>&1; then
-		echo "pandoc: not installed, skipping website"
-		return
+		fatal 'pandoc not installed!'
 	fi
 
 	if [ -f docs/CNAME ]; then
@@ -556,7 +575,7 @@ build_main() {
 		done
 		[ "$_ws_failed" -eq 0 ] || echo '==> Warning: some website asset uploads failed'
 	else
-	  echo "ERROR: No TOKEN"
+		fatal 'Invalid or no SURFER_TOKEN!'
 	fi
 }
 
@@ -564,8 +583,12 @@ build_main() {
 
 target_serve() {
 	if [ ! -f docs/index.html ]; then
-		_r "Site not built!"
-		ask 'Build first?' && build_site "$@" || _re "Exiting"
+		_r 'Site not built!'
+		if ask 'Build first?'; then
+			build_site
+		else
+			_re 'Exiting'
+		fi
 	fi
 
 	_g 'Press Ctrl+C to stop'
@@ -609,8 +632,7 @@ do_upload() {
 				;;
 			*)
 				rm -f "${ARCH}-repodata"
-				echo "==> Error: repodata fetch returned HTTP ${_repodata_http}" >&2
-				exit 1
+				fatal "==> Error: repodata fetch returned HTTP ${_repodata_http}"
 				;;
 		esac
 
@@ -650,11 +672,11 @@ do_upload() {
 			echo '==> Stripping orphan entries from local repodata'
 			if command -v python3 >/dev/null 2>&1; then
 				# xargs avoids unquoted-expansion globbing on orphan names
-				xargs python3 "${SCRIPT_DIR}/src/repodata-strip.py" \
+				xargs python3 "${REPODATA_STRIP_PY}" \
 					"${ARCH}-repodata" < "${PWD}/orphans.txt" \
 					|| echo '  Warning: repodata-strip failed; index may reference deleted packages' >&2
 			else
-				echo '  Warning: python3 not found; index will keep references to deleted packages' >&2
+				fatal 'python3 not found!'
 			fi
 		fi
 
@@ -678,7 +700,7 @@ do_upload() {
 			_fname=$(basename "$_file")
 			upload_file "$_file" "${_webdav}/${_fname}" || _upload_failed=1
 		done
-		[ "$_upload_failed" -eq 0 ] || { echo '==> Error: one or more uploads failed'; exit 1; }
+		[ "$_upload_failed" -eq 0 ] || fatal '==> Error: one or more uploads failed'
 	)
 	_upload_status=$?
 	rm -rf "$_work_dir"
@@ -692,7 +714,7 @@ check_upstream() {
 	IGNORE_FILE="${SCRIPT_DIR}/src/ignore-pkgs"
 	STATE_FILE="${SCRIPT_DIR}/src/upstream-state"
 
-	_ignores=""
+	_ignores=''
 	if [ -f "$IGNORE_FILE" ]; then
 		_ignores=$(grep -v '^#' "$IGNORE_FILE" | grep -v '^$' || true)
 	fi
@@ -700,13 +722,13 @@ check_upstream() {
 		printf '%s\n' "$_ignores" | grep -xF "$1" >/dev/null 2>&1
 	}
 
-	_state_data=""
+	_state_data=''
 	[ -f "$STATE_FILE" ] && _state_data=$(cat "$STATE_FILE")
 
 	echo '==> Fetching upstream commit feed...'
-	_feed=$(curl -sS "https://github.com/void-linux/void-packages/commits/master.atom" 2>/dev/null) || true
+	_feed=$(curl -sS 'https://github.com/void-linux/void-packages/commits/master.atom' 2>/dev/null) || echo 'Warning: Feed fetch failed!'
 
-	_recent=""
+	_recent=''
 	if [ -n "$_feed" ]; then
 		_tmp=$(mktemp)
 		echo "$_feed" | awk '
@@ -762,7 +784,7 @@ check_upstream() {
 		_fetch=false
 		case " $_recent " in *" $_pkg "*) _fetch=true ;; esac
 		[ -z "$_old_exists" ] && _fetch=true
-		[ "$_old_exists" = "ignored" ] && _fetch=true
+		[ "$_old_exists" = 'ignored' ] && _fetch=true
 
 		if $_fetch; then
 			_up_template=$(curl -sf \
@@ -772,9 +794,9 @@ check_upstream() {
 			if [ -n "$_up_template" ]; then
 				_up_ver=$(echo "$_up_template" | grep '^version=' | head -n1 \
 					| cut -d= -f2- | tr -d '"' | tr -d ' ')
-				_up_exists="yes"
+				_up_exists='yes'
 			else
-				_up_exists="no"
+				_up_exists='no'
 				_up_ver=''
 			fi
 		else
@@ -782,7 +804,7 @@ check_upstream() {
 			_up_ver="$_old_ver"
 		fi
 
-		if [ "$_up_exists" = "yes" ] && [ -n "$_up_ver" ] && [ "$_local_ver" != "?" ]; then
+		if [ "$_up_exists" = 'yes' ] && [ -n "$_up_ver" ] && [ "$_local_ver" != "?" ]; then
 			if [ "$_up_ver" != "$_local_ver" ]; then
 				_lower=$(printf '%s\n%s' "$_up_ver" "$_local_ver" \
 					| sort -V 2>/dev/null | head -n1)
@@ -791,14 +813,14 @@ check_upstream() {
 		fi
 
 		_status='current'
-		if [ "$_up_exists" = "yes" ] && [ "$_old_exists" = "no" ]; then
+		if [ "$_up_exists" = 'yes' ] && [ "$_old_exists" = 'no' ]; then
 			_status='suggested_removal'
 			_added_list="$_added_list $_pkg"
 		fi
 
-		if [ "$_up_exists" = "yes" ]; then
+		if [ "$_up_exists" = 'yes' ]; then
 			_up_to_date=$((_up_to_date + 1))
-		elif [ "$_up_exists" = "no" ]; then
+		elif [ "$_up_exists" = 'no' ]; then
 			_no_upstream=$((_no_upstream + 1))
 		fi
 
@@ -806,12 +828,14 @@ check_upstream() {
 			>> "$_state_new"
 	done
 
+	# shellcheck disable=SC2086
 	_ncnt=$(echo $_newer_list | wc -w | tr -d ' ')
+	# shellcheck disable=SC2086
 	_acnt=$(echo $_added_list | wc -w | tr -d ' ')
-	_icnt=$(grep -c '|ignored|' "$_state_new" 2>/dev/null) && _icnt="$_icnt" || _icnt=0
+	_icnt=$(grep -c '|ignored|' "$_state_new" 2>/dev/null) || _icnt=0
 
 	if [ "$_ncnt" -gt 0 ]; then
-		echo ""
+		echo ''
 		for _p in $_newer_list; do
 			_nv=$(grep "^${_p}|" "$_state_new" | head -n1 | cut -d'|' -f3)
 			_lv=$(grep '^version=' "$SRCPKGS/$_p/template" 2>/dev/null \
@@ -821,7 +845,7 @@ check_upstream() {
 	fi
 
 	if [ "$_acnt" -gt 0 ]; then
-		echo ""
+		echo ''
 		for _p in $_added_list; do
 			_nv=$(grep "^${_p}|" "$_state_new" | head -n1 | cut -d'|' -f3)
 			printf '  '; _r "[ADDED] $_p (v$_nv) -- now exist in Void Linux!"
@@ -830,9 +854,9 @@ check_upstream() {
 		done
 	fi
 
-	echo ""
+	echo ''
 	echo '================================================================='
-	echo ""
+	echo ''
 	[ "$_ncnt" -gt 0 ] && printf '  %bNEWER%b:     %s\n' "$YELLOW" "$NC" "$_newer_list"
 	[ "$_acnt" -gt 0 ] && printf '  %bADDED%b:     %s\n' "$RED" "$NC" "$_added_list"
 	[ "$_icnt" -gt 0 ] && echo "  IGNORED:   $_icnt packages"
@@ -859,11 +883,11 @@ _clone_repo() {
 do_init() {
 	# Clone void-packages directly to destination
 	rm -rf "$CLONE_DEST"
-	_clone_repo "void-packages" "$VOID_URL" "$CLONE_DEST"
+	_clone_repo 'void-packages' "$VOID_URL" "$CLONE_DEST"
 
 	# Set up remotes
-	echo "==> Setting up remotes ..."
-	git -C "$CLONE_DEST" remote rename origin void || fatal "failed to rename remote"
+	echo '==> Setting up remotes ...'
+	git -C "$CLONE_DEST" remote rename origin void || fatal 'Failed to rename remote!'
 	git -C "$CLONE_DEST" branch --set-upstream-to=void/master master
 	git -C "$CLONE_DEST" remote add OCO "$OCO_URL"
 
@@ -876,18 +900,18 @@ do_init() {
 	git -C "$CLONE_DEST" checkout master
 
 	# Overlay OCO files onto master (untracked) via git archive — skips .gitignore
-	echo "==> Overlaying OCO files onto master ..."
+	echo '==> Overlaying OCO files onto master ...'
 	git -C "$CLONE_DEST" archive "OCO/${OCO_BRANCH}" \
 		| tar -x -C "$CLONE_DEST" --exclude='.gitignore'
 
 	# Apply shlibs on master
 	do_shlibs
 
-	echo "==> Initializing masterdir ..."
-	"${CLONE_DEST}/xbps-src" binary-bootstrap || fatal "binary-bootstrap failed"
+	echo '==> Initializing masterdir ...'
+	"${CLONE_DEST}/xbps-src" binary-bootstrap || fatal 'Binary-bootstrap failed!'
 
 	_g "==> Done: ${CLONE_DEST}"
-	_g "    master  → void/master (void-packages)"
+	_g '    master  → void/master (void-packages)'
 	_g "    ${OCO_BRANCH}      → OCO/${OCO_BRANCH}"
 }
 
@@ -917,12 +941,12 @@ _shlibs_append() {
 }
 
 do_add_oco() {
-	echo "==> Adding OCO remote ..."
-	git -C "$CLONE_DEST" remote add OCO "$OCO_URL" || fatal "OCO remote already exists or failed"
+	echo '==> Adding OCO remote ...'
+	git -C "$CLONE_DEST" remote add OCO "$OCO_URL" || fatal 'OCO remote already exists, or other problem!'
 	git -C "$CLONE_DEST" fetch OCO
 	echo "==> Creating ${OCO_BRANCH} branch from OCO/${OCO_BRANCH} ..."
 	git -C "$CLONE_DEST" checkout -b "$OCO_BRANCH" --track "OCO/${OCO_BRANCH}" \
-		|| fatal "failed to create branch ${OCO_BRANCH}"
+		|| fatal "Failed to create branch ${OCO_BRANCH}!"
 	git -C "$CLONE_DEST" checkout -
 }
 
@@ -932,9 +956,9 @@ _pkg_version() {
 }
 
 do_to_void() {
-	[ $# -gt 0 ] || fatal "usage: ocoman to-void <package...>"
+	[ $# -gt 0 ] || fatal 'Usage: ocoman to-void <package...>'
 	_prev=$(git -C "$CLONE_DEST" rev-parse --abbrev-ref HEAD)
-	git -C "$CLONE_DEST" checkout master || fatal "failed to switch to master"
+	git -C "$CLONE_DEST" checkout master || fatal 'failed to switch to master'
 	for _pkg in "$@"; do
 		git -C "$CLONE_DEST" checkout "$OCO_BRANCH" -- "srcpkgs/${_pkg}/" \
 			|| { _g "  skipping ${_pkg} (not found in ${OCO_BRANCH})"; continue; }
@@ -945,9 +969,9 @@ do_to_void() {
 }
 
 do_to_oco() {
-	[ $# -gt 0 ] || fatal "usage: ocoman to-oco <package...>"
+	[ $# -gt 0 ] || fatal 'usage: ocoman to-oco <package...>'
 	_prev=$(git -C "$CLONE_DEST" rev-parse --abbrev-ref HEAD)
-	git -C "$CLONE_DEST" checkout "$OCO_BRANCH" || fatal "failed to switch to ${OCO_BRANCH}"
+	git -C "$CLONE_DEST" checkout "$OCO_BRANCH" || fatal "Failed to switch to ${OCO_BRANCH}!"
 	for _pkg in "$@"; do
 		git -C "$CLONE_DEST" checkout master -- "srcpkgs/${_pkg}/" \
 			|| { _g "  skipping ${_pkg} (not found in master)"; continue; }
