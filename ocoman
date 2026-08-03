@@ -392,67 +392,6 @@ detect_changes() {
 
 # --- Web ---
 
-build_site() {
-	_title="${1:-Void Community Repository}"
-
-	if ! command -v pandoc >/dev/null 2>&1; then
-		echo "pandoc: not installed, skipping website"
-		return
-	fi
-
-	if [ -f docs/CNAME ]; then
-		cp docs/CNAME src/
-	fi
-	rm -rf docs && mkdir -p docs
-	cp -r src/* docs/
-	rm -f docs/toggle.html docs/toc.html docs/svg-color.html docs/footer.html
-
-	_build_main_index "$_title"
-	generate_arch_pages
-	_g "Finished"
-
-	if [ -n "${SURFER_TOKEN:-}" ]; then
-		_webdav="${SURFER_URL}/_webdav"
-		echo '==> Uploading website assets'
-		_ws_failed=0
-		for _file in "${SCRIPT_DIR}/docs"/*; do
-			[ -f "$_file" ] || continue
-			upload_file "$_file" "${_webdav}/$(basename "$_file")" || _ws_failed=1
-		done
-		[ "$_ws_failed" -eq 0 ] || echo '==> Warning: some website asset uploads failed'
-	fi
-}
-
-build_main() {
-	_title="${1:-Void Community Repository}"
-
-	if ! command -v pandoc >/dev/null 2>&1; then
-		echo "pandoc: not installed, skipping website"
-		return
-	fi
-
-	if [ -f docs/CNAME ]; then
-		cp docs/CNAME src/
-	fi
-	mkdir -p docs
-	cp -r src/* docs/
-	rm -f docs/toggle.html docs/toc.html docs/svg-color.html docs/footer.html
-
-	_build_main_index "$_title"
-	_g "Finished"
-
-	if [ -n "${SURFER_TOKEN:-}" ]; then
-		_webdav="${SURFER_URL}/_webdav"
-		echo '==> Uploading website assets'
-		_ws_failed=0
-		for _file in "${SCRIPT_DIR}/docs"/*; do
-			[ -f "$_file" ] || continue
-			upload_file "$_file" "${_webdav}/$(basename "$_file")" || _ws_failed=1
-		done
-		[ "$_ws_failed" -eq 0 ] || echo '==> Warning: some website asset uploads failed'
-	fi
-}
-
 generate_arch_pages() {
 	_template="${SCRIPT_DIR}/src/arch-index-template.html"
 	[ -f "$_template" ] || { echo "arch-index-template.html not found, skipping arch pages"; return 1; }
@@ -556,6 +495,67 @@ generate_arch_pages() {
 				|| echo "  Warning: failed to upload ${_arch}/index.html"
 		fi
 	done
+}
+
+build_site() {
+	_title="${1:-Void Community Repository}"
+
+	if ! command -v pandoc >/dev/null 2>&1; then
+		echo "pandoc: not installed, skipping website"
+		return
+	fi
+
+	if [ -f docs/CNAME ]; then
+		cp docs/CNAME src/
+	fi
+	rm -rf docs && mkdir -p docs
+	cp -r src/* docs/
+	rm -f docs/toggle.html docs/toc.html docs/svg-color.html docs/footer.html
+
+	_build_main_index "$_title"
+	generate_arch_pages
+	_g "Finished"
+
+	if [ -n "${SURFER_TOKEN:-}" ]; then
+		_webdav="${SURFER_URL}/_webdav"
+		echo '==> Uploading website assets'
+		_ws_failed=0
+		for _file in "${SCRIPT_DIR}/docs"/*; do
+			[ -f "$_file" ] || continue
+			upload_file "$_file" "${_webdav}/$(basename "$_file")" || _ws_failed=1
+		done
+		[ "$_ws_failed" -eq 0 ] || echo '==> Warning: some website asset uploads failed'
+	fi
+}
+
+build_main() {
+	_title="${1:-Void Community Repository}"
+
+	if ! command -v pandoc >/dev/null 2>&1; then
+		echo "pandoc: not installed, skipping website"
+		return
+	fi
+
+	if [ -f docs/CNAME ]; then
+		cp docs/CNAME src/
+	fi
+	mkdir -p docs
+	cp -r src/* docs/
+	rm -f docs/toggle.html docs/toc.html docs/svg-color.html docs/footer.html
+
+	_build_main_index "$_title"
+	_g "Finished"
+
+	if [ -n "${SURFER_TOKEN:-}" ]; then
+		_webdav="${SURFER_URL}/_webdav"
+		echo '==> Uploading website assets'
+		_ws_failed=0
+		for _file in "${SCRIPT_DIR}/docs"/*; do
+			[ -f "$_file" ] || continue
+			upload_file "$_file" "${_webdav}/$(basename "$_file")" || _ws_failed=1
+		done
+		[ "$_ws_failed" -eq 0 ] || echo '==> Warning: some website asset uploads failed'
+	fi
 }
 
 # --- Named targets ---
@@ -822,7 +822,7 @@ check_upstream() {
 		echo ""
 		for _p in $_added_list; do
 			_nv=$(grep "^${_p}|" "$_state_new" | head -n1 | cut -d'|' -f3)
-			printf '  '; _r "[ADDED] $_p (v$_nv) -- nyní existuje ve Void Linux!"
+			printf '  '; _r "[ADDED] $_p (v$_nv) -- now exist in Void Linux!"
 			echo "         -> rm -rf srcpkgs/$_p/"
 			echo "         -> git rm srcpkgs/$_p/"
 		done
