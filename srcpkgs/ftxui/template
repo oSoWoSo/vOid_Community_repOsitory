@@ -4,7 +4,7 @@ version=7.0.2
 revision=1
 build_style=cmake
 configure_args="-DFTXUI_BUILD_DOCS=ON -DFTXUI_BUILD_TESTS=OFF"
-hostmakedepends="pkg-config doxygen graphviz"
+hostmakedepends="pkg-config doxygen graphviz git"
 checkdepends="python3-mypy"
 short_desc="C++ Functional Terminal User Interface"
 maintainer="zenobit <zen@osowoso.org>"
