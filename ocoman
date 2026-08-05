@@ -510,10 +510,8 @@ generate_arch_pages() {
 			_webdav_arch="${SURFER_URL}/_webdav/${_arch}"
 			curl -s -X MKCOL "${_webdav_arch}/" -u ":${SURFER_TOKEN}"
 			if ! upload_file "$_out" "${_webdav_arch}/index.html"; then
-				fatal "Failed to upload ${_arch}/index.html!"
+				_y "Warning: Failed to upload ${_arch}/index.html, continuing..."
 			fi
-		else
-			fatal 'Invalid or no SURFER_TOKEN!'
 		fi
 	done
 }
