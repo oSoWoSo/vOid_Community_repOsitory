@@ -10,7 +10,7 @@ maintainer="zenobit <zen@osowoso.org>"
 license="AGPL-3.0-only"
 homepage="https://codeberg.org/LinuxNation/svi"
 distfiles="https://codeberg.org/LinuxNation/svi/archive/v${version}.tar.gz"
-checksum=0d6e26b7290a40fafab51aedba888012cacccb7d7cbb6e4910a781f88f67bca5
+checksum=9288a6dd0346d4d0cd65ea02e1af193655784fc1e8b0b28e1bfd65d3c6a464e6
 
 post_install() {
 	vlicense LICENSE
