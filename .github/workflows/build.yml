@@ -172,6 +172,7 @@ on:
         - nwg-clipman
         - nwg-displays
         - nwg-dock
+        - nwg-dock-hyprland
         - nwg-drawer
         - nwg-hello
         - nwg-icon-picker

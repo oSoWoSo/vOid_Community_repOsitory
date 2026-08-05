@@ -208,6 +208,7 @@ Create PR
 | nwg-clipman | 0.2.8 | https://github.com/nwg-piotr/nwg-clipman | zenobit |  |
 | nwg-displays | 0.4.3 | https://nwg-piotr.github.io/nwg-shell/nwg-displays | zenobit |  |
 | nwg-dock | 0.4.3 | https://nwg-piotr.github.io/nwg-shell/nwg-dock | zenobit |  |
+| nwg-dock-hyprland | 0.4.11 | https://github.com/nwg-piotr/nwg-dock-hyprland | zenobit |  |
 | nwg-drawer | 0.7.5 | https://nwg-piotr.github.io/nwg-shell/nwg-drawer | zenobit |  |
 | nwg-hello | 0.4.5 | https://github.com/nwg-piotr/nwg-hello | zenobit |  |
 | nwg-icon-picker | 0.1.1 | https://github.com/nwg-piotr/nwg-icon-picker | zenobit |  |
