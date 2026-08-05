@@ -206,7 +206,7 @@ Create PR
 | nebula-gtk | 1.3.7 | https://github.com/Letdown2491/nebula-gtk | zenobit |  |
 | nwg-bar | 0.1.6 | https://github.com/nwg-piotr/nwg-bar | zenobit |  |
 | nwg-clipman | 0.2.8 | https://github.com/nwg-piotr/nwg-clipman | zenobit |  |
-| nwg-displays | 0.4.1 | https://nwg-piotr.github.io/nwg-shell/nwg-displays | zenobit |  |
+| nwg-displays | 0.4.3 | https://nwg-piotr.github.io/nwg-shell/nwg-displays | zenobit |  |
 | nwg-dock | 0.4.3 | https://nwg-piotr.github.io/nwg-shell/nwg-dock | zenobit |  |
 | nwg-drawer | 0.7.5 | https://nwg-piotr.github.io/nwg-shell/nwg-drawer | zenobit |  |
 | nwg-hello | 0.4.5 | https://github.com/nwg-piotr/nwg-hello | zenobit |  |
