@@ -1,16 +1,16 @@
 # Template file for 'crush'
 pkgname=crush
-version=0.71.0
+version=0.88.0
 revision=1
 build_style=go
 go_import_path=github.com/charmbracelet/crush
 short_desc="Glamourous AI coding agent for your favourite terminal"
-maintainer="zenobit <zen@osowoso.org>"
+maintainer="zenobit <zenobit@disroot.org>"
 license="FSL-1.1-MIT"
 homepage="https://github.com/charmbracelet/crush"
 changelog="https://github.com/charmbracelet/crush/releases"
 distfiles="https://github.com/charmbracelet/crush/archive/refs/tags/v${version}.tar.gz"
-checksum=e2386ad30c92bce96582deda1acba9077bd635262d9511f7c7d74383a7c6eeeb
+checksum=960b6fcd6283d04753b9156587bb63ded5b91e53d9791627f79f118472b163f3
 repository=nonfree
 make_check=no # No tests provided
 
