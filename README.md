@@ -142,7 +142,7 @@ Create PR
 | drako | 0.3.1 | https://github.com/lucky7xz/drako | zenobit |  |
 | easybashgui | 15.0.2 | https://github.com/BashGui/easybashgui | zenobit |  |
 | forgejo-runner | 13.0.0 | https://code.forgejo.org/forgejo/runner | zenobit |  |
-| FreeTube | 0.24.0 | https://github.com/FreeTubeApp/FreeTube/tree/development | Bella Viola Wagner | x86_64 |
+| FreeTube | 0.25.1 | https://github.com/FreeTubeApp/FreeTube | Bella Viola Wagner | x86_64 |
 | ftxui | 6.1.9 | https://github.com/ArthurSonzogni/FTXUI | zenobit |  |
 | ftxui-devel | 6.1.9 | https://github.com/ArthurSonzogni/FTXUI | zenobit |  |
 | gama | 1.2.1 | https://github.com/termkit/gama | zenobit |  |

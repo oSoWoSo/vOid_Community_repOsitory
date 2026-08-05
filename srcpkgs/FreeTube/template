@@ -1,6 +1,6 @@
 # Template file for 'FreeTube'
 pkgname=FreeTube
-version=0.24.0
+version=0.25.1
 revision=1
 archs="x86_64"
 hostmakedepends="pkg-config pnpm"
@@ -9,9 +9,9 @@ depends="libX11 libXcomposite libXdamage libXext libXfixes libXrandr alsa-lib at
 short_desc="Client for watching YouTube Videos"
 maintainer="Bella Viola Wagner <belladev109@proton.me>"
 license="AGPL-3.0-only"
-homepage="https://github.com/FreeTubeApp/FreeTube/tree/development"
+homepage="https://github.com/FreeTubeApp/FreeTube"
 distfiles="https://github.com/FreeTubeApp/FreeTube/archive/refs/tags/v${version}-beta.tar.gz"
-checksum=d73d1beff0361586ed348a373142b8d9ad0b6b77e85953847759d3ba3e6abf4b
+checksum=e9e3032264b917e03c76ad38c4ebe9885985e7629dff46712ec40932283d0fb3
 nocross=yes
 
 pre_build() {
