@@ -195,7 +195,6 @@ on:
         - pop-launcher
         - pop-sounds-theme
         - python3-anysqlite
-        - python3-dasbus
         - python3-geographiclib
         - python3-geopy
         - python3-hishel
