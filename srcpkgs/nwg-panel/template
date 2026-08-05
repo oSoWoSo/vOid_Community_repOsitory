@@ -1,6 +1,6 @@
 # Template file for 'nwg-panel'
 pkgname=nwg-panel
-version=0.10.13
+version=0.10.15
 revision=1
 build_style=python3-pep517
 hostmakedepends="pkg-config python3-setuptools python3-wheel python3-dasbus"
@@ -11,7 +11,7 @@ maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://nwg-piotr.github.io/nwg-shell/nwg-panel"
 distfiles="https://github.com/nwg-piotr/nwg-panel/archive/refs/tags/v${version}.tar.gz"
-checksum=48dee26723a1db09eb9d4de3637f6f406a7de5319ef0acf17344f095d952daa1
+checksum=4fe28d96c23ee57ea1764d78507e2d82e95eda7530f13f9882001d73bcb470af
 make_check=no # No checks provided
 
 post_install() {

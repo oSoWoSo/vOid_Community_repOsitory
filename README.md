@@ -212,7 +212,7 @@ Create PR
 | nwg-hello | 0.4.5 | https://github.com/nwg-piotr/nwg-hello | zenobit |  |
 | nwg-icon-picker | 0.1.1 | https://github.com/nwg-piotr/nwg-icon-picker | zenobit |  |
 | nwg-menu | 0.1.9 | https://nwg-piotr.github.io/nwg-shell/nwg-menu | zenobit |  |
-| nwg-panel | 0.10.13 | https://nwg-piotr.github.io/nwg-shell/nwg-panel | zenobit |  |
+| nwg-panel | 0.10.15 | https://nwg-piotr.github.io/nwg-shell/nwg-panel | zenobit |  |
 | nwg-readme-browser | 0.1.7 | https://nwg-piotr.github.io/nwg-shell/nwg-readme-browser | zenobit |  |
 | nwg-shell | 0.5.50 | https://nwg-piotr.github.io/nwg-shell | zenobit |  |
 | nwg-shell-config | 0.5.64 | https://nwg-piotr.github.io/nwg-shell/nwg-shell-config | zenobit |  |
