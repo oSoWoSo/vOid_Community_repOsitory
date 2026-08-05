@@ -7,10 +7,11 @@ short_desc="Community-maintained fork of Firefox focused on privacy and security
 maintainer="zenobit <zen@osowoso.org>"
 license="MPL-2.0"
 homepage="https://librewolf.net"
-distfiles="https://codeberg.org/api/packages/librewolf/generic/librewolf/${version%.*}-${version##*.}/librewolf-${version%.*}-${version##*.}-linux-x86_64-package.tar.xz
- https://codeberg.org/api/packages/librewolf/generic/librewolf/${version%.*}-${version##*.}/librewolf-${version%.*}-${version##*.}-linux-arm64-package.tar.xz"
+distfiles="https://dl.librewolf.net/librewolf/${version%.*}-${version##*.}/librewolf-${version%.*}-${version##*.}-linux-x86_64-package.tar.xz
+ https://dl.librewolf.net/librewolf/${version%.*}-${version##*.}/librewolf-${version%.*}-${version##*.}-linux-arm64-package.tar.xz"
 checksum="ee35141608d98a723203392529d7561ca71481243fe5edc504f08f41ea8b0c0e
  ca86b9878cf60aef660bb5001d9131601017580117ae92266e2672f5121a5b6e"
+conflicts="librewolf"
 nostrip=yes
 
 do_extract() {
