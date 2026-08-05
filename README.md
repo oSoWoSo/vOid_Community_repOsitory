@@ -190,7 +190,7 @@ Create PR
 | hyprtoolkit | 0.3.0 | https://github.com/hyprwm/hyprtoolkit | zenobit |  |
 | hyprutils | 0.13.1 | https://github.com/hyprwm/hyprutils | zenobit |  |
 | hyprwayland-scanner | 0.4.5 | https://github.com/hyprwm/hyprwayland-scanner | zenobit |  |
-| kairo | 1.6.4 | https://github.com/programmersd21/kairo | nerdyslacker |  |
+| kairo | 1.7.3 | https://github.com/programmersd21/kairo | nerdyslacker |  |
 | kando | 2.3.1 | https://kando.menu | zenobit | x86_64 aarch64 |
 | lemonade-server | 10.6.0 | https://github.com/lemonade-sdk/lemonade | zenobit |  |
 | libcprime | 5.0.1 | https://gitlab.com/cubocore/libcprime | zenobit |  |
