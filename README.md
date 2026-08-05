@@ -139,7 +139,7 @@ Create PR
 | dragonfly-reverb-standalone | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
 | dragonfly-reverb-vst | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
 | dragonfly-reverb-vst3 | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
-| drako | 0.2.10 | https://github.com/lucky7xz/drako | zenobit |  |
+| drako | 0.3.1 | https://github.com/lucky7xz/drako | zenobit |  |
 | easybashgui | 15.0.2 | https://github.com/BashGui/easybashgui | zenobit |  |
 | forgejo-runner | 12.10.1 | https://code.forgejo.org/forgejo/runner | zenobit |  |
 | FreeTube | 0.24.0 | https://github.com/FreeTubeApp/FreeTube/tree/development | Bella Viola Wagner | x86_64 |
