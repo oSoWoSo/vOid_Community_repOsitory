@@ -1,7 +1,7 @@
 # Template file for 'runkit'
 pkgname=runkit
 version=1.4.0
-revision=1
+revision=2
 build_style=cargo
 hostmakedepends="pkg-config rustup"
 makedepends="gtk4-devel libadwaita-devel glib-devel pango-devel"
@@ -19,37 +19,31 @@ do_build() {
 }
 
 do_install() {
-	vbin target/${cargo_build_target}/release/runkit
-	vbin target/${cargo_build_target}/release/runkitd
-}
-
-post_install() {
-	# icons
-	for size in 16x16 24x24 32x32 48x48 64x64 96x96 128x128 256x256 512x512; do
-		vinstall "assets/icons/hicolor/${size}/apps/runkit.png" 644 "usr/share/icons/hicolor/${size}/apps"
-	done
-
-	# icons scalable
-	vinstall assets/icons/hicolor/scalable/apps/runkit.svg 644 usr/share/icons/hicolor/scalable/apps
-
-	# desktop file
-	vinstall assets/applications/tech.geektoshi.Runkit.desktop 644 usr/share/applications
-
-	# service descriptions
-	vinstall assets/config/services.json 644 /usr/share/runkit/
-	vbin target/release/services-merge
-
-	# dbus service
+	if [ -f target/release/runkit ]; then
+		echo -e "\nUsing target/release/ directory\n"
+		vbin target/release/runkit
+		vbin target/release/runkitd
+		vbin target/release/services-merge
+	elif [ -f "target/${XBPS_RUST_TARGET}/release/runkit" ]; then
+		echo -e "\nUsing target/${XBPS_RUST_TARGET}/release/ directory\n"
+		vbin "target/${XBPS_RUST_TARGET}/release/runkit"
+		vbin "target/${XBPS_RUST_TARGET}/release/runkitd"
+		vbin "target/${XBPS_RUST_TARGET}/release/services-merge"
+	fi
+	vinstall assets/config/services.json 644 usr/share/runkit
 	vinstall assets/dbus-1/services/tech.geektoshi.Runkit.service 644 usr/share/dbus-1/services
 	vinstall assets/dbus-1/system-services/tech.geektoshi.Runkit1.service 644 usr/share/dbus-1/system-services
 	vinstall assets/dbus-1/system.d/tech.geektoshi.Runkit1.conf 644 etc/dbus-1/system.d
-
-	# polkit policy
 	vinstall assets/polkit-1/actions/tech.geektoshi.Runkit.policy 644 usr/share/polkit-1/actions
+}
 
-	# readme
+post_install() {
+	for size in 16x16 24x24 32x32 48x48 64x64 96x96 128x128 256x256 512x512; do
+		vinstall "assets/icons/hicolor/${size}/apps/runkit.png" 644 "/usr/share/icons/hicolor/${size}/apps"
+	done
+
+	vinstall assets/icons/hicolor/scalable/apps/runkit.svg 644 /usr/share/icons/hicolor/scalable/apps
+	vinstall assets/applications/tech.geektoshi.Runkit.desktop 644 /usr/share/applications
 	vdoc README.md
-
-	# license
 	vlicense LICENSE
 }
