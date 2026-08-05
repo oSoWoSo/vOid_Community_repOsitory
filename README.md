@@ -215,7 +215,7 @@ Create PR
 | nwg-panel | 0.10.15 | https://nwg-piotr.github.io/nwg-shell/nwg-panel | zenobit |  |
 | nwg-readme-browser | 0.1.7 | https://nwg-piotr.github.io/nwg-shell/nwg-readme-browser | zenobit |  |
 | nwg-shell | 0.5.50 | https://nwg-piotr.github.io/nwg-shell | zenobit |  |
-| nwg-shell-config | 0.5.64 | https://nwg-piotr.github.io/nwg-shell/nwg-shell-config | zenobit |  |
+| nwg-shell-config | 0.5.65 | https://nwg-piotr.github.io/nwg-shell/nwg-shell-config | zenobit |  |
 | nwg-shell-wallpapers | 1.5 | https://github.com/nwg-piotr/nwg-shell-wallpapers | zenobit |  |
 | odin2 | 2.4.1 | https://thewavewarden.com/pages/odin-2 | Trve_AY |  |
 | odin2-clap | 2.4.1 | https://thewavewarden.com/pages/odin-2 | Trve_AY |  |
