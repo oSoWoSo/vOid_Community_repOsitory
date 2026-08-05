@@ -156,7 +156,6 @@ on:
         - hyprwayland-scanner
         - kairo
         - kando
-        - kew
         - lemonade-server
         - libcprime
         - librewolf-bin
