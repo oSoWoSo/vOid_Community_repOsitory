@@ -1,6 +1,6 @@
 # Template file for 'gofer'
 pkgname=gofer
-version=0.2.0
+version=1.0.0
 revision=1
 build_style=go
 go_import_path="gofer"
@@ -9,4 +9,4 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-only"
 homepage="https://codeberg.org/JakeAtLinux/Gofer"
 distfiles="https://codeberg.org/JakeAtLinux/Gofer/archive/v${version}.tar.gz"
-checksum=a607541203847a1289a85c65d5a7a54f6929b44ce64589912cd818b1cfc7e3b6
+checksum=11cc01ea269a090ad5e6529b33d4b1788b2c16303ae3b2f9b12cde832d45c11a
