@@ -701,7 +701,8 @@ jobs:
             echo "ERROR: Command 'ocoman -p' failed!"
             exit 1
           fi
-          if ! "${GITHUB_WORKSPACE}/extra/ocoman" -a; then
+          # Run ocoman -a from the extra directory so it finds srcpkgs correctly
+          if ! cd "${GITHUB_WORKSPACE}/extra" && "${GITHUB_WORKSPACE}/extra/ocoman" -a; then
             echo "ERROR: Command 'ocoman -a' failed!"
             exit 1
           fi

@@ -572,8 +572,6 @@ build_main() {
 			upload_file "$_file" "${_webdav}/$(basename "$_file")" || _ws_failed=1
 		done
 		[ "$_ws_failed" -eq 0 ] || echo '==> Warning: some website asset uploads failed'
-	else
-		fatal 'Invalid or no SURFER_TOKEN!'
 	fi
 }
 
