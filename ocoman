@@ -13,7 +13,7 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 [ -f "${SCRIPT_DIR}/.env" ] && . "${SCRIPT_DIR}/.env"
 
 # --- Repo management ---
-SRCPKGS="${SCRIPT_DIR}/srcpkgs"
+SRCPKGS='srcpkgs'
 TEMPLATES_LIST='/tmp/oco-templates-list'
 REPODATA_LIST_PY="${SCRIPT_DIR}/src/repodata-list.py"
 REPODATA_STRIP_PY="${SCRIPT_DIR}/src/repodata-strip.py"
