@@ -244,6 +244,7 @@ on:
         - void-hardwaremanager-git
         - void-live-creator-git
         - void-software-store
+        - void-software-store-git
         - void-src-builder-git
         - void-user-manager-git
         - vote
