@@ -9,4 +9,4 @@ maintainer="mobinmob <mobinmob@disroot.org>"
 license="GPL-2.0-only"
 homepage="https://codeberg.org/mobinmob/xut"
 distfiles="https://codeberg.org/mobinmob/xut/archive/v.${version}.tar.gz"
-checksum=f3b8a7860622f0795fda9befb7a18e80211f60ff70e861ad7dea439b4c3f8a49
+checksum=134d10394999dc6370e8b517f1f28030509f89aa4e1667c2f86b73b47f4260d7
