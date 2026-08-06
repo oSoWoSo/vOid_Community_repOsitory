@@ -269,7 +269,7 @@ Create PR
 | tls-client | 1.15.1 | https://github.com/bogdanfinn/tls-client | zenobit |  |
 | tomlplusplus | 3.4.0 | https://marzer.github.io/tomlplusplus/ | zenobit |  |
 | tomlplusplus-devel | 3.4.0 | https://marzer.github.io/tomlplusplus/ | zenobit |  |
-| Trilium | 0.103.0 | https://github.com/TriliumNext/Trilium | zenobit |  |
+| Trilium | 0.104.1 | https://github.com/TriliumNext/Trilium | zenobit |  |
 | tufw | 0.2.8 | https://github.com/peltho/tufw | zenobit |  |
 | tuisic | 2.5.2 | https://github.com/Dark-Kernel/tuisic | zenobit |  |
 | typobuster | 1.0.0 | https://github.com/nwg-piotr/typobuster | zenobit |  |
