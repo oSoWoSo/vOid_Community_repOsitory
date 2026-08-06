@@ -214,6 +214,7 @@ on:
         - runkit
         - rustdesk
         - sdkmanager
+        - seamonkey-bin
         - sfizz-cli
         - sfizz-git
         - sfizz-lib

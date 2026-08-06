@@ -250,6 +250,7 @@ Create PR
 | runkit | 1.4.0 | https://github.com/Letdown2491/runkit | zenobit |  |
 | rustdesk | 1.4.8 | https://github.com/rustdesk/rustdesk | Bella Viola Wagner | x86_64* |
 | sdkmanager | 0.7.0 | https://gitlab.com/fdroid/sdkmanager | zenobit |  |
+| seamonkey-bin | 2.53.24 | https://www.seamonkey-project.org/ | zenobit | x86_64 |
 | sfizz-cli | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |
 | sfizz-git | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |
 | sfizz-lib | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |

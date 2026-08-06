@@ -191,6 +191,7 @@
 !/srcpkgs/runkit
 !/srcpkgs/rustdesk
 !/srcpkgs/sdkmanager
+!/srcpkgs/seamonkey-bin
 !/srcpkgs/sfizz-cli
 !/srcpkgs/sfizz-git
 !/srcpkgs/sfizz-lib
