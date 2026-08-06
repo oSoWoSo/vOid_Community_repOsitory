@@ -246,7 +246,7 @@ Create PR
 | quickshell+ | 0.3.0 | https://quickshell.org | classabbyamp |  |
 | radicle | 1.8.0 | https://radicle.dev/ | zenobit |  |
 | raysession | 0.18.0 | https://raysession.tuxfamily.org/ | Trve_AY |  |
-| rgc | 1.1.0 | https://github.com/flameshikari/rgc | zenobit |  |
+| rgc | 1.2.0 | https://github.com/flameshikari/rgc | zenobit |  |
 | runkit | 1.4.0 | https://github.com/Letdown2491/runkit | zenobit |  |
 | rustdesk | 1.4.8 | https://github.com/rustdesk/rustdesk | Bella Viola Wagner | x86_64* |
 | sdkmanager | 0.7.0 | https://gitlab.com/fdroid/sdkmanager | zenobit |  |
