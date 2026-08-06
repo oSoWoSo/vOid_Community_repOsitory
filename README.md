@@ -276,7 +276,7 @@ Create PR
 | undelete-btrfs | 1.0 | https://github.com/danthem/undelete-btrfs | zenobit |  |
 | vbm | 1.0.2 | https://codeberg.org/oSoWoSo/vbm | zenobit |  |
 | Vish | 1.1.3 | https://github.com/Lluciocc/Vish | zenobit |  |
-| vm-curator | 1.0.0 | https://github.com/mroboff/vm-curator | zenobit |  |
+| vm-curator | 1.3.0 | https://github.com/mroboff/vm-curator | zenobit |  |
 | void-hardwaremanager-git | 0.0.0 | https://codeberg.org/pinguin-void/Void-Driver-App | zenobit | x86_64 aarch64 |
 | void-live-creator-git | 0.0.0 | https://codeberg.org/pinguin-void/void-live-creator | zenobit |  |
 | void-software-store | 1.9.4.02 | https://codeberg.org/oSoWoSo/void-software-store | zenobit |  |
