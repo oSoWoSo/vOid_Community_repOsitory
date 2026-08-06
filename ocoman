@@ -9,6 +9,7 @@
 # Pin collation so sort output is identical on CI (C locale) and local
 export LC_ALL=C
 SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+echo "SCRIPT_DIR = $SCRIPT_DIR"
 # shellcheck source=/dev/null
 [ -f "${SCRIPT_DIR}/.env" ] && . "${SCRIPT_DIR}/.env"
 
@@ -23,7 +24,7 @@ WORKFLOW="${SCRIPT_DIR}/.github/workflows/build.yml"
 
 SURFER_URL='https://repo.osowoso.org'
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
-SIGNED_BY='oSOWoSo <mail@osowoso.org>'
+SIGNED_BY='oSoWoSo <mail@osowoso.org>'
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
 
 # shellcheck source=src/pkg-helpers.sh
@@ -52,7 +53,7 @@ if [ -z "$NO_COLOR" ]; then
 	NC=$(printf '\033[0m')
 fi
 _r() {
-	echo "${RED}${@}${NC}"
+	echo "${RED}${*}${NC}"
 }
 _g() {
 	echo "${GREEN}${1}${NC}"
@@ -77,7 +78,7 @@ fatal() {
 }
 
 _re() {
-	fatal "${RED}${@}${NC}"
+	fatal "${RED}${*}${NC}"
 }
 
 usage() {
