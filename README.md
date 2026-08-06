@@ -227,7 +227,7 @@ Create PR
 | omniroute | 3.8.24 | https://github.com/diegosouzapw/OmniRoute | zenobit |  |
 | opencode | 1.18.14 | https://github.com/anomalyco/opencode | zenobit | x86_64 aarch64 |
 | patchance | 1.4.0 | https://raysession.tuxfamily.org/ | Trve_AY |  |
-| pinguintv-installer | 1.0 | https://pinguin-tv.de/Downloads/Pinguin-Installer.zip | Bella Viola Wagner | x86_64 |
+| pinguintv-installer-git | 0.0.0 | https://pinguin-tv.de/installer.html | Bella Viola Wagner | x86_64 |
 | pop-fonts | 0.0.0 | https://github.com/pop-os/fonts | Bella Wagner |  |
 | pop-icons | 3.5.1 | https://github.com/pop-os/icon-theme | Bella Wagner |  |
 | pop-launcher | 1.2.7 | https://github.com/pop-os/launcher | Bella Wagner | x86_64* i686 |
