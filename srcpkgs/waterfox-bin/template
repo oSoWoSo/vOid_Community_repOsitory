@@ -1,6 +1,6 @@
 # Template file for 'waterfox-bin'
 pkgname=waterfox-bin
-version=6.6.14
+version=6.6.17
 revision=1
 archs="x86_64"
 short_desc="Fast and private web browser"
@@ -9,7 +9,7 @@ license="MPL-2.0"
 homepage="https://www.waterfox.net"
 changelog="https://www.waterfox.net/docs/releases/${version}/"
 distfiles="https://cdn.waterfox.com/waterfox/releases/${version}/Linux_x86_64/waterfox-${version}.tar.bz2"
-checksum=ef0ad42ccc5e2b3f2f84a3aa698139755f6debc19c69f20826f5cae58de64cf3
+checksum=f67403104687a301e27fb3a1efed7bfebf6add997ad0f3dea465a5797cbea220
 #nopie=yes
 
 do_install() {
