@@ -9,7 +9,7 @@ maintainer="zenobit <zenobit@disroot.org>"
 license="AGPL-3.0-only"
 homepage="https://codeberg.org/oSoWoSo/vote"
 distfiles="https://codeberg.org/oSoWoSo/vote/archive/${version}.tar.gz"
-checksum=a012caf6af36776b6e671e68e3c57278ccdf824e3388cd3d287844e089dea817
+checksum=6e260ebb63f52b9499dcc1f5a5f5e5976977678177a786e1dc1c84ea3ab43a29
 
 do_install() {
 	vmkdir usr/share/vote
