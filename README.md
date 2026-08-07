@@ -143,8 +143,8 @@ Create PR
 | easybashgui | 15.0.2 | https://github.com/BashGui/easybashgui | zenobit |  |
 | forgejo-runner | 13.0.0 | https://code.forgejo.org/forgejo/runner | zenobit |  |
 | FreeTube | 0.25.1 | https://github.com/FreeTubeApp/FreeTube | Bella Viola Wagner | x86_64 |
-| ftxui | 7.0.2 | https://github.com/ArthurSonzogni/FTXUI | zenobit |  |
-| ftxui-devel | 7.0.2 | https://github.com/ArthurSonzogni/FTXUI | zenobit |  |
+| ftxui | 7.0.3 | https://github.com/ArthurSonzogni/FTXUI | zenobit |  |
+| ftxui-devel | 7.0.3 | https://github.com/ArthurSonzogni/FTXUI | zenobit |  |
 | gama | 1.2.1 | https://github.com/termkit/gama | zenobit |  |
 | gh-dash | 4.25.2 | https://github.com/dlvhdr/gh-dash | zenobit |  |
 | gh-lazy | 0.6.6 | https://github.com/gizmo385/gh-lazy | zenobit |  |
