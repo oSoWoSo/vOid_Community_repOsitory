@@ -1,19 +1,24 @@
 # Template file for 'simplex-chat'
 pkgname=simplex-chat
-version=6.5.2
+version=7.0.0
 revision=1
-archs="~i686 ~*-musl"
+archs="~i686"
 build_style=cabal
 build_helper="haskell"
 cabal_index_state="2023-12-12T00:00:00Z"
-hostmakedepends="ghc cabal-install cmake patchelf openjdk17 openjdk17-jmods pkg-config xz"
+hostmakedepends="ghc cabal-install cmake patchelf pkg-config xz"
 makedepends="libffi-devel openssl-devel zlib-devel gmp-devel ncurses-devel"
 short_desc="Private and secure messaging application (CLI)"
 maintainer="rayfadh <rayfadh@duck.com>"
 license="AGPL-3.0-only"
 homepage="https://simplex.chat"
 distfiles="https://github.com/simplex-chat/simplex-chat/archive/refs/tags/v${version}.tar.gz"
-checksum=0134b625b4ccdc431864d9803ebd3756ee4f1698047ab02677eafef7c9f7543f
+checksum=273e1db81aa5c4bf9f4c51010ae177c556bd0aa222562264894025b6ce5b4a3b
+
+if [ "$XBPS_TARGET_LIBC" = "glibc" ]; then
+	hostmakedepends+=" openjdk17 openjdk17-jmods"
+fi
+
 nocross="cabal does not support cross compilation"
 nopie_files="/usr/bin/simplex-chat"
 make_check=no # testing hangs
@@ -34,33 +39,35 @@ do_build() {
 		--install-method=copy \
 		--overwrite-policy=always
 
-	# build haskell native library for desktop
-	_ghc_ver=$(ghc --numeric-version)
-	sed -i "s/GHC_VERSION=9.6.3/GHC_VERSION=${_ghc_ver}/" scripts/desktop/build-lib-linux.sh
-	# libffi.so.7->8 replacement; void ships .so.8 already
-	sed -i 's/patchelf --replace-needed "libffi.so.7"/# patchelf --replace-needed "libffi.so.7"/' \
-		scripts/desktop/build-lib-linux.sh
-	# use system vlc via jna.library.path
-	sed -i 's|scripts/desktop/prepare-vlc-linux.sh|# skipped: using system libvlc|' \
-		scripts/desktop/build-lib-linux.sh
-	./scripts/desktop/build-lib-linux.sh
+	if [ "$XBPS_TARGET_LIBC" = "glibc" ]; then
+		# build haskell native library for desktop
+		_ghc_ver=$(ghc --numeric-version)
+		sed -i "s/GHC_VERSION=9.6.3/GHC_VERSION=${_ghc_ver}/" scripts/desktop/build-lib-linux.sh
+		# libffi.so.7->8 replacement; void ships .so.8 already
+		sed -i 's/patchelf --replace-needed "libffi.so.7"/# patchelf --replace-needed "libffi.so.7"/' \
+			scripts/desktop/build-lib-linux.sh
+		# use system vlc via jna.library.path
+		sed -i 's|scripts/desktop/prepare-vlc-linux.sh|# skipped: using system libvlc|' \
+			scripts/desktop/build-lib-linux.sh
+		./scripts/desktop/build-lib-linux.sh
 
-	# disable upstream auto-update
-	sed -i 's/setupUpdateChecker()/\/\/setupUpdateChecker()/' \
-		apps/multiplatform/desktop/src/jvmMain/kotlin/chat/simplex/desktop/Main.kt
-	sed -i 's/showAppUpdateNotice()/\/\/showAppUpdateNotice()/' \
-		apps/multiplatform/desktop/src/jvmMain/kotlin/chat/simplex/desktop/Main.kt
+		# disable upstream auto-update
+		sed -i 's/setupUpdateChecker()/\/\/setupUpdateChecker()/' \
+			apps/multiplatform/desktop/src/jvmMain/kotlin/chat/simplex/desktop/Main.kt
+		sed -i 's/showAppUpdateNotice()/\/\/showAppUpdateNotice()/' \
+			apps/multiplatform/desktop/src/jvmMain/kotlin/chat/simplex/desktop/Main.kt
 
-	# build, exclude :android
-	cd apps/multiplatform
-	sed -i 's/include(":android", ":desktop", ":common")/include(":desktop", ":common")/' \
-		settings.gradle.kts
-	export JAVA_HOME=/usr/lib/jvm/openjdk17
-	./gradlew :desktop:createDistributable
+		# build, exclude :android
+		cd apps/multiplatform
+		sed -i 's/include(":android", ":desktop", ":common")/include(":desktop", ":common")/' \
+			settings.gradle.kts
+		export JAVA_HOME=/usr/lib/jvm/openjdk17
+		./gradlew :desktop:createDistributable
 
-	# fix RPATH: haskell .so files must find each other via $ORIGIN, not build paths
-	_res_dir="${wrksrc}/apps/multiplatform/release/main/app/simplex/lib/app/resources"
-	find "${_res_dir}" -name "lib*.so" -exec patchelf --set-rpath '$ORIGIN' {} \;
+		# fix RPATH: haskell .so files must find each other via $ORIGIN, not build paths
+		_res_dir="${wrksrc}/apps/multiplatform/release/main/app/simplex/lib/app/resources"
+		find "${_res_dir}" -name "lib*.so" -exec patchelf --set-rpath '$ORIGIN' {} \;
+	fi
 }
 
 do_install() {
@@ -69,13 +76,18 @@ do_install() {
 }
 
 simplex-chat-desktop_package() {
+	archs="~*-musl ~i686"
 	short_desc="Private and secure messaging application (GUI)"
 	# vlcj NativeDiscovery finds libvlc.so.5 at runtime via jna.library.path=/usr/lib
 	# set in the launcher script; system vlc replaces the bundled AppImage entirely
 	depends="simplex-chat libvlc libX11 libXext libXrender libXtst libnotify
 	 libcanberra libXcursor libXi fontconfig freetype libGL dbus libpng brotli bzip2
 	 alsa-lib giflib libjpeg-turbo lcms2 libnuma dejavu-fonts-ttf"
+	if [ "$XBPS_TARGET_LIBC" != "glibc" ]; then
+		metapackage=yes
+	fi
 	pkg_install() {
+		[ "$XBPS_TARGET_LIBC" = "glibc" ] || return 0
 		vmkdir usr/lib/simplex-chat
 		vcopy apps/multiplatform/release/main/app/simplex usr/lib/simplex-chat
 		patchelf --set-interpreter /usr/lib64/ld-linux-x86-64.so.2 \
