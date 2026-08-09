@@ -1,6 +1,6 @@
 # Template file for 'opencode'
 pkgname=opencode
-version=1.18.14
+version=1.18.15
 revision=1
 archs="x86_64 aarch64"
 hostmakedepends="bun nodejs python3 git"
@@ -10,11 +10,10 @@ maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/anomalyco/opencode"
 distfiles="https://github.com/anomalyco/opencode/archive/refs/tags/v${version}.tar.gz"
-checksum=3454d738eca7117099d6dc2a1d6330e0ac099da60cf3d8e40e8913ff3e38f656
+checksum=28cb44d59b455c6fdc5bc15328413f6c163291eefb5fb0535ea5ec57e4cc4b0f
 nostrip_files="/usr/bin/opencode"
 nopie_files="/usr/bin/opencode"
 nocross="opencode build uses process.arch"
-replaces="opencode-arm>=0"
 
 do_build() {
 	export OPENCODE_VERSION="${version}"
@@ -26,7 +25,7 @@ do_install() {
 	local _ARCH
 	case "$XBPS_TARGET_MACHINE" in
 		x86_64) _ARCH="x64" ;;
-		aarch64) _ARCH="aarch64" ;;
+		aarch64) _ARCH="arm64" ;;
 	esac
 	vbin "packages/opencode/dist/opencode-linux-${_ARCH}/bin/opencode"
 	"$DESTDIR/usr/bin/opencode" completion > opencode
