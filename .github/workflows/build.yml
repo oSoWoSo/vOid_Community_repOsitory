@@ -203,6 +203,7 @@ on:
         - python3-inline-snapshot
         - python3-linkify-it-py
         - python3-PyGithub
+        - python3-structlog
         - python3-textual
         - python3-uc-micro-py
         - quickemu

@@ -239,6 +239,7 @@ Create PR
 | python3-inline-snapshot | 0.32.6 | https://15r10nk.github.io/inline-snapshot/latest | zenobit |  |
 | python3-linkify-it-py | 2.1.0 | https://github.com/tsutsu3/linkify-it-py | Orphaned |  |
 | python3-PyGithub | 2.8.1 | https://pygithub.readthedocs.io/ | Orphan |  |
+| python3-structlog | 26.1.0 | https://github.com/hynek/structlog | zenobit |  |
 | python3-textual | 5.3.0 | https://textual.textualize.io | icp |  |
 | python3-uc-micro-py | 2.0.0 | https://github.com/tsutsu3/uc.micro-py | Orphaned |  |
 | quickemu | 4.9.9 | https://github.com/quickemu-project/quickemu | zenobit |  |

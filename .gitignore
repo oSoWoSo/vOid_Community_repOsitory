@@ -180,6 +180,7 @@
 !/srcpkgs/python3-inline-snapshot
 !/srcpkgs/python3-linkify-it-py
 !/srcpkgs/python3-PyGithub
+!/srcpkgs/python3-structlog
 !/srcpkgs/python3-textual
 !/srcpkgs/python3-uc-micro-py
 !/srcpkgs/quickemu
