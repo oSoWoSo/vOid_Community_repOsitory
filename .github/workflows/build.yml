@@ -168,6 +168,7 @@ on:
         - menu-themes
         - mesa-amber
         - nebula-gtk
+        - nvchecker
         - nwg-bar
         - nwg-clipman
         - nwg-displays
