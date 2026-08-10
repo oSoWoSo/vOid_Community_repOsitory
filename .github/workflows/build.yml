@@ -62,6 +62,7 @@ on:
         - candy-icons-git
         - cc-switch
         - clitest
+        - Community-Repositories-Collection
         - corekeyboard
         - cosmic-applets
         - cosmic-applibrary
@@ -91,6 +92,16 @@ on:
         - cosmic-tweaks
         - cosmic-wallpapers
         - cosmic-workspaces-epoch
+        - CRC-black-hole
+        - CRC-cereus-core
+        - CRC-cereus-extra
+        - CRC-d77void
+        - CRC-noid
+        - CRC-odyssey
+        - CRC-sofijacom
+        - CRC-sonicde
+        - CRC-split
+        - CRC-vostock
         - crush
         - cwal
         - dashy

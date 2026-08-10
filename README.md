@@ -98,6 +98,7 @@ Create PR
 | candy-icons-git | 0.11.1 | https://www.opendesktop.org/p/1305251/ | Trve_AY |  |
 | cc-switch | 3.15.0 | https://github.com/farion1231/cc-switch | zenobit | x86_64* aarch64* |
 | clitest | 0.5.0 | https://github.com/aureliojargas/clitest | zenobit |  |
+| Community-Repositories-Collection | 1 | https://repo.osowoso.org | zenobit |  |
 | corekeyboard | 5.0.1 | https://gitlab.com/cubocore/coreapps/corekeyboard | zenobit |  |
 | cosmic-applets | 1.1.0 | https://github.com/pop-os/cosmic-applets | Bella Viola Wagner | x86_64* i686 |
 | cosmic-applibrary | 1.1.0 | https://github.com/pop-os/cosmic-applibrary | Bella Viola Wagner | x86_64* i686 |
@@ -127,6 +128,16 @@ Create PR
 | cosmic-tweaks | 0.2.2 | https://github.com/cosmic-utils/cosmic-tweaks | Bella Viola Wagner | x86_64 |
 | cosmic-wallpapers | 1.1.0 | https://github.com/pop-os/cosmic-wallpapers | Bella Viola Wagner |  |
 | cosmic-workspaces-epoch | 1.1.0 | https://github.com/pop-os/cosmic-workspaces-epoch | Bella Viola Wagner | x86_64* i686 |
+| CRC-black-hole | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-cereus-core | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-cereus-extra | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-d77void | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-noid | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-odyssey | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-sofijacom | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-sonicde | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-split | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-vostock | 1 | https://repo.osowoso.org | zenobit |  |
 | crush | 0.88.0 | https://github.com/charmbracelet/crush | zenobit |  |
 | cwal | 0.8.5 | https://github.com/nitinbhat972/cwal | zenobit |  |
 | dashy | 4.1.5 | https://github.com/Lissy93/dashy | zenobit |  |
