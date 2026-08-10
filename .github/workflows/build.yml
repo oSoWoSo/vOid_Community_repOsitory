@@ -93,14 +93,18 @@ on:
         - cosmic-wallpapers
         - cosmic-workspaces-epoch
         - CRC-black-hole
+        - CRC-brgvos
         - CRC-cereus-core
         - CRC-cereus-extra
         - CRC-d77void
+        - CRC-lazy
+        - CRC-librewolf
         - CRC-noid
         - CRC-odyssey
         - CRC-sofijacom
         - CRC-sonicde
         - CRC-split
+        - CRC-techrockedge
         - CRC-vostock
         - crush
         - cwal
