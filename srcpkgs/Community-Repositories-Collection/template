@@ -1,7 +1,7 @@
 # Template file for 'Community-Repositories-Collection'
 pkgname=Community-Repositories-Collection
 version=1
-revision=2
+revision=3
 metapackage=yes
 short_desc="CRC: Collection of community repositories"
 maintainer="zenobit <zen@osowoso.org>"
@@ -10,11 +10,11 @@ homepage="https://repo.osowoso.org"
 
 CRC-black-hole_package() {
 	archs="x86_64*"
-	short_desc="${short_desc} - Black Hole repository"
-	homepage="https://mirror.black-hole.dev"
+	short_desc="${short_desc} - blackhole repository"
+	homepage="https://github.com/Event-Horizon-VL/blackhole-vl"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=${homepage}/${XBPS_TARGET_MACHINE}" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-black-hole.conf
+		echo "repository=https://mirror.black-hole.dev/${XBPS_TARGET_MACHINE}" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-black-hole.conf
 	}
 }
 
@@ -50,11 +50,28 @@ CRC-cereus-extra_package() {
 
 CRC-d77void_package() {
 	archs="x86_64"
-	short_desc="${short_desc} - d77 Void respin"
+	short_desc="${short_desc} - d77 Void repository"
 	homepage="https://sourceforge.net/projects/d77void/files/d77void-repo"
 	pkg_install() {
 		vmkdir etc/xbps.d
 		echo "repository=${homepage}" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-d77void.conf
+	}
+}
+
+CRC-hyprland_package() {
+	archs="x86_64* aarch64*"
+	short_desc="${short_desc} - Hyprland repository by sofijacom"
+	homepage="https://github.com/sofijacom/hyprland-void"
+	pkg_install() {
+		vmkdir etc/xbps.d
+		repo="https://raw.githubusercontent.com/sofijacom/hyprland-void/repository-"
+		case "${XBPS_TARGET_MACHINE}" in
+			x86_64) repo+="x86_64-glibc" ;;
+			x86_64-musl) repo+="x86_64-musl" ;;
+			aarch64) repo+="aarch64-glibc" ;;
+			aarch64-musl) repo+="aarch64-musl" ;;
+		esac
+		echo "repository=${repo}" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-hyprland.conf
 	}
 }
 
@@ -125,16 +142,6 @@ CRC-split_package() {
 	pkg_install() {
 		vmkdir etc/xbps.d
 		echo "repository=${homepage}/-/raw/master/binpkgs" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-split.conf
-	}
-}
-
-CRC-techrockedge_package() {
-	archs="x86_64"
-	short_desc="${short_desc} - techrockedge repository"
-	homepage="https://github.com/techrockedge/void-package"
-	pkg_install() {
-		vmkdir etc/xbps.d
-		echo "repository=${homepage}/releases/latest/download" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-techrockedge.conf
 	}
 }
 

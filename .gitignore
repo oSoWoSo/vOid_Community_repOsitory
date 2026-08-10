@@ -74,6 +74,7 @@
 !/srcpkgs/CRC-cereus-core
 !/srcpkgs/CRC-cereus-extra
 !/srcpkgs/CRC-d77void
+!/srcpkgs/CRC-hyprland
 !/srcpkgs/CRC-lazy
 !/srcpkgs/CRC-librewolf
 !/srcpkgs/CRC-noid
@@ -81,7 +82,6 @@
 !/srcpkgs/CRC-sofijacom
 !/srcpkgs/CRC-sonicde
 !/srcpkgs/CRC-split
-!/srcpkgs/CRC-techrockedge
 !/srcpkgs/CRC-vostock
 !/srcpkgs/crush
 !/srcpkgs/cwal

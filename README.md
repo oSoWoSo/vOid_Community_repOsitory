@@ -133,6 +133,7 @@ Create PR
 | CRC-cereus-core | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-cereus-extra | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-d77void | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-hyprland | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-lazy | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-librewolf | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-noid | 1 | https://repo.osowoso.org | zenobit |  |
@@ -140,7 +141,6 @@ Create PR
 | CRC-sofijacom | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-sonicde | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-split | 1 | https://repo.osowoso.org | zenobit |  |
-| CRC-techrockedge | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-vostock | 1 | https://repo.osowoso.org | zenobit |  |
 | crush | 0.88.0 | https://github.com/charmbracelet/crush | zenobit |  |
 | cwal | 0.8.5 | https://github.com/nitinbhat972/cwal | zenobit |  |
