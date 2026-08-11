@@ -1,7 +1,7 @@
 # Template file for 'Community-Repositories-Collection'
 pkgname=Community-Repositories-Collection
 version=1
-revision=3
+revision=4
 metapackage=yes
 short_desc="CRC: Collection of community repositories"
 maintainer="zenobit <zen@osowoso.org>"
@@ -14,7 +14,8 @@ CRC-black-hole_package() {
 	homepage="https://github.com/Event-Horizon-VL/blackhole-vl"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=https://mirror.black-hole.dev/${XBPS_TARGET_MACHINE}" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-black-hole.conf
+		echo "repository=https://mirror.black-hole.dev/${XBPS_TARGET_MACHINE}" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-black-hole.conf
 	}
 }
 
@@ -24,37 +25,45 @@ CRC-brgvos_package() {
 	homepage="https://github.com/florintanasa/brgvos-void"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=https://repository.brgv-os.ro/x86_64-current" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-brgvos.conf
+		echo "repository=https://repository.brgv-os.ro/x86_64-current" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-brgvos.conf
 	}
 }
 
 CRC-cereus-core_package() {
 	archs="x86_64* i686"
 	short_desc="${short_desc} - Cereus Linux Core repository"
-	homepage="https://sourceforge.net/projects/cereus-linux/files/repos/cereus-core"
+	homepage="https://codeberg.org/cereus-linux/cereus-pkgs"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=${homepage}/${XBPS_TARGET_MACHINE}" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-cereus-core.conf
+		echo "repository=https://sourceforge.net/projects/cereus-linux/files/repos/cereus-core/${XBPS_TARGET_MACHINE}" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-cereus-core.conf
 	}
 }
 
 CRC-cereus-extra_package() {
 	archs="x86_64* i686"
 	short_desc="${short_desc} - Cereus Linux Extra repository"
-	homepage="https://sourceforge.net/projects/cereus-linux/files/repos/cereus-extra"
+	homepage="https://codeberg.org/cereus-linux/cereus-pkgs"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=${homepage}/${XBPS_TARGET_MACHINE}" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-cereus-extra.conf
+		echo "repository=https://sourceforge.net/projects/cereus-linux/files/repos/cereus-extra/${XBPS_TARGET_MACHINE}" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-cereus-extra.conf
 	}
 }
 
 CRC-d77void_package() {
-	archs="x86_64"
+	archs="x86_64*"
 	short_desc="${short_desc} - d77 Void repository"
-	homepage="https://sourceforge.net/projects/d77void/files/d77void-repo"
+	homepage="https://github.com/d77void/srcpkgs-d77"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=${homepage}" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-d77void.conf
+		repo="https://sourceforge.net/projects/d77void/files/"
+		case "${XBPS_TARGET_MACHINE}" in
+			x86_64) repo+="d77void-repo" ;;
+			x86_64-musl) repo+="d77void-musl" ;;
+		esac
+		echo "repository=${repo}" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-d77void.conf
 	}
 }
 
@@ -81,7 +90,8 @@ CRC-lazy_package() {
 	homepage="https://github.com/lazylinuxos/lazy-repo"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=${homepage}/releases/latest/download" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-lazy.conf
+		echo "repository=${homepage}/releases/latest/download" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-lazy.conf
 	}
 }
 
@@ -91,7 +101,8 @@ CRC-librewolf_package() {
 	homepage="https://github.com/index-0/librewolf-void"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=${homepage}/releases/latest/download" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-librewolf.conf
+		echo "repository=${homepage}/releases/latest/download" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-librewolf.conf
 	}
 }
 
@@ -101,7 +112,8 @@ CRC-noid_package() {
 	homepage="https://github.com/noid-linux/xbps-repo"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=${homepage}/releases/latest/download" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-noid.conf
+		echo "repository=${homepage}/releases/latest/download" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-noid.conf
 	}
 }
 
@@ -111,7 +123,8 @@ CRC-odyssey_package() {
 	homepage="https://code.odysseylinux.org/nobody"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=https://repo.odysseylinux.org/odyssey-repo/x86_64" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-odyssey.conf
+		echo "repository=https://repo.odysseylinux.org/odyssey-repo/x86_64" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-odyssey.conf
 	}
 }
 
@@ -121,7 +134,8 @@ CRC-sofijacom_package() {
 	homepage="https://github.com/sofijacom/void-package"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=${homepage}/releases/latest/download" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-sofijacom.conf
+		echo "repository=${homepage}/releases/latest/download" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-sofijacom.conf
 	}
 }
 
@@ -131,7 +145,8 @@ CRC-sonicde_package() {
 	homepage="https://github.com/sonicde-void/sonicde-void"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=${homepage}/releases/latest/download" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-sonicde.conf
+		echo "repository=${homepage}/releases/latest/download" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-sonicde.conf
 	}
 }
 
@@ -141,16 +156,17 @@ CRC-split_package() {
 	homepage="https://gitlab.com/splitlinux/split-packages"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=${homepage}/-/raw/master/binpkgs" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-split.conf
+		echo "repository=${homepage}/-/raw/master/binpkgs" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-split.conf
 	}
 }
 
 CRC-vostock_package() {
 	archs="x86_64"
 	short_desc="${short_desc} - Vostock Linux repository"
-	homepage="https://repo.vostoklinux.org/current"
+	homepage="https://github.com/vostoklinux/vostok-packages"
 	pkg_install() {
 		vmkdir etc/xbps.d
-		echo "repository=${homepage}" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-vostock.conf
+		echo "repository=https://repo.vostoklinux.org/current" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-vostock.conf
 	}
 }
