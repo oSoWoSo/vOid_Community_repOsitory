@@ -106,6 +106,7 @@ on:
         - CRC-sonicde
         - CRC-split
         - CRC-vostock
+        - CRC-xlibre
         - crush
         - cwal
         - dashy

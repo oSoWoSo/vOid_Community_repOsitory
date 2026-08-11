@@ -142,6 +142,7 @@ Create PR
 | CRC-sonicde | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-split | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-vostock | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-xlibre | 1 | https://repo.osowoso.org | zenobit |  |
 | crush | 0.88.0 | https://github.com/charmbracelet/crush | zenobit |  |
 | cwal | 0.8.5 | https://github.com/nitinbhat972/cwal | zenobit |  |
 | dashy | 4.1.5 | https://github.com/Lissy93/dashy | zenobit |  |

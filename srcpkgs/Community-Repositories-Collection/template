@@ -1,7 +1,7 @@
 # Template file for 'Community-Repositories-Collection'
 pkgname=Community-Repositories-Collection
 version=1
-revision=4
+revision=5
 metapackage=yes
 short_desc="CRC: Collection of community repositories"
 maintainer="zenobit <zen@osowoso.org>"
@@ -168,5 +168,16 @@ CRC-vostock_package() {
 	pkg_install() {
 		vmkdir etc/xbps.d
 		echo "repository=https://repo.vostoklinux.org/current" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-vostock.conf
+	}
+}
+
+CRC-xlibre_package() {
+	archs="x86_64"
+	short_desc="${short_desc} - Xlibre repository by sofijacom"
+	homepage="https://github.com/xlibre-void/xlibre"
+	pkg_install() {
+		vmkdir etc/xbps.d
+		echo "repository=https://github.com/xlibre-void/xlibre/releases/latest/download" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-xlibre.conf
 	}
 }
