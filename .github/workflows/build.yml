@@ -57,6 +57,7 @@ on:
         - brave-browser-bin
         - brow6el
         - btrfs-progs
+        - bulletty
         - bun
         - bun-bootstrap
         - candy-icons-git
