@@ -101,6 +101,7 @@ Create PR
 | clitest | 0.5.0 | https://github.com/aureliojargas/clitest | zenobit |  |
 | Community-Repositories-Collection | 1 | https://repo.osowoso.org | zenobit |  |
 | corekeyboard | 5.0.1 | https://gitlab.com/cubocore/coreapps/corekeyboard | zenobit |  |
+| cosign | 3.1.3 | https://github.com/sigstore/cosign | zenobit |  |
 | cosmic-applets | 1.1.0 | https://github.com/pop-os/cosmic-applets | Bella Viola Wagner | x86_64* i686 |
 | cosmic-applibrary | 1.1.0 | https://github.com/pop-os/cosmic-applibrary | Bella Viola Wagner | x86_64* i686 |
 | cosmic-bg | 1.1.0 | https://github.com/pop-os/cosmic-bg | Bella Viola Wagner | x86_64* i686 |

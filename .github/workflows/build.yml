@@ -65,6 +65,7 @@ on:
         - clitest
         - Community-Repositories-Collection
         - corekeyboard
+        - cosign
         - cosmic-applets
         - cosmic-applibrary
         - cosmic-bg
