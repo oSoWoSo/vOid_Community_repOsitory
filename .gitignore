@@ -159,6 +159,7 @@
 !/srcpkgs/lunasvg
 !/srcpkgs/lunasvg-devel
 !/srcpkgs/ly
+!/srcpkgs/lycan
 !/srcpkgs/menu-themes
 !/srcpkgs/mesa-amber
 !/srcpkgs/nebula-gtk

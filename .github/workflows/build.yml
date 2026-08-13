@@ -182,6 +182,7 @@ on:
         - lunasvg
         - lunasvg-devel
         - ly
+        - lycan
         - menu-themes
         - mesa-amber
         - nebula-gtk
