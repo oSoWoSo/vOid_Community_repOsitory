@@ -113,6 +113,7 @@ on:
         - cwal
         - dashy
         - desktop-tui
+        - devedeng
         - distrobox
         - dragonfly-reverb
         - dragonfly-reverb-clap

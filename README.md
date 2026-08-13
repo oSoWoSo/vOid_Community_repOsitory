@@ -149,6 +149,7 @@ Create PR
 | cwal | 0.8.5 | https://github.com/nitinbhat972/cwal | zenobit |  |
 | dashy | 4.1.5 | https://github.com/Lissy93/dashy | zenobit |  |
 | desktop-tui | 0.3.2 | https://github.com/Julien-cpsn/desktop-tui | zenobit |  |
+| devedeng | 4.22.0 | https://www.rastersoft.com/programas/devede.html | Bella109 |  |
 | distrobox | 1.8.2.5 | https://distrobox.it/ | zenobit |  |
 | dragonfly-reverb | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
 | dragonfly-reverb-clap | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
