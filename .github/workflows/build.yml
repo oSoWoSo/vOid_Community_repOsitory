@@ -215,6 +215,7 @@ on:
         - pop-icons
         - pop-launcher
         - pop-sounds-theme
+        - proxelar
         - python3-anysqlite
         - python3-geographiclib
         - python3-geopy
