@@ -1,7 +1,7 @@
 # Template file for 'lunasvg'
 pkgname=lunasvg
 version=3.5.0
-revision=2
+revision=3
 build_style=cmake
 hostmakedepends="cmake pkg-config"
 makedepends="freetype-devel harfbuzz-devel libxml2-devel"
@@ -27,6 +27,6 @@ lunasvg-devel_package() {
 		vmove usr/include
 		vmove usr/lib/pkgconfig
 		vmove usr/lib/cmake
-		#vmove "usr/lib/*.so"
+		vmove "usr/lib/*.so"
 	}
 }
