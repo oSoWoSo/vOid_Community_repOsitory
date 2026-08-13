@@ -147,6 +147,7 @@ Create PR
 | cwal | 0.8.5 | https://github.com/nitinbhat972/cwal | zenobit |  |
 | dashy | 4.1.5 | https://github.com/Lissy93/dashy | zenobit |  |
 | desktop-tui | 0.3.2 | https://github.com/Julien-cpsn/desktop-tui | zenobit |  |
+| devedeng | 4.22.0 | https://www.rastersoft.com/programas/devede.html | Bella109 |  |
 | distrobox | 1.8.2.5 | https://distrobox.it/ | zenobit |  |
 | dragonfly-reverb | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
 | dragonfly-reverb-clap | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
@@ -218,7 +219,7 @@ Create PR
 | lunasvg | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
 | lunasvg-devel | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
 | ly | 1.4.0 | https://codeberg.org/fairyglade/ly | zenobit | i686 x86_64 |
-| lycan | 1.4.8 | https://github.com/lycan/lycan | Bella109 | x86_64* |
+| lycan | 0.1.2 | https://github.com/lycan/lycan | Bella109 | x86_64* |
 | menu-themes | 0.8.0 | https://github.com/kando-menu/menu-themes | zenobit |  |
 | mesa-amber | 26.1.2 | https://www.mesa3d.org/ | Bella109 |  |
 | nebula-gtk | 1.3.7 | https://github.com/Letdown2491/nebula-gtk | zenobit |  |
