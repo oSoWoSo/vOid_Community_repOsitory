@@ -12,7 +12,7 @@ license="MIT"
 homepage="https://codeberg.org/oSoWoSo/gum"
 changelog="https://github.com/charmbracelet/gum/releases"
 distfiles="https://codeberg.org/oSoWoSo/gum/archive/${version}.tar.gz"
-checksum=03601f3b509511abcb1f6b7535022b21f290d66ed00e605e9a34d08b59da8b54
+checksum=ddeadc98426e03954a37c96afaf0019cb556eb9a689478cfc4c748b5b429adff
 conflicts=gum
 
 post_install() {

@@ -1,6 +1,6 @@
 # Template file for 'brave-browser-bin'
 pkgname=brave-browser-bin
-version=1.91.168
+version=1.93.129
 revision=1
 archs="x86_64 aarch64"
 hostmakedepends="rpmextract"
@@ -11,15 +11,15 @@ homepage="https://www.brave.com/"
 changelog="https://raw.githubusercontent.com/brave/brave-browser/refs/heads/master/CHANGELOG_DESKTOP.md"
 distfiles="https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser-${version}-1.x86_64.rpm
  https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser-${version}-1.aarch64.rpm"
-checksum="b8e0229d1e74c1e8e519f920e89ef3819feb9626d97fe10f33ee26a95e9c3c57
- 4872e992dd08402ad3f9ea6bf16fe0cd420076360194712db5a4a8142ff239bb"
+checksum="0d7e82846f013b8969f39a8d914d8d6ca6aae4b6c86a00195178e141c4b236c2
+ ff5c7c5b12375d0155f49808dbe102679aeda4a355b460167414898c98157b41"
 replaces="brave-browser-arm-bin>=0"
 
 do_extract() {
 	local archiv
 	case "$XBPS_TARGET_MACHINE" in
-		x86_64)      archiv="brave-browser-${version}-1.x86_64.rpm" ;;
-		aarch64)     archiv="brave-browser-${version}-1.aarch64.rpm" ;;
+		x86_64) archiv="brave-browser-${version}-1.x86_64.rpm" ;;
+		aarch64) archiv="brave-browser-${version}-1.aarch64.rpm" ;;
 	esac
 	vextract "${XBPS_SRCDISTDIR}/${pkgname}-${version}/${archiv}"
 }

@@ -17,8 +17,14 @@ checksum=c63b1ffbc3c4a42dbe98e35dbc811cb62e67068c7227da3f631826842bef4a06
 conflicts="kando-beta"
 
 case "$XBPS_TARGET_MACHINE" in
-	x86_64*) _electron_arch="x64" ;;
-	aarch64*) _electron_arch="arm64" ;;
+	x86_64*)
+		_electron_arch="x64"
+		build_options="-DNODE_ARCH=x64"
+		;;
+	aarch64*)
+		_electron_arch="arm64"
+		build_options="-DNODE_ARCH=arm64"
+		;;
 esac
 
 do_configure() {

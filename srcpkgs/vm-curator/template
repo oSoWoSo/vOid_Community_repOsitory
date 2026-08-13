@@ -1,16 +1,16 @@
 # Template file for 'vm-curator'
 pkgname=vm-curator
-version=1.0.0
-hostmakedepends="pkg-config"
-makedepends="eudev-libudev-devel"
+version=1.3.0
 revision=1
 build_style=cargo
+hostmakedepends="pkg-config"
+makedepends="eudev-libudev-devel"
 short_desc="TUI to build and manage QEMU/KVM virtual machines"
 maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/mroboff/vm-curator"
 distfiles="https://github.com/mroboff/vm-curator/archive/refs/tags/v${version}.tar.gz"
-checksum=6d0e2a4fba6f71fdbb711443cf001b2d9f5e3e90380fa25d9b48235409a41d33
+checksum=1df98fce9f655438a111b69898bdc63a65c77852371376310c689bdc64ed3113
 
 post_install() {
 	vlicense LICENSE

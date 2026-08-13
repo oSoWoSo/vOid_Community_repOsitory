@@ -57,11 +57,13 @@ on:
         - brave-browser-bin
         - brow6el
         - btrfs-progs
+        - bulletty
         - bun
         - bun-bootstrap
         - candy-icons-git
         - cc-switch
         - clitest
+        - Community-Repositories-Collection
         - corekeyboard
         - cosmic-applets
         - cosmic-applibrary
@@ -89,6 +91,22 @@ on:
         - cosmic-tweaks
         - cosmic-wallpapers
         - cosmic-workspaces-epoch
+        - CRC-black-hole
+        - CRC-brgvos
+        - CRC-cereus-core
+        - CRC-cereus-extra
+        - CRC-d77void
+        - CRC-hyprland
+        - CRC-jake
+        - CRC-lazy
+        - CRC-librewolf
+        - CRC-noid
+        - CRC-odyssey
+        - CRC-sofijacom
+        - CRC-sonicde
+        - CRC-split
+        - CRC-vostock
+        - CRC-xlibre
         - crush
         - cwal
         - dashy
@@ -154,7 +172,6 @@ on:
         - hyprwayland-scanner
         - kairo
         - kando
-        - kew
         - lemonade-server
         - libcprime
         - librewolf-bin
@@ -163,13 +180,17 @@ on:
         - linuxcommandlibrary-desktop
         - llama.cpp
         - lunasvg
+        - lunasvg-devel
         - ly
         - menu-themes
         - mesa-amber
         - nebula-gtk
+        - nvchecker
+        - nwg-bar
         - nwg-clipman
         - nwg-displays
         - nwg-dock
+        - nwg-dock-hyprland
         - nwg-drawer
         - nwg-hello
         - nwg-icon-picker
@@ -188,19 +209,20 @@ on:
         - omniroute
         - opencode
         - patchance
-        - pinguintv-installer
+        - pinguintv-installer-git
         - pop-fonts
         - pop-icons
         - pop-launcher
         - pop-sounds-theme
+        - proxelar
         - python3-anysqlite
-        - python3-dasbus
         - python3-geographiclib
         - python3-geopy
         - python3-hishel
         - python3-inline-snapshot
         - python3-linkify-it-py
         - python3-PyGithub
+        - python3-structlog
         - python3-textual
         - python3-uc-micro-py
         - quickemu
@@ -208,10 +230,12 @@ on:
         - quickshell+
         - radicle
         - raysession
+        - rebos
         - rgc
         - runkit
         - rustdesk
         - sdkmanager
+        - seamonkey-bin
         - sfizz-cli
         - sfizz-git
         - sfizz-lib
@@ -242,6 +266,7 @@ on:
         - void-hardwaremanager-git
         - void-live-creator-git
         - void-software-store
+        - void-software-store-git
         - void-src-builder-git
         - void-user-manager-git
         - vote
@@ -269,6 +294,7 @@ permissions:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
+  queue: max
 
 jobs:
   detect:
@@ -696,5 +722,11 @@ jobs:
           xbps-rindex -S --privkey /tmp/private.pem "$NEW_PKGS_DIR"/*.xbps
           rm -f /tmp/private.pem
 
-          BUILDDIR="$NEW_PKGS_DIR" "${GITHUB_WORKSPACE}/extra/ocoman" -p
-          "${GITHUB_WORKSPACE}/extra/ocoman" -a
+          if ! BUILDDIR="$NEW_PKGS_DIR" "${GITHUB_WORKSPACE}/extra/ocoman" -p; then
+            echo "ERROR: Command 'ocoman -p' failed!"
+            exit 1
+          fi
+          if ! "${GITHUB_WORKSPACE}/extra/ocoman" -a; then
+            echo "ERROR: Command 'ocoman -a' failed!"
+            exit 1
+          fi

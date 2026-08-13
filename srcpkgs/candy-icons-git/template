@@ -1,7 +1,7 @@
 # Template file for 'candy-icons-git'
 pkgname=candy-icons-git
 version=0.11.1
-revision=1
+revision=5
 # depends="breeze-icons adwaita-icon-theme hicolor-icon-theme"
 short_desc="Sweet gradient icons, sweet rainbow folders included"
 maintainer="Trve_AY <anthonyh@purplehaze.noho.st>"
