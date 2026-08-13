@@ -308,7 +308,7 @@ Create PR
 | void-src-builder-git | 0.0.0 | https://codeberg.org/pinguin-void/void-src-builder | zenobit |  |
 | void-user-manager-git | 0.0.0 | https://codeberg.org/pinguin-void/void-user-manager | zenobit | x86_64 |
 | vote | 0.92 | https://codeberg.org/oSoWoSo/vote | zenobit |  |
-| vtm | 2026.05.28 | https://github.com/directvt/vtm | zenobit |  |
+| vtm | 2026.07.30 | https://github.com/directvt/vtm | zenobit |  |
 | waterfox-bin | 6.6.17 | https://www.waterfox.net | zenobit | x86_64 |
 | wpgtk | 6.7.1 | https://github.com/deviantfero/wpgtk/ | zenobit |  |
 | xdg-desktop-portal-cosmic | 1.1.0 | https://github.com/pop-os/xdg-desktop-portal-cosmic | Bella Viola Wagner | x86_64* |
