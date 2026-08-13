@@ -159,6 +159,7 @@
 !/srcpkgs/linuxcommandlibrary-desktop
 !/srcpkgs/llama.cpp
 !/srcpkgs/lunasvg
+!/srcpkgs/lunasvg-devel
 !/srcpkgs/ly
 !/srcpkgs/menu-themes
 !/srcpkgs/mesa-amber

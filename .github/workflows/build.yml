@@ -182,6 +182,7 @@ on:
         - linuxcommandlibrary-desktop
         - llama.cpp
         - lunasvg
+        - lunasvg-devel
         - ly
         - menu-themes
         - mesa-amber

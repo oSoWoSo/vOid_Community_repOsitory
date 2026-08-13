@@ -218,6 +218,7 @@ Create PR
 | linuxcommandlibrary-desktop | 4.2.0 | http://linuxcommandlibrary.com/ | zenobit | x86_64 aarch64 |
 | llama.cpp | 9357 | https://github.com/ggml-org/llama.cpp | zenobit |  |
 | lunasvg | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
+| lunasvg-devel | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
 | ly | 1.4.0 | https://codeberg.org/fairyglade/ly | zenobit | i686 x86_64 |
 | menu-themes | 0.8.0 | https://github.com/kando-menu/menu-themes | zenobit |  |
 | mesa-amber | 26.1.2 | https://www.mesa3d.org/ | Bella Viola Wagner |  |
