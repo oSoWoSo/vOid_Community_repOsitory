@@ -99,6 +99,7 @@ on:
         - CRC-cereus-extra
         - CRC-d77void
         - CRC-hyprland
+        - CRC-jake
         - CRC-lazy
         - CRC-librewolf
         - CRC-noid

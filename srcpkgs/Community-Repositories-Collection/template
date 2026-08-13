@@ -1,7 +1,7 @@
 # Template file for 'Community-Repositories-Collection'
 pkgname=Community-Repositories-Collection
 version=1
-revision=5
+revision=6
 metapackage=yes
 short_desc="CRC: Collection of community repositories"
 maintainer="zenobit <zen@osowoso.org>"
@@ -81,6 +81,18 @@ CRC-hyprland_package() {
 			aarch64-musl) repo+="aarch64-musl" ;;
 		esac
 		echo "repository=${repo}" > ${PKGDESTDIR}/etc/xbps.d/20-CRC-hyprland.conf
+	}
+}
+
+
+CRC-jake_package() {
+	archs="x86_64"
+	short_desc="${short_desc} - JakeAtLinux (jpedmedia.com) repository"
+	homepage="https://codeberg.org/JakeAtLinux/void-repo"
+	pkg_install() {
+		vmkdir etc/xbps.d
+		echo "repository=${homepage}/raw/branch/main/x86_64" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-jake.conf
 	}
 }
 

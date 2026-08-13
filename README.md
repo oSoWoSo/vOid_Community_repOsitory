@@ -135,6 +135,7 @@ Create PR
 | CRC-cereus-extra | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-d77void | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-hyprland | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-jake | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-lazy | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-librewolf | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-noid | 1 | https://repo.osowoso.org | zenobit |  |
