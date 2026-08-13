@@ -230,6 +230,7 @@ on:
         - quickshell+
         - radicle
         - raysession
+        - rebos
         - rgc
         - runkit
         - rustdesk
