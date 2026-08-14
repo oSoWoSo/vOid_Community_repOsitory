@@ -54,7 +54,6 @@
 !/srcpkgs/cosmic-greeter
 !/srcpkgs/cosmic-icons
 !/srcpkgs/cosmic-idle
-!/srcpkgs/cosmic-initial-setup
 !/srcpkgs/cosmic-launcher
 !/srcpkgs/cosmic-monitor
 !/srcpkgs/cosmic-notifications
@@ -67,7 +66,6 @@
 !/srcpkgs/cosmic-settings
 !/srcpkgs/cosmic-settings-daemon
 !/srcpkgs/cosmic-term
-!/srcpkgs/cosmic-theme-editor
 !/srcpkgs/cosmic-tweaks
 !/srcpkgs/cosmic-wallpapers
 !/srcpkgs/cosmic-workspaces-epoch

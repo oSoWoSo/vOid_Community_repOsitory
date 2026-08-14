@@ -113,7 +113,6 @@ Create PR
 | cosmic-greeter | 1.1.0 | https://github.com/pop-os/cosmic-greeter | Bella109 | x86_64* i686 |
 | cosmic-icons | 1.1.0 | https://github.com/pop-os/cosmic-icons | Bella109 |  |
 | cosmic-idle | 1.1.0 | https://github.com/pop-os/cosmic-idle | Bella109 | x86_64* i686 |
-| cosmic-initial-setup | 1.0.13 | https://github.com/pop-os/cosmic-initial-setup | Bella109 | x86_64* i686 |
 | cosmic-launcher | 1.1.0 | https://github.com/pop-os/cosmic-launcher | Bella109 | x86_64* i686 |
 | cosmic-monitor | 1.1.0 | https://github.com/pop-os/cosmic-monitor | Bella109 | x86_64* |
 | cosmic-notifications | 1.1.0 | https://github.com/pop-os/cosmic-notifications | Bella109 | x86_64* i686 |
@@ -126,7 +125,6 @@ Create PR
 | cosmic-settings | 1.1.0 | https://github.com/pop-os/cosmic-settings | Bella109 | x86_64* i686 |
 | cosmic-settings-daemon | 1.1.0 | https://github.com/pop-os/cosmic-settings-daemon | Bella109 | x86_64* i686 |
 | cosmic-term | 1.1.0 | https://github.com/pop-os/cosmic-term | Bella109 | x86_64* |
-| cosmic-theme-editor | 0.0.0 | https://github.com/pop-os/cosmic-theme-editor | Bella Wagner | x86_64* i686 |
 | cosmic-tweaks | 0.2.2 | https://github.com/cosmic-utils/cosmic-tweaks | Bella109 | x86_64 |
 | cosmic-wallpapers | 1.1.0 | https://github.com/pop-os/cosmic-wallpapers | Bella109 |  |
 | cosmic-workspaces-epoch | 1.1.0 | https://github.com/pop-os/cosmic-workspaces-epoch | Bella109 | x86_64* i686 |
