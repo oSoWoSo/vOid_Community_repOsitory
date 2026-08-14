@@ -98,6 +98,7 @@ on:
         - CRC-brgvos
         - CRC-cereus-core
         - CRC-cereus-extra
+        - CRC-cosmic
         - CRC-d77void
         - CRC-hyprland
         - CRC-jake
