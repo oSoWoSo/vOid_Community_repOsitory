@@ -187,6 +187,7 @@ on:
         - menu-themes
         - mesa-amber
         - nebula-gtk
+        - NuvioDesktop
         - nvchecker
         - nwg-bar
         - nwg-clipman

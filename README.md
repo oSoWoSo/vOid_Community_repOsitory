@@ -223,6 +223,7 @@ Create PR
 | menu-themes | 0.8.0 | https://github.com/kando-menu/menu-themes | zenobit |  |
 | mesa-amber | 26.1.2 | https://www.mesa3d.org/ | Bella109 |  |
 | nebula-gtk | 1.3.7 | https://github.com/Letdown2491/nebula-gtk | zenobit |  |
+| NuvioDesktop | 0.3.2 | https://github.com/blarns/NuvioForLinux | Bella109 | x86_64* |
 | nvchecker | 2.21 | https://github.com/lilydjwg/nvchecker | zenobit |  |
 | nwg-bar | 0.1.6 | https://github.com/nwg-piotr/nwg-bar | zenobit |  |
 | nwg-clipman | 0.2.8 | https://github.com/nwg-piotr/nwg-clipman | zenobit |  |
