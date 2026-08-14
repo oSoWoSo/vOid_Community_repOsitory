@@ -28,6 +28,6 @@ do_install() {
 	vcopy * usr/lib/helium-browser
 	vbin "${FILESDIR}/helium"
 	vinstall helium.desktop 644 usr/share/applications
-	vinstall product_logo_256.png 644 usr/share/pixmaps/helium.png
+	vinstall product_logo_256.png 644 usr/share/pixmaps helium.png
 	vlicense "${FILESDIR}/LICENSE.ungoogled_chromium"
 }
