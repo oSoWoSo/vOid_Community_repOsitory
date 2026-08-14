@@ -1,7 +1,7 @@
 # Template file for 'helium-browser-bin'
 pkgname=helium-browser-bin
 version=0.15.2.1
-revision=1
+revision=2
 archs="x86_64 aarch64"
 #depends="gtk+3 libXScrnSaver nss alsa-lib"
 short_desc="Private, fast, and honest web browser based on Chromium (binary build)"
@@ -26,7 +26,7 @@ do_extract() {
 do_install() {
 	vmkdir usr/lib/helium-browser
 	vcopy * usr/lib/helium-browser
-	vbin "${FILESDIR}/helium-browser"
+	vbin "${FILESDIR}/helium"
 	vinstall helium.desktop 644 usr/share/applications
 	vinstall product_logo_256.png 644 usr/share/pixmaps/helium.png
 	vlicense "${FILESDIR}/LICENSE.ungoogled_chromium"
