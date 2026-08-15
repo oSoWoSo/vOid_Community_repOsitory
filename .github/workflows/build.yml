@@ -175,6 +175,7 @@ on:
         - hyprwayland-scanner
         - kairo
         - kando
+        - lazyrsync
         - lemonade-server
         - libcprime
         - librewolf-bin

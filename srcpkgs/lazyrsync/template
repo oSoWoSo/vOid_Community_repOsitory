@@ -1,0 +1,16 @@
+# Template file for 'lazyrsync'
+pkgname=lazyrsync
+version=0.3.0
+revision=1
+build_style=cargo
+hostmakedepends="rust-std"
+short_desc="Friendly terminal UI for rsync"
+maintainer="zenobit <zen@osowoso.org>"
+license="MIT"
+homepage="https://github.com/westpoint-io/lazyrsync"
+distfiles="https://github.com/westpoint-io/lazyrsync/archive/refs/tags/v${version}.tar.gz"
+checksum=7ddb32c20688c1e56032207a5ed8edd5db09f9aaaad43741de13bef715bc1a4d
+
+post_install() {
+	vlicense LICENSE
+}

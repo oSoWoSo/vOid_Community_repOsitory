@@ -152,6 +152,7 @@
 !/srcpkgs/hyprwayland-scanner
 !/srcpkgs/kairo
 !/srcpkgs/kando
+!/srcpkgs/lazyrsync
 !/srcpkgs/lemonade-server
 !/srcpkgs/libcprime
 !/srcpkgs/librewolf-bin
