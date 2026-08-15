@@ -1,19 +1,18 @@
 # Template file for 'gradle'
 pkgname=gradle
-reverts="8.14.1_1"
-version=9.5.1
+version=9.7.0
 revision=1
 depends="virtual?java-environment"
 short_desc="Build system for Java/C/C++ software"
-maintainer="Bnyro <bnyro@tutanota.com>"
+maintainer="zenobit <zen@osowoso.org>"
 license="Apache-2.0"
-homepage="https://gradle.org/"
+homepage="https://gradle.org"
 changelog="https://docs.gradle.org/${version}/release-notes.html"
 distfiles="https://services.gradle.org/distributions/gradle-${version}-bin.zip"
-checksum=bafc141b619ad6350fd975fc903156dd5c151998cc8b058e8c1044ab5f7b031f
+checksum=84fbba45c7f4c64abc77460e1c00f541e9f960e3c7ed2538f1ede19eacd873ae
 
 do_install() {
-	vmkdir "usr/lib/gradle"
+	vmkdir usr/lib/gradle
 	sed ${FILESDIR}/gradle -e "s;@VERSION@;${version};" > gradle
 	vbin gradle
 	vdoc README
