@@ -266,6 +266,7 @@ Create PR
 | python3-structlog | 26.1.0 | https://github.com/hynek/structlog | zenobit |  |
 | python3-textual | 5.3.0 | https://textual.textualize.io | icp |  |
 | python3-uc-micro-py | 2.0.0 | https://github.com/tsutsu3/uc.micro-py | Orphaned |  |
+| qrunsvmgr | 0.2.5 | https://codeberg.org/ItsZariep/qrunsvmgr | zenobit |  |
 | quickemu | 4.9.9 | https://github.com/quickemu-project/quickemu | zenobit |  |
 | quickosdl | 0.3.2 | https://github.com/lj3954/quickosdl | zenobit |  |
 | quickshell+ | 0.3.0 | https://quickshell.org | classabbyamp |  |

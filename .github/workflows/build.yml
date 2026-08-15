@@ -230,6 +230,7 @@ on:
         - python3-structlog
         - python3-textual
         - python3-uc-micro-py
+        - qrunsvmgr
         - quickemu
         - quickosdl
         - quickshell+
