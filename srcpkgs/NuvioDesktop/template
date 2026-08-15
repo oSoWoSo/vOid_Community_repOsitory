@@ -4,9 +4,9 @@ version=0.3.3
 revision=1
 archs="x86_64*"
 hostmakedepends="pkg-config"
-makedepends="openjdk21 openjdk21-jmods"
+makedepends="openjdk21 openjdk21-jmods gradle"
 depends="openjdk21"
-short_desc="Hub combining multiple sources for watching Series, Movies and Anime"
+short_desc="Multi Media Hub - multiple sources for watching Series, Movies and Anime"
 maintainer="Bella109 <belladev109@proton.me>"
 license="GPL-3.0-only"
 homepage="https://github.com/blarns/NuvioForLinux"
@@ -15,7 +15,8 @@ checksum=f2ec13e8a78ab055b9ac712d543d2c080ffd2ed047631c1d1c0d85f51611df5b
 make_check=no # No test targets
 
 do_build() {
-	./gradlew :composeApp:packageUberJarForCurrentOS
+	# Use --no-daemon to avoid native file watcher that requires glibc
+	./gradlew --no-daemon :composeApp:packageUberJarForCurrentOS
 }
 
 do_install() {
