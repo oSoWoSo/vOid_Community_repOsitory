@@ -215,8 +215,8 @@ Create PR
 | libcprime | 5.0.1 | https://gitlab.com/cubocore/libcprime | zenobit |  |
 | librewolf-bin | 153.0.4.1 | https://librewolf.net | zenobit | x86_64 aarch64 |
 | libspng | 0.7.4 | https://libspng.org/ | zenobit |  |
-| linuxcommandlibrary | 4.2.0 | http://linuxcommandlibrary.com/ | zenobit | x86_64 aarch64 |
-| linuxcommandlibrary-desktop | 4.2.0 | http://linuxcommandlibrary.com/ | zenobit | x86_64 aarch64 |
+| linuxcommandlibrary | 4.5.0 | http://linuxcommandlibrary.com/ | zenobit | x86_64 aarch64 |
+| linuxcommandlibrary-desktop | 4.5.0 | http://linuxcommandlibrary.com/ | zenobit | x86_64 aarch64 |
 | llama.cpp | 9357 | https://github.com/ggml-org/llama.cpp | zenobit |  |
 | lunasvg | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
 | lunasvg-devel | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
