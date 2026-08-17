@@ -124,6 +124,7 @@ on:
         - dragonfly-reverb-vst3
         - drako
         - easybashgui
+        - faugus-launcher
         - forgejo-runner
         - FreeTube
         - ftxui
