@@ -167,7 +167,7 @@ Create PR
 | gama | 1.2.1 | https://github.com/termkit/gama | zenobit |  |
 | gh-dash | 4.25.2 | https://github.com/dlvhdr/gh-dash | zenobit |  |
 | gh-lazy | 0.6.6 | https://github.com/gizmo385/gh-lazy | zenobit |  |
-| ghgrab | 2.0.1 | https://github.com/abhixdd/ghgrab | zenobit |  |
+| ghgrab | 2.0.2 | https://github.com/abhixdd/ghgrab | zenobit |  |
 | glaze | 8.0.0 | https://github.com/stephenberry/glaze | zenobit |  |
 | gofer | 0.4.2 | https://codeberg.org/JakeAtLinux/Gofer | zenobit |  |
 | gradle | 9.7.0 | https://gradle.org | zenobit |  |
