@@ -160,6 +160,7 @@
 !/srcpkgs/linuxcommandlibrary
 !/srcpkgs/linuxcommandlibrary-desktop
 !/srcpkgs/llama.cpp
+!/srcpkgs/llmfit
 !/srcpkgs/lunasvg
 !/srcpkgs/lunasvg-devel
 !/srcpkgs/ly

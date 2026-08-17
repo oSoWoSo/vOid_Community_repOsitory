@@ -219,6 +219,7 @@ Create PR
 | linuxcommandlibrary | 4.5.0 | http://linuxcommandlibrary.com/ | zenobit | x86_64 aarch64 |
 | linuxcommandlibrary-desktop | 4.5.0 | http://linuxcommandlibrary.com/ | zenobit | x86_64 aarch64 |
 | llama.cpp | 9357 | https://github.com/ggml-org/llama.cpp | zenobit |  |
+| llmfit | 1.1.10 | https://github.com/AlexsJones/llmfit | zenobit |  |
 | lunasvg | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
 | lunasvg-devel | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
 | ly | 1.4.0 | https://codeberg.org/fairyglade/ly | zenobit | i686 x86_64 |

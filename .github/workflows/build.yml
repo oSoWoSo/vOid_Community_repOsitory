@@ -183,6 +183,7 @@ on:
         - linuxcommandlibrary
         - linuxcommandlibrary-desktop
         - llama.cpp
+        - llmfit
         - lunasvg
         - lunasvg-devel
         - ly
