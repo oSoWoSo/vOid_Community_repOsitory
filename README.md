@@ -273,7 +273,7 @@ Create PR
 | qrunsvmgr | 0.2.5 | https://codeberg.org/ItsZariep/qrunsvmgr | zenobit |  |
 | quickemu | 4.9.9 | https://github.com/quickemu-project/quickemu | zenobit |  |
 | quickosdl | 0.3.2 | https://github.com/lj3954/quickosdl | zenobit |  |
-| quickshell+ | 0.3.0 | https://quickshell.org | classabbyamp |  |
+| quickshell+ | 0.3.1 | https://quickshell.org | zenobit |  |
 | radicle | 1.8.0 | https://radicle.dev/ | zenobit |  |
 | raysession | 0.18.0 | https://raysession.tuxfamily.org/ | Trve_AY |  |
 | rebos | 3.5.2 | https://gitlab.com/Oglo12/rebos | zenobit |  |
