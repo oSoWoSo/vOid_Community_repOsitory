@@ -192,7 +192,7 @@ Create PR
 | gum-panel | 2.0.0.001 | https://codeberg.org/oSoWoSo/gum | zenobit |  |
 | helium-browser-bin | 0.15.6.1 | https://helium.computer | zenobit | x86_64 aarch64 |
 | hyprcursor | 0.1.13 | https://github.com/hyprwm/hyprcursor | zenobit |  |
-| hyprdynamicmonitors | 1.3.5 | https://github.com/fiffeek/hyprdynamicmonitors | zenobit |  |
+| hyprdynamicmonitors | 1.4.0 | https://github.com/fiffeek/hyprdynamicmonitors | zenobit |  |
 | hyprgraphics | 0.3.0 | https://github.com/hyprwm/hyprgraphics | zenobit |  |
 | hypridle | 0.1.7 | https://github.com/hyprwm/hypridle | zenobit |  |
 | hyprland | 0.52.1 | https://hyprland.org/ | zenobit |  |

@@ -1,6 +1,6 @@
 # Template file for 'hyprdynamicmonitors'
 pkgname=hyprdynamicmonitors
-version=1.3.5
+version=1.4.0
 revision=1
 build_style=go
 go_import_path="github.com/fiffeek/hyprdynamicmonitors"
@@ -13,7 +13,7 @@ license="MIT"
 homepage="https://github.com/fiffeek/hyprdynamicmonitors"
 #changelog=""
 distfiles="https://github.com/fiffeek/hyprdynamicmonitors/archive/refs/tags/v${version}.tar.gz"
-checksum=c944fbbc5ef88c4e62c017662994d4088f0cc3bad3ef5ede2e0cefec50d46adf
+checksum=93ba3920214b17e33003354717b0051faee50939dfae62d99979fcb26f69c470
 
 post_install() {
 	vlicense LICENSE
