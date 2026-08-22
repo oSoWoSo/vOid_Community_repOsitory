@@ -11,8 +11,10 @@ homepage="https://github.com/lucky7xz/drako"
 distfiles="https://github.com/lucky7xz/drako/archive/refs/tags/v${version}.tar.gz"
 checksum=57ba6540c879a46e2dafa3b5f2162190335b7f1ecbb21e56a4bb76e36c36c2c7
 
-post_install() {
-	vlicense LICENCE
 do_check() {
 	go test ./...
+}
+
+post_install() {
+	vlicense LICENCE
 }
