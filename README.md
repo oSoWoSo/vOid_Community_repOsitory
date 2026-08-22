@@ -97,7 +97,7 @@ Create PR
 | bun | 1.4.0 | https://bun.sh | zenobit | aarch64* x86_64* |
 | bun-bootstrap | 1.4.0 | https://bun.sh | zenobit | x86_64* aarch64* |
 | candy-icons-git | 0.11.1 | https://www.opendesktop.org/p/1305251/ | Trve_AY |  |
-| cc-switch | 3.15.0 | https://github.com/farion1231/cc-switch | zenobit | x86_64* aarch64* |
+| cc-switch | 3.20.0 | https://github.com/farion1231/cc-switch | zenobit | x86_64* aarch64* |
 | clitest | 0.5.0 | https://github.com/aureliojargas/clitest | zenobit |  |
 | Community-Repositories-Collection | 1 | https://repo.osowoso.org | zenobit |  |
 | corekeyboard | 5.0.1 | https://gitlab.com/cubocore/coreapps/corekeyboard | zenobit |  |
