@@ -219,7 +219,7 @@ Create PR
 | libspng | 0.7.4 | https://libspng.org/ | zenobit |  |
 | linuxcommandlibrary | 4.5.0 | http://linuxcommandlibrary.com/ | zenobit | x86_64 aarch64 |
 | linuxcommandlibrary-desktop | 4.5.0 | http://linuxcommandlibrary.com/ | zenobit | x86_64 aarch64 |
-| llama.cpp | 9357 | https://github.com/ggml-org/llama.cpp | zenobit |  |
+| llama.cpp | 10568 | https://github.com/ggml-org/llama.cpp | zenobit |  |
 | llmfit | 1.1.10 | https://github.com/AlexsJones/llmfit | zenobit |  |
 | lunasvg | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
 | lunasvg-devel | 3.5.0 | https://github.com/sammycage/lunasvg | zenobit |  |
