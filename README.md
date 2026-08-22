@@ -153,6 +153,7 @@ Create PR
 | desktop-tui | 0.3.2 | https://github.com/Julien-cpsn/desktop-tui | zenobit |  |
 | devedeng | 4.22.1 | https://www.rastersoft.com/programas/devede.html | Bella109 |  |
 | distrobox | 1.8.2.5 | https://distrobox.it/ | zenobit |  |
+| dooble | 2026.08.21 | https://textbrowser.github.io/dooble/ | zenobit | x86_64* aarch64* |
 | dragonfly-reverb | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
 | dragonfly-reverb-clap | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
 | dragonfly-reverb-doc | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
