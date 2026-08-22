@@ -202,8 +202,8 @@ Create PR
 | hyprland-qt-support | 0.1.0 | https://github.com/hyprwm/hyprland-qt-support | zenobit |  |
 | hyprlang | 0.6.8 | https://github.com/hyprwm/hyprlang | zenobit |  |
 | hyprlock | 0.9.2 | https://github.com/hyprwm/hyprlock | zenobit |  |
-| hyprmoncfg | 1.4.2 | https://github.com/crmne/hyprmoncfg/ | zenobit |  |
 | hyprpaper | 0.7.6 | https://github.com/hyprwm/hyprpaper | zenobit |  |
+| hyprmoncfg | 1.14.2 | https://github.com/crmne/hyprmoncfg/ | zenobit |  |
 | hyprpicker | 0.4.7 | https://github.com/hyprwm/hyprpicker | zenobit |  |
 | hyprpolkitagent | 0.1.3 | https://github.com/hyprwm/hyprpolkitagent | zenobit |  |
 | hyprsunset | 0.3.3 | https://github.com/hyprwm/hyprsunset | zenobit |  |
