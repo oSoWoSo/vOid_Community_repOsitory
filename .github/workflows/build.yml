@@ -60,6 +60,7 @@ on:
         - bulletty
         - bun
         - bun-bootstrap
+        - caerus
         - candy-icons-git
         - cc-switch
         - clitest
