@@ -180,6 +180,10 @@ on:
         - kando
         - lazyrsync
         - lemonade-server
+        - libbtrfs
+        - libbtrfs-devel
+        - libbtrfsutil
+        - libbtrfsutil-devel
         - libcprime
         - librewolf-bin
         - libspng

@@ -92,7 +92,7 @@ Create PR
 | aquamarine | 0.11.0 | https://github.com/hyprwm/aquamarine | zenobit |  |
 | brave-browser-bin | 1.93.138 | https://www.brave.com/ | zenobit | x86_64 aarch64 |
 | brow6el | 0.3.5 | https://brow6el.dev/ | zenobit | x86_64 |
-| btrfs-progs | 6.17.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
+| btrfs-progs | 7.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
 | bulletty | 0.3.0 | https://github.com/crocidb/bulletty | zenobit |  |
 | bun | 1.4.0 | https://bun.sh | zenobit | aarch64* x86_64* |
 | bun-bootstrap | 1.4.0 | https://bun.sh | zenobit | x86_64* aarch64* |
@@ -216,6 +216,10 @@ Create PR
 | kando | 2.3.1 | https://kando.menu | zenobit | x86_64 aarch64 |
 | lazyrsync | 0.3.0 | https://github.com/westpoint-io/lazyrsync | zenobit |  |
 | lemonade-server | 10.6.0 | https://github.com/lemonade-sdk/lemonade | zenobit |  |
+| libbtrfs | 7.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
+| libbtrfs-devel | 7.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
+| libbtrfsutil | 7.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
+| libbtrfsutil-devel | 7.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
 | libcprime | 5.0.1 | https://gitlab.com/cubocore/libcprime | zenobit |  |
 | librewolf-bin | 153.0.4.1 | https://librewolf.net | zenobit | x86_64 aarch64 |
 | libspng | 0.7.4 | https://libspng.org/ | zenobit |  |

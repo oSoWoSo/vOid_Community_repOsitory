@@ -157,6 +157,10 @@
 !/srcpkgs/kando
 !/srcpkgs/lazyrsync
 !/srcpkgs/lemonade-server
+!/srcpkgs/libbtrfs
+!/srcpkgs/libbtrfs-devel
+!/srcpkgs/libbtrfsutil
+!/srcpkgs/libbtrfsutil-devel
 !/srcpkgs/libcprime
 !/srcpkgs/librewolf-bin
 !/srcpkgs/libspng
