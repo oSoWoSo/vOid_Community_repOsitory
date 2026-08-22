@@ -2,21 +2,30 @@
 pkgname=waterfox-bin
 version=6.7.0
 revision=1
-archs="x86_64"
+archs="x86_64 aarch64"
 short_desc="Fast and private web browser"
 maintainer="zenobit <zen@osowoso.org>"
 license="MPL-2.0"
 homepage="https://www.waterfox.net"
 changelog="https://www.waterfox.net/docs/releases/${version}/"
-distfiles="https://cdn.waterfox.com/waterfox/releases/${version}/Linux_x86_64/waterfox-${version}.tar.bz2"
-checksum=c751a45242b2b4a84267815819e79d1ebd2eb85f1d5ad75528e54b96f8267851
-#nopie=yes
+distfiles="https://cdn.waterfox.com/waterfox/releases/${version}/Linux_x86_64/waterfox-${version}.tar.bz2>waterfox-${version}-x64.tar.bz2
+ https://cdn.waterfox.com/waterfox/releases/${version}/Linux_aarch64/waterfox-${version}.tar.bz2>waterfox-${version}-arm64.tar.bz2"
+checksum="c751a45242b2b4a84267815819e79d1ebd2eb85f1d5ad75528e54b96f8267851
+ cde7ec5c88a71a862ae6a765444e8f8c16fad0e3c60f4aaef49b5f7ffe53e26a"
+nopie=yes
+
+do_extract() {
+	case "$XBPS_TARGET_MACHINE" in
+		x86_64) a="x64" ;;
+		aarch64) a="arm64" ;;
+	esac
+	vextract "${XBPS_SRCDISTDIR}/${pkgname}-${version}/waterfox-${version}-${a}.tar.bz2"
+}
 
 do_install() {
 	vmkdir opt/waterfox
 	vcopy * opt/waterfox
-	vmkdir usr/bin
-	ln -rfs opt/waterfox/waterfox "${DESTDIR}/usr/bin/waterfox"
+	vbin ${FILESDIR}/waterfox
 	vinstall "${FILESDIR}/waterfox.desktop" 0644 usr/share/applications
 	for res in 16 32 48 64 128; do
 		vmkdir usr/share/icons/hicolor/${res}x${res}/apps
