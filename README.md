@@ -146,7 +146,7 @@ Create PR
 | CRC-vostock | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-xlibre | 1 | https://repo.osowoso.org | zenobit |  |
 | crush | 0.90.0 | https://github.com/charmbracelet/crush | zenobit |  |
-| cwal | 0.8.5 | https://github.com/nitinbhat972/cwal | zenobit |  |
+| cwal | 0.9.0 | https://github.com/nitinbhat972/cwal | zenobit |  |
 | dashy | 4.1.5 | https://github.com/Lissy93/dashy | zenobit |  |
 | desktop-tui | 0.3.2 | https://github.com/Julien-cpsn/desktop-tui | zenobit |  |
 | devedeng | 4.22.1 | https://www.rastersoft.com/programas/devede.html | Bella109 |  |

@@ -1,6 +1,6 @@
 # Template file for 'cwal'
 pkgname=cwal
-version=0.8.5
+version=0.9.0
 revision=1
 build_style=cmake
 hostmakedepends="pkg-config"
@@ -10,4 +10,4 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-only"
 homepage="https://github.com/nitinbhat972/cwal"
 distfiles="https://github.com/nitinbhat972/cwal/archive/refs/tags/v${version}.tar.gz"
-checksum=833eb641368061c5ea453cbde25e3175e3e32cfb68842e92290209f4bf99f459
+checksum=a60461081f1ffa6cab187cecea82edc5ff7883c1d0cfccbcf6c3b3838753a36f
