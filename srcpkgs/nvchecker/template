@@ -1,6 +1,6 @@
 # Template file for 'nvchecker'
 pkgname=nvchecker
-version=2.21
+version=2.22
 revision=1
 build_style=python3-pep517
 hostmakedepends="python3-setuptools"
@@ -11,7 +11,7 @@ maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/lilydjwg/nvchecker"
 distfiles="https://github.com/lilydjwg/nvchecker/archive/refs/tags/v${version}.tar.gz"
-checksum=a6ec8bfad285a1dc51fcc3fd5cfe4d5a6c96c36faabe86e447d3ee18459e89e7
+checksum=7f304f80cd383462225855fe7f735123117d9f8811d22c0bd8be8984f2c35e1a
 
 post_install() {
 	vlicense LICENSE
