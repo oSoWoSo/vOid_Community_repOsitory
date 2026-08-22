@@ -1,10 +1,10 @@
 # Template file for 'NuvioDesktop'
 pkgname=NuvioDesktop
 version=0.3.5
-revision=1
+revision=2
 archs="x86_64*"
 hostmakedepends="pkg-config"
-makedepends="openjdk21 openjdk21-jmods gradle"
+makedepends="openjdk21 openjdk21-jmods"
 depends="openjdk21"
 short_desc="Multi Media Hub - multiple sources for watching Series, Movies and Anime"
 maintainer="Bella109 <belladev109@proton.me>"
@@ -15,7 +15,8 @@ checksum=24e0ad1ea115d7672bc3264f4782776a86e0994f91cae8d5688c0a1f5efb1167
 make_check=no # No test targets
 
 do_build() {
-	# Use --no-daemon to avoid native file watcher that requires glibc
+	# Use gradle wrapper with --no-daemon to avoid native file watcher that requires glibc
+	# Using wrapper (not system gradle) because the project requires Gradle 8.x for AGP compatibility
 	./gradlew --no-daemon :composeApp:packageUberJarForCurrentOS
 }
 

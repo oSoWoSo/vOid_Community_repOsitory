@@ -111,6 +111,7 @@ on:
         - CRC-xlibre
         - crush
         - cwal
+        - dankcalendar
         - dashy
         - desktop-tui
         - devedeng
