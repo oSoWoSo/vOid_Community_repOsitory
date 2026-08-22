@@ -1,0 +1,16 @@
+# Template file for 'DankMaterialShell'
+pkgname=DankMaterialShell
+version=1.5.3
+revision=1
+build_style=gnu-makefile
+hostmakedepends="go"
+short_desc="Desktop shell for wayland compositors built with Quickshell & GO"
+maintainer="zenobit <zen@osowoso.org>"
+license="MIT"
+homepage="https://github.com/AvengeMedia/DankMaterialShell"
+distfiles="https://github.com/AvengeMedia/DankMaterialShell/archive/refs/tags/v${version}.tar.gz"
+checksum=2d665870f7019700fb38d59d043202e298e1aad1d3f1cb96360a75acbd3be9ca
+
+post_install() {
+	vlicense LICENSE
+}
