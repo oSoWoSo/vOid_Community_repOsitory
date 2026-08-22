@@ -284,7 +284,7 @@ Create PR
 | rebos | 3.5.2 | https://gitlab.com/Oglo12/rebos | zenobit |  |
 | rgc | 1.2.0 | https://github.com/flameshikari/rgc | zenobit |  |
 | runkit | 1.4.0 | https://github.com/Letdown2491/runkit | zenobit |  |
-| rustdesk | 1.4.8 | https://github.com/rustdesk/rustdesk | Bella109 | x86_64* |
+| rustdesk | 1.4.9 | https://github.com/rustdesk/rustdesk | Bella109 | x86_64* |
 | sdkmanager | 0.7.0 | https://gitlab.com/fdroid/sdkmanager | zenobit |  |
 | seamonkey-bin | 2.53.24 | https://www.seamonkey-project.org/ | zenobit | x86_64 |
 | sfizz-cli | 1.2.3 | https://sfztools.github.io/sfizz/ | Trve_AY |  |

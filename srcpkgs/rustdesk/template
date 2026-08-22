@@ -1,6 +1,6 @@
 # Template file for 'rustdesk'
 pkgname=rustdesk
-version=1.4.8
+version=1.4.9
 revision=1
 archs="x86_64*"
 create_wrksrc=yes
@@ -19,7 +19,7 @@ homepage="https://github.com/rustdesk/rustdesk"
 distfiles="https://github.com/rustdesk/rustdesk/archive/refs/tags/${version}.tar.gz
 https://raw.githubusercontent.com/c-smile/sciter-sdk/master/bin.lnx/x64/libsciter-gtk.so
 https://github.com/rustdesk/hbb_common/archive/387603f47cbb15c0d3dc3d67ae3396d3eb707daf.tar.gz"
-checksum="ab424b48861cb74ca84e847564ca071a7c7a393a2ab3818a8d0a095e290caa85
+checksum="1769fcc51751aab91bc0cfa691723722f51d3693ce3ddea3d92cfb1c319100e0
  a1682fbf55e004f1862d6ace31b5220121d20906bdbf308d0a9237b451e4db86
  8b2155e81c1fcdeaca6c02a0ed88af7701b2e07f513b8bba8a62ab1e0053672d"
 skip_extraction="libsciter-gtk.so"
