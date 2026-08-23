@@ -1,0 +1,18 @@
+# Template file for 'cliamp'
+pkgname=cliamp
+version=1.63.2
+revision=1
+build_style=go
+go_import_path=github.com/bjarneo/cliamp
+hostmakedepends="pkg-config"
+makedepends="alsa-lib-devel libvorbis-devel libogg-devel libflac-devel mpg123-devel"
+short_desc="Terminal music player inspired by winamp"
+maintainer="zenobit <zen@osowoso.org>"
+license="MIT"
+homepage="https://github.com/bjarneo/cliamp"
+distfiles="https://github.com/bjarneo/cliamp/archive/refs/tags/v${version}.tar.gz"
+checksum=968ff98c1e49bae8a0ce63acf5c77a9621ef70756a048e3df5e79454b82a9eef
+
+post_install() {
+	vlicense LICENSE
+}
