@@ -1,11 +1,12 @@
 # Template file for 'cliamp'
 pkgname=cliamp
 version=1.63.2
-revision=1
+revision=2
 build_style=go
 go_import_path=github.com/bjarneo/cliamp
 hostmakedepends="pkg-config"
 makedepends="alsa-lib-devel libvorbis-devel libogg-devel libflac-devel mpg123-devel"
+depends="$(vopt_if yt yt-dlp) $(vopt_if ff ffmpeg6)"
 short_desc="Terminal music player inspired by winamp"
 maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
@@ -13,6 +14,15 @@ homepage="https://github.com/bjarneo/cliamp"
 distfiles="https://github.com/bjarneo/cliamp/archive/refs/tags/v${version}.tar.gz"
 checksum=968ff98c1e49bae8a0ce63acf5c77a9621ef70756a048e3df5e79454b82a9eef
 
+build_options="ff yt"
+build_options_default="ff yt"
+desc_option_ff="Enable AAC, ALAC, Opus, WMA playback support"
+desc_option_yt="Enable YouTube, SoundCloud, Bandcamp, Bilibili, NetEase Cloud Music support"
+
 post_install() {
 	vlicense LICENSE
+	vdoc README.md
+	for doc in docs/*; do
+		vdoc "$doc"
+	done
 }
