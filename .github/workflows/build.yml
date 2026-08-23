@@ -119,7 +119,6 @@ on:
         - desktop-tui
         - devedeng
         - distrobox
-        - dooble
         - dragonfly-reverb
         - dragonfly-reverb-clap
         - dragonfly-reverb-doc
