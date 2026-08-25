@@ -163,7 +163,7 @@ Create PR
 | dragonfly-reverb-standalone | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
 | dragonfly-reverb-vst | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
 | dragonfly-reverb-vst3 | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
-| drako | 0.3.2 | https://github.com/lucky7xz/drako | zenobit |  |
+| drako | 0.3.3 | https://github.com/lucky7xz/drako | zenobit |  |
 | easybashgui | 15.0.2 | https://github.com/BashGui/easybashgui | zenobit |  |
 | faugus-launcher | 2.1.0 | https://github.com/Faugus/faugus-launcher | zenobit |  |
 | forgejo-runner | 13.0.0 | https://code.forgejo.org/forgejo/runner | zenobit |  |
