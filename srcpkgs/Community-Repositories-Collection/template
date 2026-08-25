@@ -1,7 +1,7 @@
 # Template file for 'Community-Repositories-Collection'
 pkgname=Community-Repositories-Collection
 version=1
-revision=7
+revision=8
 metapackage=yes
 short_desc="CRC: Collection of community repositories"
 maintainer="zenobit <zen@osowoso.org>"
@@ -180,6 +180,17 @@ CRC-split_package() {
 		vmkdir etc/xbps.d
 		echo "repository=${homepage}/-/raw/master/binpkgs" > \
 			${PKGDESTDIR}/etc/xbps.d/20-CRC-split.conf
+	}
+}
+
+CRC-voiders_package() {
+	archs="aarch64* x86_64*"
+	short_desc="${short_desc} - Voiders repository"
+	homepage="https://codeberg.org/voiders-community/repository"
+	pkg_install() {
+		vmkdir etc/xbps.d
+		echo "repository=https://repo.voiders.dev" > \
+			${PKGDESTDIR}/etc/xbps.d/20-CRC-voiders.conf
 	}
 }
 

@@ -145,6 +145,7 @@ Create PR
 | CRC-sofijacom | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-sonicde | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-split | 1 | https://repo.osowoso.org | zenobit |  |
+| CRC-voiders | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-vostock | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-xlibre | 1 | https://repo.osowoso.org | zenobit |  |
 | crush | 0.90.0 | https://github.com/charmbracelet/crush | zenobit |  |
