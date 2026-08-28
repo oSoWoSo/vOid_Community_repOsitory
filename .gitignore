@@ -160,6 +160,7 @@
 !/srcpkgs/kando
 !/srcpkgs/lazyrsync
 !/srcpkgs/lemonade-server
+!/srcpkgs/lgogdownloader
 !/srcpkgs/libbtrfs
 !/srcpkgs/libbtrfs-devel
 !/srcpkgs/libbtrfsutil

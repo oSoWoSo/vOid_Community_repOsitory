@@ -183,6 +183,7 @@ on:
         - kando
         - lazyrsync
         - lemonade-server
+        - lgogdownloader
         - libbtrfs
         - libbtrfs-devel
         - libbtrfsutil

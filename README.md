@@ -219,6 +219,7 @@ Create PR
 | kando | 2.3.1 | https://kando.menu | zenobit | x86_64 aarch64 |
 | lazyrsync | 0.3.0 | https://github.com/westpoint-io/lazyrsync | zenobit |  |
 | lemonade-server | 10.6.0 | https://github.com/lemonade-sdk/lemonade | zenobit |  |
+| lgogdownloader | 3.18 | https://github.com/Sude-/lgogdownloader | zenobit |  |
 | libbtrfs | 7.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
 | libbtrfs-devel | 7.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
 | libbtrfsutil | 7.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
