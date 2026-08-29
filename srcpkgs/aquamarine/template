@@ -1,6 +1,6 @@
 # Template file for 'aquamarine'
 pkgname=aquamarine
-version=0.11.0
+version=0.14.0
 revision=1
 build_style=cmake
 configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
@@ -13,7 +13,7 @@ license="BSD-3-Clause"
 homepage="https://github.com/hyprwm/aquamarine"
 changelog="https://github.com/hyprwm/aquamarine/releases"
 distfiles="https://github.com/hyprwm/aquamarine/archive/refs/tags/v${version}.tar.gz"
-checksum=d3c74babe4321a31fba0db2c8c27ea4436876c2617cf69f57c1813095b87ff9b
+checksum=5dcf0b17f7dd51539fd7e79d68484f04240b3b63cf9f5f21d5b6dea0088168f9
 make_check=no # cant run in sandbox
 
 post_install() {
