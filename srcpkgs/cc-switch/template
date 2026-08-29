@@ -1,6 +1,6 @@
 # Template file for 'cc-switch'
 pkgname=cc-switch
-version=3.20.0
+version=3.20.1
 revision=1
 archs="x86_64* aarch64*"
 hostmakedepends="nodejs cargo python3 xdg-utils pnpm pkg-config"
@@ -11,7 +11,7 @@ maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/farion1231/cc-switch"
 distfiles="https://github.com/farion1231/cc-switch/archive/refs/tags/v${version}.tar.gz"
-checksum=fca70ae68af06f726a49b31c7febeb19ce8f486456ef195c5953baeb035366d9
+checksum=8486e81e602c0d87729e4cda7a46631c9c1913b78ed400cd21bb50f4d63431eb
 
 _setup_env() {
 	if [ -n "$CROSS_BUILD" ]; then
@@ -29,8 +29,7 @@ _setup_env() {
 }
 
 pre_build() {
-	rm -f pnpm-lock.yaml
-	pnpm install --ignore-scripts
+	pnpm install --frozen-lockfile --ignore-scripts
 	if [ -n "$CROSS_BUILD" ]; then
 		_setup_env
 		cargo fetch --locked --target ${RUST_TARGET} --manifest-path src-tauri/Cargo.toml
@@ -48,7 +47,7 @@ do_build() {
 }
 
 do_check() {
-	pnpm run test:unit || true
+	pnpm run test:unit
 }
 
 do_install() {
