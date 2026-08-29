@@ -159,6 +159,7 @@ on:
         - graphite-gtk-theme-nord-light-compact
         - gum-panel
         - helium-browser-bin
+        - hister
         - hyprcursor
         - hyprdynamicmonitors
         - hyprgraphics
