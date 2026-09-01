@@ -1,6 +1,6 @@
 # Template file for 'forgejo-runner'
 pkgname=forgejo-runner
-version=13.0.0
+version=13.1.0
 revision=1
 build_style=go
 go_import_path="code.forgejo.org/forgejo/runner/v13"
@@ -12,5 +12,5 @@ license="GPL-3.0-or-later"
 homepage="https://code.forgejo.org/forgejo/runner"
 changelog="https://code.forgejo.org/forgejo/runner/raw/branch/main/RELEASE-NOTES.md"
 distfiles="https://code.forgejo.org/forgejo/runner/archive/v${version}.tar.gz"
-checksum=ce4b18a2e31ba50ec686aa0bc8db98d52e35db1c8fc86ad0cc1fbc92e24693d8
+checksum=bdece01a00354bb29de4e36b6c72afae9ed571ed1fba1905d01bc8961de41819
 make_check=no # Investigating
