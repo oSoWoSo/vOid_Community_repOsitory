@@ -90,7 +90,7 @@ Create PR
 |:--------|:--------|:---------|:-----------|:------|
 | android-sdk | 36 | https://developer.android.com/studio | zenobit | x86_64 |
 | aquamarine | 0.14.0 | https://github.com/hyprwm/aquamarine | zenobit |  |
-| brave-browser-bin | 1.94.116 | https://www.brave.com/ | zenobit | x86_64 aarch64 |
+| brave-browser-bin | 1.93.138 | https://www.brave.com/ | zenobit | x86_64 aarch64 |
 | brow6el | 0.3.5 | https://brow6el.dev/ | zenobit | x86_64 |
 | btrfs-progs | 7.1 | https://btrfs.wiki.kernel.org/index.php/Main_Page | Enno Boland |  |
 | bulletty | 0.3.0 | https://github.com/crocidb/bulletty | zenobit |  |
@@ -149,7 +149,7 @@ Create PR
 | CRC-vostock | 1 | https://repo.osowoso.org | zenobit |  |
 | CRC-xlibre | 1 | https://repo.osowoso.org | zenobit |  |
 | crush | 0.90.0 | https://github.com/charmbracelet/crush | zenobit |  |
-| cwal | 0.9.0 | https://github.com/nitinbhat972/cwal | zenobit |  |
+| cwal | 0.10.1 | https://github.com/nitinbhat972/cwal | zenobit |  |
 | dankcalendar | 0.3.1 | https://github.com/AvengeMedia/dankcalendar | zenobit |  |
 | DankMaterialShell | 1.5.3 | https://github.com/AvengeMedia/DankMaterialShell | zenobit |  |
 | dashy | 4.1.5 | https://github.com/Lissy93/dashy | zenobit |  |
@@ -207,8 +207,8 @@ Create PR
 | hyprland-qt-support | 0.1.0 | https://github.com/hyprwm/hyprland-qt-support | zenobit |  |
 | hyprlang | 0.6.8 | https://github.com/hyprwm/hyprlang | zenobit |  |
 | hyprlock | 0.9.2 | https://github.com/hyprwm/hyprlock | zenobit |  |
-| hyprpaper | 0.7.6 | https://github.com/hyprwm/hyprpaper | zenobit |  |
 | hyprmoncfg | 1.14.2 | https://github.com/crmne/hyprmoncfg/ | zenobit |  |
+| hyprpaper | 0.7.6 | https://github.com/hyprwm/hyprpaper | zenobit |  |
 | hyprpicker | 0.4.7 | https://github.com/hyprwm/hyprpicker | zenobit |  |
 | hyprpolkitagent | 0.1.3 | https://github.com/hyprwm/hyprpolkitagent | zenobit |  |
 | hyprsunset | 0.3.3 | https://github.com/hyprwm/hyprsunset | zenobit |  |
