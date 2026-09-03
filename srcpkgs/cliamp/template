@@ -1,23 +1,26 @@
 # Template file for 'cliamp'
 pkgname=cliamp
-version=1.63.2
-revision=2
+version=2.0.1
+revision=1
 build_style=go
 go_import_path=github.com/bjarneo/cliamp
+go_ldflags="-X main.version=v${version}"
 hostmakedepends="pkg-config"
 makedepends="alsa-lib-devel libvorbis-devel libogg-devel libflac-devel mpg123-devel"
-depends="$(vopt_if yt yt-dlp) $(vopt_if ff ffmpeg6)"
+depends="$(vopt_if yt yt-dlp) $(vopt_if ff ffmpeg6) $(vopt_if pa pulseaudio-alsa) $(vopt_if pw alsa-pipewire)"
 short_desc="Terminal music player inspired by winamp"
 maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/bjarneo/cliamp"
 distfiles="https://github.com/bjarneo/cliamp/archive/refs/tags/v${version}.tar.gz"
-checksum=968ff98c1e49bae8a0ce63acf5c77a9621ef70756a048e3df5e79454b82a9eef
+checksum=2c5885665dba5ed2e8dc156bce64751199a92efed7f63959c65e985759b73732
 
-build_options="ff yt"
-build_options_default="ff yt"
+build_options="ff yt pa pw"
+build_options_default="ff yt pw"
 desc_option_ff="Enable AAC, ALAC, Opus, WMA playback support"
 desc_option_yt="Enable YouTube, SoundCloud, Bandcamp, Bilibili, NetEase Cloud Music support"
+desc_option_pa="Use pulseaudio-alsa backend"
+desc_option_pw="Use alsa-pipewire backend"
 
 post_install() {
 	vlicense LICENSE
