@@ -130,6 +130,8 @@ on:
         - drako
         - easybashgui
         - faugus-launcher
+        - fcitx5-lotus
+        - fcitx5-lotus-settings
         - forgejo-runner
         - FreeTube
         - ftxui
