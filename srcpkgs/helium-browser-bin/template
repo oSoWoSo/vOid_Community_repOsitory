@@ -1,6 +1,6 @@
 # Template file for 'helium-browser-bin'
 pkgname=helium-browser-bin
-version=0.16.3.1
+version=0.16.4.1
 revision=1
 archs="x86_64 aarch64"
 #depends="gtk+3 libXScrnSaver nss alsa-lib"
@@ -10,8 +10,8 @@ license="GPL-3.0-only, BSD-3-Clause"
 homepage="https://helium.computer"
 distfiles="https://github.com/imputnet/helium-linux/releases/download/${version}/helium-${version}-x86_64_linux.tar.xz
  https://github.com/imputnet/helium-linux/releases/download/${version}/helium-${version}-arm64_linux.tar.xz"
-checksum="634edfba4d02eab5048f3e8f1c644c2437c12fb4ccdb19608172ad1b8956cbeb
- 2162f7ec2b2a3a2025ac9756c7b0d7971abf04fc85cf343fd75c9f56f6e60ca3"
+checksum="683edba74ab8f6ae0ac7272a3c27f9ef945690629e1525370887b17815cedcbe
+ 397e9b73d9805fb5aa1fd057c19efdb14c451dfb6ee5bfa53e630365d93dae0e"
 replaces="helium-browser-arm-bin>=0"
 
 do_extract() {
