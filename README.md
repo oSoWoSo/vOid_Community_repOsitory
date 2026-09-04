@@ -197,7 +197,7 @@ Create PR
 | graphite-gtk-theme-nord-light-compact | 2025.07.06 | https://github.com/vinceliuice/Graphite-gtk-theme | zenobit |  |
 | gum-panel | 2.0.0.001 | https://codeberg.org/oSoWoSo/gum | zenobit |  |
 | helium-browser-bin | 0.16.4.1 | https://helium.computer | zenobit | x86_64 aarch64 |
-| hister | 0.18.0 | https://github.com/asciimoo/hister | zenobit |  |
+| hister | 0.19.0 | https://github.com/asciimoo/hister | zenobit |  |
 | hyprcursor | 0.1.13 | https://github.com/hyprwm/hyprcursor | zenobit |  |
 | hyprdynamicmonitors | 1.4.0 | https://github.com/fiffeek/hyprdynamicmonitors | zenobit |  |
 | hyprgraphics | 0.3.0 | https://github.com/hyprwm/hyprgraphics | zenobit |  |
