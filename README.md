@@ -165,7 +165,7 @@ Create PR
 | dragonfly-reverb-vst3 | 3.2.10 | https://michaelwillis.github.io/dragonfly-reverb | Trve_AY |  |
 | drako | 0.3.3 | https://github.com/lucky7xz/drako | zenobit |  |
 | easybashgui | 15.0.2 | https://github.com/BashGui/easybashgui | zenobit |  |
-| faugus-launcher | 2.2.0 | https://github.com/Faugus/faugus-launcher | zenobit |  |
+| faugus-launcher | 2.2.2 | https://github.com/Faugus/faugus-launcher | zenobit |  |
 | fcitx5-lotus | 3.5.8 | https://github.com/LotusInputMethod/fcitx5-lotus | Coolllyn |  |
 | fcitx5-lotus-settings | 3.5.8 | https://github.com/LotusInputMethod/fcitx5-lotus | Coolllyn |  |
 | forgejo-runner | 13.1.0 | https://code.forgejo.org/forgejo/runner | zenobit |  |
