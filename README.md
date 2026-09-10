@@ -172,8 +172,8 @@ Create PR
 | drako | 0.4.0 | [home](https://github.com/lucky7xz/drako) | zenobit |  | Grid-based, customizable TUI-Deck launcher |
 | easybashgui | 15.0.2 | [home](https://github.com/BashGui/easybashgui) | zenobit |  | Bash functions library that aims to give simple GUI functions |
 | faugus-launcher | 2.3.0 | [home](https://github.com/Faugus/faugus-launcher) | zenobit |  | Simple and lightweight app for running Windows games using UMU-Launcher |
-| fcitx5-lotus | 3.5.8 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn |  | Vietnamese input method for fcitx5 |
-| fcitx5-lotus-settings | 3.5.8 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn |  | Vietnamese input method for fcitx5 |
+| fcitx5-lotus | 3.5.9 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn |  | Fcitx5 - Vietnamese IME |
+| fcitx5-lotus-settings | 3.5.9 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn |  | Fcitx5 - Vietnamese IME |
 | flyline | 1.7.1 | [home](https://github.com/HalFrgrd/flyline) | zenobit |  | Bash plugin to replace readline for a modern line editing experience |
 | forgejo-runner | 13.1.0 | [home](https://code.forgejo.org/forgejo/runner) | zenobit |  | Continuous integration for Forgejo |
 | FreeTube | 0.25.1 | [home](https://github.com/FreeTubeApp/FreeTube) | Bella109 | x86_64 | Client for watching YouTube Videos |
