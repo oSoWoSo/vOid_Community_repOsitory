@@ -963,28 +963,22 @@ _pkg_version() {
 
 do_to_void() {
 	[ $# -gt 0 ] || fatal 'Usage: ocoman to-void <package...>'
-	_prev=$(git -C "$CLONE_DEST" rev-parse --abbrev-ref HEAD)
-	git -C "$CLONE_DEST" checkout master || fatal 'failed to switch to master'
 	for _pkg in "$@"; do
 		git -C "$CLONE_DEST" checkout "$OCO_BRANCH" -- "srcpkgs/${_pkg}/" \
 			|| { _g "  skipping ${_pkg} (not found in ${OCO_BRANCH})"; continue; }
 		_ver=$(_pkg_version "$_pkg")
 		git -C "$CLONE_DEST" commit -m "New package: ${_pkg}-${_ver}"
 	done
-	git -C "$CLONE_DEST" checkout "$_prev"
 }
 
 do_to_oco() {
 	[ $# -gt 0 ] || fatal 'usage: ocoman to-oco <package...>'
-	_prev=$(git -C "$CLONE_DEST" rev-parse --abbrev-ref HEAD)
-	git -C "$CLONE_DEST" checkout "$OCO_BRANCH" || fatal "Failed to switch to ${OCO_BRANCH}!"
 	for _pkg in "$@"; do
 		git -C "$CLONE_DEST" checkout master -- "srcpkgs/${_pkg}/" \
 			|| { _g "  skipping ${_pkg} (not found in master)"; continue; }
 		_ver=$(_pkg_version "$_pkg")
 		git -C "$CLONE_DEST" commit -m "${_pkg} ${_ver}"
 	done
-	git -C "$CLONE_DEST" checkout "$_prev"
 }
 
 do_shlibs() {
@@ -1093,7 +1087,7 @@ main() {
 		init|setup)           set -- -i ;;
 		add-oco)              set -- -o ;;
 		to-void)              shift; do_to_void "$@"; return 0 ;;
-		to-oco)               shift; do_to_oco  "$@"; return 0 ;;
+		to-oco)               shift; do_to_oco "$@"; return 0 ;;
 		shlibs)               set -- -l ;;
 		test)                 shift; set -- -t "$@" ;;
 	esac
