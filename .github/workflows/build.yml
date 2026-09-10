@@ -855,6 +855,15 @@ jobs:
           python3 extra/src/gen-feed.py update \
             extra/src/feed.xml extra/results "$RUN_ID" "$(date -u +%Y-%m-%d)"
 
+      - name: Upload RSS feed to WebDAV
+        if: always()
+        env:
+          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
+        run: |
+          curl -s -T extra/src/feed.xml \
+            "https://repo.osowoso.org/_webdav/feed.xml" \
+            -u ":${SURFER_TOKEN}"
+
       - name: Regenerate list, README, and workflow
         run: |
           cd extra

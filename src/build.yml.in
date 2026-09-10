@@ -585,16 +585,17 @@ jobs:
         with:
           path: extra/results
 
-      - name: Update RSS feed from build results
+      - name: Update RSS
         if: always()
         env:
           RUN_ID: ${{ github.run_id }}
+          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
         run: |
           python3 extra/src/gen-feed.py update \
             extra/src/feed.xml extra/results "$RUN_ID" "$(date -u +%Y-%m-%d)"
-
-      - name: Regenerate list, README, and workflow
-        run: |
+          curl -s -T extra/src/feed.xml \
+            "https://repo.osowoso.org/_webdav/feed.xml" \
+            -u ":${SURFER_TOKEN}"
           cd extra
           ./ocoman -u
 
