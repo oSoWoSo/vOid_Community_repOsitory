@@ -335,7 +335,7 @@ concurrency:
 
 jobs:
   detect:
-    name: Detect packages
+    name: detect
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -479,18 +479,51 @@ jobs:
           }
           for _p in $packages; do _topo_visit "$_p"; done
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "### Build order with dependencies" >> "$GITHUB_STEP_SUMMARY"
+          echo "### build order" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           _ord=1
           for _p in $_topo_sorted; do
+            # Subpackage template-symlinks are reported under their parent below;
+            # skip them here unless their parent is not in the detected set.
+            if [ -L "srcpkgs/$_p" ]; then
+              _p_parent=$(readlink "srcpkgs/$_p")
+              case " $_topo_sorted " in *" $_p_parent "*) continue ;; esac
+            fi
             _deps=$(_topo_pkg_deps "$_p" | sort -u | tr '\n' ' ' | sed 's/ $//')
             if [ -n "$_deps" ]; then
               echo "${_ord}. **${_p}** ← ${_deps}" >> "$GITHUB_STEP_SUMMARY"
             else
-              echo "${_ord}. ${_p}" >> "$GITHUB_STEP_SUMMARY"
+              echo "${_ord}. **${_p}**" >> "$GITHUB_STEP_SUMMARY"
             fi
             _ord=$((_ord + 1))
           done
+
+          # Subpackages = symlinks in srcpkgs/ pointing at a listed package's template dir,
+          # grouped under their parent package.
+          _sub_parents=""
+          for _p in $_topo_sorted; do
+            [ -L "srcpkgs/$_p" ] && continue
+            for _sp in srcpkgs/*; do
+              [ -L "$_sp" ] || continue
+              [ "$(readlink "$_sp")" = "$_p" ] && { _sub_parents="$_sub_parents $_p"; break; }
+            done
+          done
+          if [ -n "$_sub_parents" ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "### subpackages" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            for _p in $_sub_parents; do
+              _children=""
+              for _sp in srcpkgs/*; do
+                [ -L "$_sp" ] || continue
+                [ "$(readlink "$_sp")" = "$_p" ] && _children="$_children ${_sp##*/}"
+              done
+              echo "**${_p}**:" >> "$GITHUB_STEP_SUMMARY"
+              for _c in $_children; do
+                echo "- $_c" >> "$GITHUB_STEP_SUMMARY"
+              done
+            done
+          fi
 
           if [ -n "$removed" ]; then
             echo "" >> "$GITHUB_STEP_SUMMARY"
@@ -796,7 +829,7 @@ jobs:
           fi
 
   update-status:
-    name: Update README and RSS feed
+    name: update
     needs: [detect, build]
     if: always() && (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest

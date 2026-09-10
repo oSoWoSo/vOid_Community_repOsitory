@@ -1,4 +1,4 @@
-name: Update README and build workflow
+name: update files
 on:
   push:
     paths:
