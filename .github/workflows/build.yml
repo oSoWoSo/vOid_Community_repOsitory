@@ -343,7 +343,7 @@ jobs:
       removed: ${{ steps.detect.outputs.removed }}
       matrix: ${{ steps.detect.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # Need full history so we can diff against arbitrary base SHAs
           # (multi-commit pushes, force-pushes, PR bases).
@@ -627,7 +627,7 @@ jobs:
 
     steps:
       - name: Checkout repo (PR head)
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           path: extra
@@ -701,7 +701,7 @@ jobs:
 
     steps:
       - name: Checkout this repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: extra
 
@@ -735,7 +735,7 @@ jobs:
 
       - name: Upload per-arch build results
         if: always() && needs.detect.outputs.packages != ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-results-${{ matrix.config.arch }}
           path: ${{ runner.temp }}/results.tsv
@@ -803,14 +803,14 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout this repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: extra
           fetch-depth: 0
 
       - name: Download build results
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: extra/results
 
