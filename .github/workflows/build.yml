@@ -71,7 +71,6 @@ on:
         - Community-Repositories-Collection
         - corekeyboard
         - cosign
-        - cosmic
         - cosmic-applets
         - cosmic-applibrary
         - cosmic-bg
@@ -269,7 +268,6 @@ on:
         - river-compositor
         - runkit
         - rustdesk
-        - sdbus-c++
         - sdkmanager
         - seamonkey-bin
         - sfizz-cli
@@ -844,8 +842,8 @@ jobs:
             echo "No build-status changes to commit"
             exit 0
           fi
-          git config user.name "OCO build-bot"
-          git config user.email "build@users.noreply.github.com"
+          git config user.name "oSoWoSo-bot"
+          git config user.email "mail@osowoso.org"
           git commit -m "CI: update build status"
           git pull --rebase
           git push

@@ -1402,27 +1402,27 @@
   "drako": {
     "arches": {
       "aarch64": {
-        "run_date": "2026-08-25",
-        "run_id": 32893940104,
+        "run_date": "2026-09-10",
+        "run_id": 34510977747,
         "status": "ok"
       },
       "aarch64-musl": {
-        "run_date": "2026-08-25",
-        "run_id": 32893940104,
+        "run_date": "2026-09-10",
+        "run_id": 34510977747,
         "status": "ok"
       },
       "x86_64": {
-        "run_date": "2026-08-25",
-        "run_id": 32893940104,
+        "run_date": "2026-09-10",
+        "run_id": 34510977747,
         "status": "ok"
       },
       "x86_64-musl": {
-        "run_date": "2026-08-25",
-        "run_id": 32893940104,
+        "run_date": "2026-09-10",
+        "run_id": 34510977747,
         "status": "ok"
       }
     },
-    "version": "0.3.3"
+    "version": "0.4.0"
   },
   "faugus-launcher": {
     "arches": {
@@ -3132,24 +3132,24 @@
   "vbm": {
     "arches": {
       "aarch64": {
-        "run_date": "2026-08-06",
-        "run_id": 31084353246,
-        "status": "fail"
+        "run_date": "2026-09-10",
+        "run_id": 34512714509,
+        "status": "ok"
       },
       "aarch64-musl": {
-        "run_date": "2026-08-06",
-        "run_id": 31084353246,
+        "run_date": "2026-09-10",
+        "run_id": 34512714509,
         "status": "ok"
       },
       "x86_64": {
-        "run_date": "2026-08-06",
-        "run_id": 31084353246,
-        "status": "fail"
+        "run_date": "2026-09-10",
+        "run_id": 34512714509,
+        "status": "ok"
       },
       "x86_64-musl": {
-        "run_date": "2026-08-06",
-        "run_id": 31084353246,
-        "status": "fail"
+        "run_date": "2026-09-10",
+        "run_id": 34512714509,
+        "status": "ok"
       }
     },
     "version": "1.0.2"
