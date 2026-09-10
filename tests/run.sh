@@ -358,6 +358,8 @@ if command -v python3 >/dev/null 2>&1; then
 	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cell beta "$_bs_wd/status.json" | tr '\n' ',')" 'fail,,skip,,42,2026-09-10,2.0,'
 	it 'cell: unknown pkg all empty'
 	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cell ghost "$_bs_wd/status.json" | tr '\n' ',')" ',,,,,,,'
+	it 'cells-all: one line per pkg, sorted, tab->|'
+	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cells-all "$_bs_wd/status.json" | tr '\t' '|' | tr '\n' ',')" 'alpha|ok||ok||42|2026-09-10|1.0,beta|fail||skip||42|2026-09-10|2.0,'
 	python3 "$SCRIPT_DIR/src/build-status.py" prune "$_bs_wd/status.json" alpha >/dev/null
 	it 'prune: removes entry'
 	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cell alpha "$_bs_wd/status.json" | tr '\n' ',')" ',,,,,,,'

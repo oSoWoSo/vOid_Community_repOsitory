@@ -27,6 +27,15 @@ Subcommands:
             status_x86_64, status_x86_64_musl,
             status_aarch64, status_aarch64_musl, run_id, run_date, built_version
         An empty status field means "no data yet".
+
+    cells-all STATUS_FILE
+        Same per-package info as `cell`, but for every package at once,
+        one tab-separated line per package:
+            PKG\tstatus_x86_64\tstatus_x86_64_musl\tstatus_aarch64\t
+            status_aarch64_musl\trun_id\trun_date\tbuilt_version
+        Packages are sorted by name. This exists so callers can load the
+        whole status file with a single Python invocation instead of
+        spawning one process (and one full JSON parse) per package.
 """
 
 from __future__ import annotations
@@ -155,6 +164,34 @@ def cell(pkg: str, status_file: str) -> int:
     return 0
 
 
+def cells_all(status_file: str) -> int:
+    data = _load_status(status_file)
+    for pkg in sorted(data.keys()):
+        rec = data.get(pkg)
+        out = [""] * 4
+        latest = 0
+        latest_date = ""
+        built_version = ""
+        if isinstance(rec, dict) and isinstance(rec.get("arches"), dict):
+            built_version = rec.get("version", "")
+            arches = rec["arches"]
+            for i, arch in enumerate(ARCHES):
+                entry = arches.get(arch)
+                if not isinstance(entry, dict):
+                    continue
+                out[i] = entry.get("status", "")
+                rid = _run_id_of(entry)
+                if rid > latest:
+                    latest = rid
+                    latest_date = entry.get("run_date", "")
+        row = [pkg] + out
+        row.append(str(latest) if latest else "")
+        row.append(latest_date)
+        row.append(built_version)
+        print("\t".join(row))
+    return 0
+
+
 def main() -> int:
     args = sys.argv[1:]
     if not args:
@@ -167,6 +204,8 @@ def main() -> int:
         return prune(args[0], args[1:])
     if cmd == "cell" and len(args) == 2:
         return cell(*args)
+    if cmd == "cells-all" and len(args) == 1:
+        return cells_all(*args)
     if cmd == "cell" and len(args) < 2:
         sys.stderr.write(f"Usage: {sys.argv[0]} cell PKG STATUS_FILE\n")
         return 2

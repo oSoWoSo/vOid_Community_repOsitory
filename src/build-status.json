@@ -1427,27 +1427,27 @@
   "faugus-launcher": {
     "arches": {
       "aarch64": {
-        "run_date": "2026-09-05",
-        "run_id": 33988032485,
+        "run_date": "2026-09-10",
+        "run_id": 34523401922,
         "status": "ok"
       },
       "aarch64-musl": {
-        "run_date": "2026-09-05",
-        "run_id": 33988032485,
+        "run_date": "2026-09-10",
+        "run_id": 34523401922,
         "status": "ok"
       },
       "x86_64": {
-        "run_date": "2026-09-05",
-        "run_id": 33988032485,
+        "run_date": "2026-09-10",
+        "run_id": 34523401922,
         "status": "ok"
       },
       "x86_64-musl": {
-        "run_date": "2026-09-05",
-        "run_id": 33988032485,
+        "run_date": "2026-09-10",
+        "run_id": 34523401922,
         "status": "ok"
       }
     },
-    "version": "2.2.2"
+    "version": "2.3.0"
   },
   "fcitx5-lotus": {
     "arches": {
