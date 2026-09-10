@@ -170,7 +170,7 @@ Create PR
 | dragonfly-reverb-standalone | 3.2.10 | [home](https://michaelwillis.github.io/dragonfly-reverb) |  |  |  |  |  | Trve_AY |  | Collection of reverbs |
 | dragonfly-reverb-vst | 3.2.10 | [home](https://michaelwillis.github.io/dragonfly-reverb) |  |  |  |  |  | Trve_AY |  | Collection of reverbs |
 | dragonfly-reverb-vst3 | 3.2.10 | [home](https://michaelwillis.github.io/dragonfly-reverb) |  |  |  |  |  | Trve_AY |  | Collection of reverbs |
-| drako | 0.3.3 | [home](https://github.com/lucky7xz/drako) | [2026-08-25](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/32893940104) | ✅ | ✅ | ✅ | ✅ | zenobit |  | Grid-based, customizable TUI-Deck launcher |
+| drako | 0.4.0 | [home](https://github.com/lucky7xz/drako) | <span title="built 0.3.3">⚠️</span>[2026-08-25](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/32893940104) | ⚠️ | ⚠️ | ⚠️ | ⚠️ | zenobit |  | Grid-based, customizable TUI-Deck launcher |
 | easybashgui | 15.0.2 | [home](https://github.com/BashGui/easybashgui) |  |  |  |  |  | zenobit |  | Bash functions library that aims to give simple GUI functions |
 | faugus-launcher | 2.2.2 | [home](https://github.com/Faugus/faugus-launcher) | [2026-09-05](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/33988032485) | ✅ | ✅ | ✅ | ✅ | zenobit |  | Simple and lightweight app for running Windows games using UMU-Launcher |
 | fcitx5-lotus | 3.5.8 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | [2026-09-04](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/33854321813) | ✅ | ✅ | ❌ | ❌ | Coolllyn |  | Vietnamese input method for fcitx5 |
