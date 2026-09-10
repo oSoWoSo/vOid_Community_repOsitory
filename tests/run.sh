@@ -353,18 +353,61 @@ if command -v python3 >/dev/null 2>&1; then
 	python3 "$SCRIPT_DIR/src/build-status.py" merge \
 		"$_bs_wd/results" "$_bs_wd/status.json" 42 2026-09-10 >/dev/null
 	it 'merge: per-arch cells (ok/ok)'
-	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cell alpha "$_bs_wd/status.json" | tr '\n' ',')" 'ok,,ok,,42,2026-09-10,'
+	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cell alpha "$_bs_wd/status.json" | tr '\n' ',')" 'ok,,ok,,42,2026-09-10,1.0,'
 	it 'merge: per-arch cells (fail/skip)'
-	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cell beta "$_bs_wd/status.json" | tr '\n' ',')" 'fail,,skip,,42,2026-09-10,'
+	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cell beta "$_bs_wd/status.json" | tr '\n' ',')" 'fail,,skip,,42,2026-09-10,2.0,'
 	it 'cell: unknown pkg all empty'
-	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cell ghost "$_bs_wd/status.json" | tr '\n' ',')" ',,,,,,'
+	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cell ghost "$_bs_wd/status.json" | tr '\n' ',')" ',,,,,,,'
 	python3 "$SCRIPT_DIR/src/build-status.py" prune "$_bs_wd/status.json" alpha >/dev/null
 	it 'prune: removes entry'
-	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cell alpha "$_bs_wd/status.json" | tr '\n' ',')" ',,,,,,'
+	assert_eq "$(python3 "$SCRIPT_DIR/src/build-status.py" cell alpha "$_bs_wd/status.json" | tr '\n' ',')" ',,,,,,,'
 	rm -rf "$_bs_wd"
 else
 	echo '  (skipped: python3 not on PATH)'
 fi
+
+echo '== _status_cell =='
+
+eval "$(awk '
+  /^[[:space:]]*_status_cell\(\)/ { p=1; depth=0 }
+  p { print }
+  p && /\{/ { depth++ }
+  p && /\}/ { depth--; if (depth==0) p=0 }
+' "$SCRIPT_DIR/ocoman")"
+
+it '_status_cell ok same version = check'
+assert_eq "$(_status_cell ok 1.0 1.0)" '✅'
+it '_status_cell ok older built version = warning'
+assert_eq "$(_status_cell ok 1.0 1.1)" '⚠️'
+it '_status_cell ok empty built version = check'
+assert_eq "$(_status_cell ok '' 1.1)" '✅'
+it '_status_cell fail = cross'
+assert_eq "$(_status_cell fail 1.0 1.0)" '❌'
+it '_status_cell skip = dash'
+assert_eq "$(_status_cell skip 1.0 1.1)" '–'
+it '_status_cell empty = nothing'
+assert_eq "$(_status_cell '' 1.0 1.1)" ''
+
+echo '== _ci_cell =='
+
+eval "$(awk '
+  /^[[:space:]]*_ci_cell\(\)/ { p=1; depth=0 }
+  p { print }
+  p && /\{/ { depth++ }
+  p && /\}/ { depth--; if (depth==0) p=0 }
+' "$SCRIPT_DIR/ocoman")"
+
+it '_ci_cell empty run = nothing'
+assert_eq "$(_ci_cell '' 2026-09-10 1.0 1.0)" ''
+CI_URL='https://github.com/oSoWoSo/Void_Community_Repository'
+it '_ci_cell no date = [CI]'
+assert_eq "$(_ci_cell 42 '' '' 1.0)" '[CI](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/42)'
+it '_ci_cell matching version = [date]'
+assert_eq "$(_ci_cell 42 2026-09-10 1.0 1.0)" '[2026-09-10](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/42)'
+it '_ci_cell mismatch = warning + [date]'
+assert_eq "$(_ci_cell 42 2026-09-10 0.3.3 1.0)" '<span title="built 0.3.3">⚠️</span>[2026-09-10](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/42)'
+it '_ci_cell mismatch no built version = [date]'
+assert_eq "$(_ci_cell 42 2026-09-10 '' 1.0)" '[2026-09-10](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/42)'
 
 echo '== _check_nocross_chain =='
 

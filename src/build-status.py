@@ -22,10 +22,10 @@ Subcommands:
         Drop entries for PKGs (e.g. templates removed from the repo).
 
     cell PKG STATUS_FILE
-        Print the four arch status cells, the latest CI run id, and the
-        run date of that run, one field per line:
+        Print the four arch status cells, the latest CI run id, the
+        run date of that run, and the built version, one field per line:
             status_x86_64, status_x86_64_musl,
-            status_aarch64, status_aarch64_musl, run_id, run_date
+            status_aarch64, status_aarch64_musl, run_id, run_date, built_version
         An empty status field means "no data yet".
 """
 
@@ -135,7 +135,9 @@ def cell(pkg: str, status_file: str) -> int:
     out = [""] * 4
     latest = 0
     latest_date = ""
+    built_version = ""
     if isinstance(rec, dict) and isinstance(rec.get("arches"), dict):
+        built_version = rec.get("version", "")
         arches = rec["arches"]
         for i, arch in enumerate(ARCHES):
             entry = arches.get(arch)
@@ -148,6 +150,7 @@ def cell(pkg: str, status_file: str) -> int:
                 latest_date = entry.get("run_date", "")
     out.append(str(latest) if latest else "")
     out.append(latest_date)
+    out.append(built_version)
     print("\n".join(out))
     return 0
 

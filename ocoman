@@ -350,9 +350,9 @@ generate_readme() {
 	awk '/^## Available/{exit} {print}' "$README" > "$_tmp"
 
 	# Build-result lookups. One field per line, in arch order:
-	# x86_64, x86_64-musl, aarch64, aarch64-musl, latest-run-id, run-date.
+	# x86_64, x86_64-musl, aarch64, aarch64-musl, latest-run-id, run-date, built-version.
 	_row_status() {
-		_st_s1='' _st_s2='' _st_s3='' _st_s4='' _st_run='' _st_date=''
+		_st_s1='' _st_s2='' _st_s3='' _st_s4='' _st_run='' _st_date='' _st_bver=''
 		command -v python3 >/dev/null 2>&1 || return 0
 		_out=$(python3 "$BUILD_STATUS_PY" cell "$1" "$BUILD_STATUS_FILE" 2>/dev/null) || return 0
 		_st_s1=$(printf '%s\n' "$_out" | sed -n '1p')
@@ -361,14 +361,34 @@ generate_readme() {
 		_st_s4=$(printf '%s\n' "$_out" | sed -n '4p')
 		_st_run=$(printf '%s\n' "$_out" | sed -n '5p')
 		_st_date=$(printf '%s\n' "$_out" | sed -n '6p')
+		_st_bver=$(printf '%s\n' "$_out" | sed -n '7p')
 	}
 
 	_status_cell() {
 		case "$1" in
-			ok)   printf '✅' ;;
+			ok)
+				if [ -n "$2" ] && [ "$2" != "$3" ]; then
+					printf '⚠️'
+				else
+					printf '✅'
+				fi
+				;;
 			fail) printf '❌' ;;
 			skip) printf '–' ;;
 		esac
+	}
+
+	# CI-column cell: run id + date. If the built version doesn't match
+	# the template version, prefix with a warning (tooltip = built version).
+	# Usage: _ci_cell RUN_ID DATE BUILT_VERSION TPL_VERSION
+	_ci_cell() {
+		[ -n "$1" ] || return 0
+		_cc_label="${2:-CI}"
+		_cc_out="[${_cc_label}](${CI_URL}/actions/runs/${1})"
+		if [ -n "$3" ] && [ -n "$4" ] && [ "$3" != "$4" ]; then
+			_cc_out="<span title=\"built $3\">⚠️</span>${_cc_out}"
+		fi
+		printf '%s' "$_cc_out"
 	}
 
 	{
@@ -384,19 +404,12 @@ generate_readme() {
 			[ -n "$_tpl_homepage" ] && _home="[home](${_tpl_homepage})"
 
 			_row_status "$_pkg"
-			_st_c1=$(_status_cell "$_st_s1")
-			_st_c2=$(_status_cell "$_st_s2")
-			_st_c3=$(_status_cell "$_st_s3")
-			_st_c4=$(_status_cell "$_st_s4")
+			_st_c1=$(_status_cell "$_st_s1" "$_st_bver" "$_tpl_version")
+			_st_c2=$(_status_cell "$_st_s2" "$_st_bver" "$_tpl_version")
+			_st_c3=$(_status_cell "$_st_s3" "$_st_bver" "$_tpl_version")
+			_st_c4=$(_status_cell "$_st_s4" "$_st_bver" "$_tpl_version")
 
-			_ci=''
-			if [ -n "$_st_run" ]; then
-				if [ -n "$_st_date" ]; then
-					_ci="[${_st_date}](${CI_URL}/actions/runs/${_st_run})"
-				else
-					_ci="[CI](${CI_URL}/actions/runs/${_st_run})"
-				fi
-			fi
+			_ci=$(_ci_cell "$_st_run" "$_st_date" "$_st_bver" "$_tpl_version")
 
 			echo "| $_pkg | $_tpl_version | $_home | $_ci | $_st_c1 | $_st_c2 | $_st_c3 | $_st_c4 | $_tpl_maintainer | $_tpl_archs | $_tpl_short_desc |"
 		done < "$TEMPLATES_LIST"
