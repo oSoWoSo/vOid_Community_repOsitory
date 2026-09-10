@@ -367,13 +367,12 @@ EOF
 	it 'guid = pkg-version'
 	grep -q 'guid isPermaLink="false">tor-0.4.8.11' "$_gf_wd/feed.xml"; assert_rc $? 0
 	it 'ok arches listed, failed arch skipped'
-	grep -q 'Arches: aarch64, x86_64' "$_gf_wd/feed.xml"; assert_rc $? 0
+	grep -q 'Archs: aarch64 x86_64' "$_gf_wd/feed.xml"; assert_rc $? 0
 	it 'template homepage used as item link'
 	grep -q '<link>https://example.org/tor</link>' "$_gf_wd/feed.xml"; assert_rc $? 0
-	it 'github template link in description'
-	grep -q 'blob/OCO/srcpkgs/tor/template' "$_gf_wd/feed.xml"; assert_rc $? 0
-	it 'codeberg template link in description'
-	grep -q 'codeberg.org/oSoWoSo/oco/src/branch/OCO/srcpkgs/tor/template' "$_gf_wd/feed.xml"; assert_rc $? 0
+	it 'codeberg is the only template link in description'
+	grep -q 'codeberg.org/oSoWoSo/oco/src/branch/OCO/srcpkgs/tor/template">template</a>' "$_gf_wd/feed.xml"; assert_rc $? 0
+	grep -vq 'github.com/oSoWoSo/Void_Community_Repository/blob/OCO/srcpkgs/tor/template' "$_gf_wd/feed.xml"; assert_rc $? 0
 	it 'CI run link in description'
 	grep -q 'actions/runs/42' "$_gf_wd/feed.xml"; assert_rc $? 0
 	it 'output is valid XML'

@@ -175,14 +175,13 @@ def update_feed(
         guid = f"{pkg}-{version}"
         homepage, short_desc = read_template(srcpkgs_dir, pkg)
         run_url = f"{GH_REPO}/actions/runs/{run_id}"
-        arches = ", ".join(sorted(rec["arches"]))
+        arches = " ".join(sorted(rec["arches"]))
         desc = (
             f"{short_desc}<br/>"
             f"Built on: {run_date}<br/>"
-            f"Arches: {arches}<br/>"
+            f"Archs: {arches}<br/>"
             f'<a href="{run_url}">CI run</a>'
-            f' &middot; <a href="{GH_REPO}/blob/{BRANCH}/srcpkgs/{pkg}/template">template</a>'
-            f' &middot; <a href="{CB_REPO}/src/branch/{BRANCH}/srcpkgs/{pkg}/template">template (codeberg)</a>'
+            f' &middot; <a href="{CB_REPO}/src/branch/{BRANCH}/srcpkgs/{pkg}/template">template</a>'
         )
         item = items.get(guid)
         if item is None:
