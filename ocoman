@@ -18,8 +18,6 @@ SRCPKGS='srcpkgs'
 TEMPLATES_LIST='/tmp/oco-templates-list'
 REPODATA_LIST_PY="${SCRIPT_DIR}/src/repodata-list.py"
 REPODATA_STRIP_PY="${SCRIPT_DIR}/src/repodata-strip.py"
-BUILD_STATUS_PY="${SCRIPT_DIR}/src/build-status.py"
-BUILD_STATUS_FILE="${SCRIPT_DIR}/src/build-status.json"
 BUILD_TEMPLATE="${SCRIPT_DIR}/src/build.yml.in"
 README="${SCRIPT_DIR}/README.md"
 WORKFLOW="${SCRIPT_DIR}/.github/workflows/build.yml"
@@ -349,58 +347,10 @@ generate_readme() {
 
 	awk '/^## Available/{exit} {print}' "$README" > "$_tmp"
 
-	# Load the whole build-status file once (single Python process) instead
-	# of forking one `build-status.py cell` per package. Format per line:
-	# PKG\tx86_64\tx86_64-musl\taarch64\taarch64-musl\trun_id\trun_date\tbuilt_version
-	_cells_tmp=$(mktemp)
-	command -v python3 >/dev/null 2>&1 \
-		&& python3 "$BUILD_STATUS_PY" cells-all "$BUILD_STATUS_FILE" > "$_cells_tmp" 2>/dev/null || true
-
-	# Build-result lookups. Fields, in arch order:
-	# x86_64, x86_64-musl, aarch64, aarch64-musl, latest-run-id, run-date, built-version.
-	_row_status() {
-		_st_s1='' _st_s2='' _st_s3='' _st_s4='' _st_run='' _st_date='' _st_bver=''
-		_st_line=$(grep -m1 "$(printf '^%s\t' "$1")" "$_cells_tmp" 2>/dev/null) || return 0
-		_st_s1=$(  printf '%s' "$_st_line" | cut -f2)
-		_st_s2=$(  printf '%s' "$_st_line" | cut -f3)
-		_st_s3=$(  printf '%s' "$_st_line" | cut -f4)
-		_st_s4=$(  printf '%s' "$_st_line" | cut -f5)
-		_st_run=$( printf '%s' "$_st_line" | cut -f6)
-		_st_date=$(printf '%s' "$_st_line" | cut -f7)
-		_st_bver=$(printf '%s' "$_st_line" | cut -f8)
-	}
-
-	_status_cell() {
-		case "$1" in
-			ok)
-				if [ -n "$2" ] && [ "$2" != "$3" ]; then
-					printf '⚠️'
-				else
-					printf '✅'
-				fi
-				;;
-			fail) printf '❌' ;;
-			skip) printf '–' ;;
-		esac
-	}
-
-	# CI-column cell: run id + date. If the built version doesn't match
-	# the template version, prefix with a warning (tooltip = built version).
-	# Usage: _ci_cell RUN_ID DATE BUILT_VERSION TPL_VERSION
-	_ci_cell() {
-		[ -n "$1" ] || return 0
-		_cc_label="${2:-CI}"
-		_cc_out="[${_cc_label}](${CI_URL}/actions/runs/${1})"
-		if [ -n "$3" ] && [ -n "$4" ] && [ "$3" != "$4" ]; then
-			_cc_out="<span title=\"built $3\">⚠️</span>${_cc_out}"
-		fi
-		printf '%s' "$_cc_out"
-	}
-
 	{
 		echo '## Available templates (packages when built successfully)'
-		echo '| package | version | home | CI | x86_64 | x86_64-musl | aarch64 | aarch64-musl | maintainer | notes | popis |'
-		echo '|:--------|:--------|:-----|:---|:-------|:------------|:--------|:-------------|:-----------|:------|:------|'
+		echo '| package | version | home | maintainer | notes | description |'
+		echo '|:--------|:--------|:-----|:-----------|:------|:------|'
 		while IFS= read -r _pkg; do
 			_tpl="$SRCPKGS/$_pkg/template"
 			[ -f "$_tpl" ] || continue
@@ -409,19 +359,10 @@ generate_readme() {
 			_home=''
 			[ -n "$_tpl_homepage" ] && _home="[home](${_tpl_homepage})"
 
-			_row_status "$_pkg"
-			_st_c1=$(_status_cell "$_st_s1" "$_st_bver" "$_tpl_version")
-			_st_c2=$(_status_cell "$_st_s2" "$_st_bver" "$_tpl_version")
-			_st_c3=$(_status_cell "$_st_s3" "$_st_bver" "$_tpl_version")
-			_st_c4=$(_status_cell "$_st_s4" "$_st_bver" "$_tpl_version")
-
-			_ci=$(_ci_cell "$_st_run" "$_st_date" "$_st_bver" "$_tpl_version")
-
-			echo "| $_pkg | $_tpl_version | $_home | $_ci | $_st_c1 | $_st_c2 | $_st_c3 | $_st_c4 | $_tpl_maintainer | $_tpl_archs | $_tpl_short_desc |"
+			echo "| $_pkg | $_tpl_version | $_home | $_tpl_maintainer | $_tpl_archs | $_tpl_short_desc |"
 		done < "$TEMPLATES_LIST"
 	} >> "$_tmp"
 
-	rm -f "$_cells_tmp"
 	mv "$_tmp" "$README"
 	echo 'README: updated'
 }
@@ -449,34 +390,6 @@ generate_build_yml() {
 
 	rm -f "$_opts"
 	echo 'build.yml: updated'
-}
-
-# Pull the latest CI-published build status from the GitHub remote (gh/OCO)
-# so the README reflects recent CI results even with local template changes.
-# Non-fatal: skips silently when the `gh` remote is missing or unreachable,
-# keeping the local build-status.json.
-update_ci_status() {
-	git -C "$SCRIPT_DIR" remote get-url gh >/dev/null 2>&1 || {
-		_y 'Warning: no "gh" remote configured; build-status.json kept local'
-		return 0
-	}
-	echo '==> Fetching latest CI status from GitHub (gh/OCO)'
-	if ! git -C "$SCRIPT_DIR" fetch gh OCO 2>/dev/null; then
-		_y 'Warning: gh/OCO fetch failed; build-status.json kept local'
-		return 0
-	fi
-	_ghf=$(mktemp)
-	if git -C "$SCRIPT_DIR" show 'FETCH_HEAD:src/build-status.json' > "$_ghf" 2>/dev/null; then
-		if cmp -s "$_ghf" "$BUILD_STATUS_FILE"; then
-			echo 'build-status.json: already current'
-		else
-			cp "$_ghf" "$BUILD_STATUS_FILE"
-			_g 'build-status.json: updated from gh/OCO (CI)'
-		fi
-	else
-		_y 'Warning: gh/OCO has no src/build-status.json; keeping local'
-	fi
-	rm -f "$_ghf"
 }
 
 detect_changes() {
@@ -1231,7 +1144,6 @@ main() {
 	fi
 	if [ "$_do_update" = 1 ]; then
 		[ -f "$README" ] || fatal "README not found: ${README}"
-		update_ci_status
 		generate_list
 		generate_readme
 		generate_build_yml

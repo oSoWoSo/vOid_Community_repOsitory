@@ -796,7 +796,7 @@ jobs:
           fi
 
   update-status:
-    name: Update build status table
+    name: Update README
     needs: [detect, build]
     if: always() && (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
@@ -808,26 +808,6 @@ jobs:
           path: extra
           fetch-depth: 0
 
-      - name: Download build results
-        uses: actions/download-artifact@v4
-        with:
-          path: extra/results
-
-      - name: Merge build results
-        env:
-          RUN_ID: ${{ github.run_id }}
-        run: |
-          python3 extra/src/build-status.py merge \
-            extra/results extra/src/build-status.json "$RUN_ID" "$(date -u +%Y-%m-%d)"
-
-      - name: Prune removed packages
-        if: needs.detect.outputs.removed != ''
-        env:
-          REMOVED: ${{ needs.detect.outputs.removed }}
-        run: |
-          python3 extra/src/build-status.py prune \
-            extra/src/build-status.json $REMOVED
-
       - name: Regenerate list, README, and workflow
         run: |
           cd extra
@@ -837,13 +817,13 @@ jobs:
         if: github.ref_name == 'OCO'
         run: |
           cd extra
-          git add README.md src/build-status.json
+          git add README.md
           if git diff --cached --quiet; then
-            echo "No build-status changes to commit"
+            echo "No changes to commit"
             exit 0
           fi
           git config user.name "oSoWoSo-bot"
           git config user.email "mail@osowoso.org"
-          git commit -m "CI: update build status"
+          git commit -m "CI: update"
           git pull --rebase
           git push
