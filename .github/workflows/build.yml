@@ -847,39 +847,18 @@ jobs:
         with:
           path: extra/results
 
-      - name: Update RSS feed from build results
+      - name: Update RSS
         if: always()
         env:
           RUN_ID: ${{ github.run_id }}
-        run: |
-          python3 extra/src/gen-feed.py update \
-            extra/src/feed.xml extra/results "$RUN_ID" "$(date -u +%Y-%m-%d)"
-
-      - name: Upload RSS feed to WebDAV
-        if: always()
-        env:
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
         run: |
+          curl -sf -u ":${SURFER_TOKEN}" -o extra/src/feed.xml \
+            "https://repo.osowoso.org/_webdav/feed.xml" || true
+          python3 extra/src/gen-feed.py update \
+            extra/src/feed.xml extra/results "$RUN_ID" "$(date -u +%Y-%m-%d)"
           curl -s -T extra/src/feed.xml \
             "https://repo.osowoso.org/_webdav/feed.xml" \
             -u ":${SURFER_TOKEN}"
-
-      - name: Regenerate list, README, and workflow
-        run: |
           cd extra
           ./ocoman -u
-
-      - name: Commit and push status updates
-        if: github.ref_name == 'OCO'
-        run: |
-          cd extra
-          git add README.md src/feed.xml
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git config user.name "oSoWoSo-bot"
-          git config user.email "mail@osowoso.org"
-          git commit -m "CI: update README and RSS feed"
-          git pull --rebase
-          git push

@@ -591,6 +591,8 @@ jobs:
           RUN_ID: ${{ github.run_id }}
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
         run: |
+          curl -sf -u ":${SURFER_TOKEN}" -o extra/src/feed.xml \
+            "https://repo.osowoso.org/_webdav/feed.xml" || true
           python3 extra/src/gen-feed.py update \
             extra/src/feed.xml extra/results "$RUN_ID" "$(date -u +%Y-%m-%d)"
           curl -s -T extra/src/feed.xml \
@@ -598,18 +600,3 @@ jobs:
             -u ":${SURFER_TOKEN}"
           cd extra
           ./ocoman -u
-
-      - name: Commit and push status updates
-        if: github.ref_name == 'OCO'
-        run: |
-          cd extra
-          git add README.md src/feed.xml
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git config user.name "oSoWoSo-bot"
-          git config user.email "mail@osowoso.org"
-          git commit -m "CI: update README and RSS feed"
-          git pull --rebase
-          git push
