@@ -132,7 +132,7 @@ Create PR
 | cosmic-sound-theme | 1.8.0 | [home](https://github.com/pop-os/cosmic-sound-theme) | [2026-09-10](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/34428897249) | ✅ | ✅ |  |  | zenobit | x86_64* | Sound theme for the COSMIC desktop environment |
 | cosmic-store | 1.8.0 | [home](https://github.com/pop-os/cosmic-store) |  |  |  |  |  | zenobit | x86_64* | Cosmic App Store |
 | cosmic-term | 1.8.0 | [home](https://github.com/pop-os/cosmic-term) | [2026-09-10](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/34428913889) | ✅ | ✅ | – | – | zenobit | x86_64* | COSMIC terminal emulator |
-| cosmic-tweaks | 0.2.2 | [home](https://github.com/cosmic-utils/cosmic-tweaks) | [2026-07-08](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/28964285155) | ✅ |  |  |  | Bella109 | x86_64 | Tweaks for COSMIC |
+| cosmic-tweaks | 0.2.5 | [home](https://github.com/cosmic-utils/cosmic-tweaks) | <span title="built 0.2.2">⚠️</span>[2026-07-08](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/28964285155) | ⚠️ |  |  |  | Bella109 | x86_64 | Tweaks for COSMIC |
 | cosmic-wallpapers | 1.8.0 | [home](https://github.com/pop-os/cosmic-wallpapers) | [2026-09-10](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/34428923372) | ✅ | ✅ | – | – | zenobit | x86_64* | Wallpapers for the COSMIC Desktop Environment |
 | cosmic-workspaces-epoch | 1.8.0 | [home](https://github.com/pop-os/cosmic-workspaces-epoch) | [2026-09-10](https://github.com/oSoWoSo/Void_Community_Repository/actions/runs/34428960585) | ✅ | ✅ | – | – | zenobit | x86_64* | COSMIC workspaces |
 | CRC-black-hole | 1 | [home](https://repo.osowoso.org) |  |  |  |  |  | zenobit |  | CRC: Collection of community repositories |
