@@ -796,7 +796,7 @@ jobs:
           fi
 
   update-status:
-    name: Update README
+    name: Update README and RSS feed
     needs: [detect, build]
     if: always() && (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
@@ -808,6 +808,20 @@ jobs:
           path: extra
           fetch-depth: 0
 
+      - name: Download build results
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          path: extra/results
+
+      - name: Update RSS feed from build results
+        if: always()
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 extra/src/gen-feed.py update \
+            extra/src/feed.xml extra/results "$RUN_ID" "$(date -u +%Y-%m-%d)"
+
       - name: Regenerate list, README, and workflow
         run: |
           cd extra
@@ -817,13 +831,13 @@ jobs:
         if: github.ref_name == 'OCO'
         run: |
           cd extra
-          git add README.md
+          git add README.md src/feed.xml
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
           fi
           git config user.name "oSoWoSo-bot"
           git config user.email "mail@osowoso.org"
-          git commit -m "CI: update"
+          git commit -m "CI: update README and RSS feed"
           git pull --rebase
           git push

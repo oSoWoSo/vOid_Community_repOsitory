@@ -343,6 +343,82 @@ else
 	echo '  (skipped: python3 not on PATH)'
 fi
 
+echo '== gen-feed.py =='
+
+if command -v python3 >/dev/null 2>&1; then
+	_gf_wd=$(mktemp -d)
+	mkdir -p "$_gf_wd/results/build-results-x86_64" \
+		"$_gf_wd/results/build-results-aarch64" \
+		"$_gf_wd/srcpkgs/tor"
+	printf 'tor\t0.4.8.11\tok\nfailme\t1.0\tfail\n' > "$_gf_wd/results/build-results-x86_64/results.tsv"
+	printf 'tor\t0.4.8.11\tok\n' > "$_gf_wd/results/build-results-aarch64/results.tsv"
+	cat > "$_gf_wd/srcpkgs/tor/template" <<'EOF'
+version=0.4.8.11
+homepage=https://example.org/tor
+short_desc="An overlay network"
+EOF
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/feed.xml" "$_gf_wd/results" 42 2026-09-10 "$_gf_wd/srcpkgs" >/dev/null
+
+	it 'first run: one item per ok pkg'
+	assert_eq "$(grep -c '<item>' "$_gf_wd/feed.xml")" '1'
+	it 'item title carries pkg+version'
+	grep -q '<title>tor 0.4.8.11</title>' "$_gf_wd/feed.xml"; assert_rc $? 0
+	it 'guid = pkg-version'
+	grep -q 'guid isPermaLink="false">tor-0.4.8.11' "$_gf_wd/feed.xml"; assert_rc $? 0
+	it 'ok arches listed, failed arch skipped'
+	grep -q 'Arches: aarch64, x86_64' "$_gf_wd/feed.xml"; assert_rc $? 0
+	it 'template homepage used as item link'
+	grep -q '<link>https://example.org/tor</link>' "$_gf_wd/feed.xml"; assert_rc $? 0
+	it 'github template link in description'
+	grep -q 'blob/OCO/srcpkgs/tor/template' "$_gf_wd/feed.xml"; assert_rc $? 0
+	it 'codeberg template link in description'
+	grep -q 'codeberg.org/oSoWoSo/oco/src/branch/OCO/srcpkgs/tor/template' "$_gf_wd/feed.xml"; assert_rc $? 0
+	it 'CI run link in description'
+	grep -q 'actions/runs/42' "$_gf_wd/feed.xml"; assert_rc $? 0
+	it 'output is valid XML'
+	python3 -c 'import sys, xml.etree.ElementTree as ET; ET.parse(sys.argv[1])' "$_gf_wd/feed.xml"; assert_rc $? 0
+
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/feed.xml" "$_gf_wd/results" 99 2026-09-11 "$_gf_wd/srcpkgs" >/dev/null
+	it 'same-version rebuild: no new item'
+	assert_eq "$(grep -c '<item>' "$_gf_wd/feed.xml")" '1'
+	it 'same-version rebuild: date updated'
+	grep -q 'Fri, 11 Sep 2026' "$_gf_wd/feed.xml"; assert_rc $? 0
+	it 'same-version rebuild: run link updated'
+	grep -q 'actions/runs/99' "$_gf_wd/feed.xml"; assert_rc $? 0
+
+	printf 'tor\t0.4.8.12\tok\n' > "$_gf_wd/results/build-results-x86_64/results.tsv"
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/feed.xml" "$_gf_wd/results" 100 2026-09-12 "$_gf_wd/srcpkgs" >/dev/null
+	it 'version bump adds new item'
+	assert_eq "$(grep -c '<item>' "$_gf_wd/feed.xml")" '2'
+	it 'history retains previous version'
+	grep -q 'tor-0.4.8.11' "$_gf_wd/feed.xml"; assert_rc $? 0
+	it 'history adds new version item'
+	grep -q 'tor-0.4.8.12' "$_gf_wd/feed.xml"; assert_rc $? 0
+
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/feed.xml" "$_gf_wd/empty" 100 2026-09-12 "$_gf_wd/srcpkgs" 2>/dev/null >/dev/null
+	it 'no results dir: item count unchanged'
+	assert_eq "$(grep -c '<item>' "$_gf_wd/feed.xml")" '2'
+
+	mkdir -p "$_gf_wd/cap/build-results-x86_64"
+	_i=0
+	while [ "$_i" -lt 1100 ]; do
+		printf 'pkg%s\t%s.0\tok\n' "$_i" "$_i" >> "$_gf_wd/cap/build-results-x86_64/results.tsv"
+		_i=$((_i + 1))
+	done
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/cap.xml" "$_gf_wd/cap" 100 2026-09-12 "$_gf_wd/srcpkgs" >/dev/null
+	it 'cap: feed limited to 1000 items'
+	assert_eq "$(grep -c '<item>' "$_gf_wd/cap.xml")" '1000'
+
+	rm -rf "$_gf_wd"
+else
+	echo '  (skipped: python3 not on PATH)'
+fi
+
 echo '== _check_nocross_chain =='
 
 eval "$(awk '
