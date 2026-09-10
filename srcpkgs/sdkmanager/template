@@ -1,6 +1,6 @@
 # Template file for 'sdkmanager'
 pkgname=sdkmanager
-version=0.7.0
+version=0.7.1
 revision=1
 build_style=python3-module
 hostmakedepends="pkg-config gnupg openjdk17 python3-argcomplete python3-defusedxml
@@ -11,7 +11,7 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-or-later"
 homepage="https://gitlab.com/fdroid/sdkmanager"
 distfiles="https://gitlab.com/fdroid/sdkmanager/-/archive/${version}/sdkmanager-${version}.tar.gz"
-checksum=fdd28d52dce71d4a9dcaccd46eaf0afc5db445cb97f394e9e90052775a7e541a
+checksum=68ec4f15d880d93ba94ced17522099ebfd8ae88d284c39529350191775adec22
 export ANDROID_SDK_ROOT=/tmp/android-sdk
 export JAVA_HOME=/usr/lib/jvm/openjdk17
 export ver=9.0
