@@ -285,6 +285,7 @@ on:
         - surge-xt-standalone
         - surge-xt-vst3
         - svi
+        - SysMan
         - tdf
         - tiki
         - tls-client
