@@ -92,7 +92,7 @@ Create PR
 | aquamarine | 0.14.0 | [home](https://github.com/hyprwm/aquamarine) | zenobit |  | Aquamarine is a very light linux rendering backend library |
 | blocaled | 0.7 | [home](https://github.com/lfs-book/blocaled) | zenobit |  | Standalone implementation of the localed D-Bus service |
 | brave-browser-bin | 1.95.101 | [home](https://www.brave.com/) | zenobit | x86_64 aarch64 | One of the most private browsers built on top off Chromium project |
-| brave-origin-bin | 1.94.121 | [home](https://www.brave.com/) | zenobit | x86_64 aarc64 | Minimalist browser from the makers of Brave (binary) |
+| brave-origin-bin | 1.95.101 | [home](https://www.brave.com/) | zenobit | x86_64 aarc64 | Minimalist browser from the makers of Brave (binary) |
 | brow6el | 0.3.5 | [home](https://brow6el.dev/) | zenobit | x86_64 | Minimalistic graphical terminal web browser using sixels |
 | btrfs-progs | 7.1 | [home](https://btrfs.wiki.kernel.org/index.php/Main_Page) | Enno Boland |  | Btrfs filesystem utilities |
 | bulletty | 0.3.0 | [home](https://github.com/crocidb/bulletty) | zenobit |  | Feed reader for the terminal that stores the articles as Markdown |
