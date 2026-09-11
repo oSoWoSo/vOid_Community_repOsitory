@@ -21,6 +21,8 @@ REPODATA_STRIP_PY="${SCRIPT_DIR}/src/repodata-strip.py"
 BUILD_TEMPLATE="${SCRIPT_DIR}/src/build.yml.in"
 README="${SCRIPT_DIR}/README.md"
 WORKFLOW="${SCRIPT_DIR}/.github/workflows/build.yml"
+FEED_OPML="${SCRIPT_DIR}/src/feed.opml"
+NVCONF="${SCRIPT_DIR}/.nvchecker/nvchecker.toml"
 
 SURFER_URL='https://repo.osowoso.org'
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
@@ -412,6 +414,168 @@ detect_changes() {
 	echo "==> Added:   $(echo "$_added" | tr '\n' ' ')"
 	echo "==> Modified: $(echo "$_modified" | tr '\n' ' ')"
 	echo "==> Removed: $(echo "$_removed" | tr '\n' ' ')"
+}
+
+# --- RSS feed (feed.opml) suggestions ---
+
+feed_xml_escape() {
+	printf '%s' "$1" |
+		sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g'
+}
+
+# Usage: feed_urls_from_nvchecker <pkg>
+# Derives upstream RSS/HTML urls from .nvchecker/nvchecker.toml section
+# [<pkg>] (source=github|gitea|gitlab). Handles quoted section names
+# (["llama.cpp"]) and `${pkgname}` placeholders.
+# Sets _feed_xml_url _feed_html_url; returns 0 when derivable, 1 otherwise.
+feed_urls_from_nvchecker() {
+	_feed_xml_url='' _feed_html_url=''
+	_fun_pkg="$1"
+	[ -f "$NVCONF" ] || return 1
+
+	_fun_tmp=$(awk '
+		$0 ~ /^\[/ {
+			s=$0; sub(/^\[/, "", s); sub(/\]$/, "", s); gsub(/"/, "", s)
+			insec = (s == pkg); next
+		}
+		insec && NF >= 3 {
+			if ($1 == "source") src = $3
+			else if ($1 == "github") repo = $3
+			else if ($1 == "gitea") repo = $3
+			else if ($1 == "gitlab") repo = $3
+			else if ($1 == "host") host = $3
+		}
+		END { print src; print repo; print host }
+	' pkg="$_fun_pkg" "$NVCONF")
+
+	# Note: in awk, $3 of 'host = "x"' is the field AFTER '='; but for
+	# 'source = "x"' the value is also $3. So all values are $3 above.
+	_fun_src=$(echo "$_fun_tmp" | sed -n '1p' | tr -d '"')
+	_fun_repo=$(echo "$_fun_tmp" | sed -n '2p' | tr -d '"')
+	_fun_host=$(echo "$_fun_tmp" | sed -n '3p' | tr -d '"')
+
+	case "$_fun_repo" in
+		*'${pkgname}'*)
+			_fun_repo=$(printf '%s' "$_fun_repo" |
+				sed "s/\${pkgname}/${_fun_pkg}/g")
+			;;
+	esac
+
+	case "$_fun_src" in
+		github | gitea | gitlab) ;;
+		*) return 1 ;;
+	esac
+	[ -n "$_fun_repo" ] || return 1
+
+	case "$_fun_src" in
+		github)
+			_feed_xml_url="https://github.com/${_fun_repo}/tags.atom"
+			_feed_html_url="https://github.com/${_fun_repo}/releases"
+			;;
+		gitea)
+			_fun_host=${_fun_host:-codeberg.org}
+			_feed_xml_url="https://${_fun_host}/${_fun_repo}/tags.rss"
+			_feed_html_url="https://${_fun_host}/${_fun_repo}/tags"
+			;;
+		gitlab)
+			_fun_host=${_fun_host:-gitlab.com}
+			_feed_xml_url="https://${_fun_host}/${_fun_repo}/-/tags?format=atom"
+			_feed_html_url="https://${_fun_host}/${_fun_repo}/-/tags"
+			;;
+	esac
+	return 0
+}
+
+# Usage: feed_urls_from_homepage <url>
+# Fallback: derive urls from a homepage pointing at a well-known host
+# (github.com / codeberg.org / gitlab.com). Keeps subgroup-style paths
+# (gitlab.com/group/sub/project).
+# Sets _feed_xml_url _feed_html_url; returns 0 on success, 1 otherwise.
+feed_urls_from_homepage() {
+	_feed_xml_url='' _feed_html_url=''
+	_fun_hp="$1"
+	_fun_host=''
+	_fun_path=''
+	case "$_fun_hp" in
+		https://github.com/*) _fun_host=github.com; _fun_path=${_fun_hp#https://github.com/} ;;
+		https://codeberg.org/*) _fun_host=codeberg.org; _fun_path=${_fun_hp#https://codeberg.org/} ;;
+		https://gitlab.com/*) _fun_host=gitlab.com; _fun_path=${_fun_hp#https://gitlab.com/} ;;
+		*) return 1 ;;
+	esac
+	_fun_path=${_fun_path%%\?*}
+	_fun_path=${_fun_path%%\#*}
+	[ -n "$_fun_path" ] || return 1
+
+	case "$_fun_host" in
+		github.com)
+			_feed_xml_url="https://github.com/${_fun_path}/tags.atom"
+			_feed_html_url="https://github.com/${_fun_path}/releases"
+			;;
+		codeberg.org)
+			_feed_xml_url="https://codeberg.org/${_fun_path}/tags.rss"
+			_feed_html_url="https://codeberg.org/${_fun_path}/tags"
+			;;
+		gitlab.com)
+			_feed_xml_url="https://gitlab.com/${_fun_path}/-/tags?format=atom"
+			_feed_html_url="https://gitlab.com/${_fun_path}/-/tags"
+			;;
+	esac
+	return 0
+}
+
+# Usage: feed_opml_has <pkg>
+# Returns 0 when an <outline> with title="<pkg>" exists under the
+# package-update folder of src/feed.opml, 1 otherwise (also when the
+# file is missing).
+feed_opml_has() {
+	_fun_pkg="$1"
+	[ -f "$FEED_OPML" ] || return 1
+	awk -v p="$_fun_pkg" '
+		/<outline text="package-update">/ { sec = 1; next }
+		sec && /<outline/ && index($0, "title=\"" p "\"") { found = 1 }
+		END { exit (found ? 0 : 1) }
+	' "$FEED_OPML"
+	return $?
+}
+
+# Suggest missing feed.opml <outline> entries for templates that were
+# added or modified. Prints draft lines to stdout only when src/feed.opml
+# exists (i.e. local runs; CI checkout has no feed.opml -> silent skip).
+# Subpackage symlinks and already-present packages are skipped.
+suggest_feeds() {
+	[ -f "$FEED_OPML" ] || return 0
+	_feed_pkgs=$(printf '%s\n' "$_added $_modified" | tr ' ' '\n' |
+		sed '/^$/d' | sort -fu | tr '\n' ' ')
+	[ -n "$_feed_pkgs" ] || return 0
+
+	_feed_out=''
+	for _pkg in $_feed_pkgs; do
+		[ -L "${SRCPKGS}/$_pkg" ] && continue
+		feed_opml_has "$_pkg" && continue
+		[ -f "${SRCPKGS}/$_pkg/template" ] || continue
+		read_template_fields "${SRCPKGS}/$_pkg/template"
+
+		feed_urls_from_nvchecker "$_pkg"
+		if [ $? -ne 0 ]; then
+			feed_urls_from_homepage "$_tpl_homepage"
+		fi
+
+		_title=$(feed_xml_escape "$_pkg")
+		_desc=$(feed_xml_escape "$_tpl_short_desc")
+
+		if [ -n "$_feed_xml_url" ]; then
+			_feed_line="    <outline title=\"${_title}\" text=\"${_title}\" xmlUrl=\"${_feed_xml_url}\" htmlUrl=\"${_feed_html_url}\" description=\"${_desc}\" type=\"rss\"></outline>"
+		else
+			_feed_line="    # ${_pkg}: upstream feed nelze odvodit (zadna nvchecker sekce / homepage neni hosting) -- pridej rucne"
+		fi
+		_feed_out="$_feed_out
+$_feed_line"
+	done
+
+	[ -n "$_feed_out" ] || return 0
+	echo '==> RSS feed (feed.opml) proposals:'
+	echo '    (vlozit do <outline text="package-update">):'
+	echo "$_feed_out"
 }
 
 # --- Web ---
@@ -1142,6 +1306,7 @@ main() {
 		generate_readme
 		generate_build_yml
 		detect_changes
+		suggest_feeds
 	fi
 	if [ "$_do_web" = 1 ]; then
 		build_site

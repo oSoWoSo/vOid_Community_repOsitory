@@ -50,6 +50,10 @@ eval "$(awk '
 	/^pkg_name\(\)/        {p=1}
 	/^fetch_remote_list/   {p=1}
 	/^read_template_fields/{p=1}
+	/^feed_xml_escape/     {p=1}
+	/^feed_urls_from_nvchecker/{p=1}
+	/^feed_urls_from_homepage/{p=1}
+	/^feed_opml_has/       {p=1}
 	p {print}
 	p && /^}$/             {p=0}
 ' "$SCRIPT_DIR/ocoman")"
@@ -137,6 +141,113 @@ it 'first version wins'; assert_eq "$_tpl_version" '1.0'
 read_template_fields srcpkgs/_t/template
 it 'empty template -> empty version'; assert_eq "$_tpl_version" ''
 it 'empty template -> empty archs';   assert_eq "$_tpl_archs"   ''
+
+echo '== feed (feed.opml) helpers =='
+
+NVCONF="$PWD/nvchecker.toml"
+FEED_OPML="$PWD/feed.opml"
+
+cat > "$NVCONF" <<'EOF'
+[__config__]
+oldver = "old_ver.json"
+
+[aquamarine]
+source = "github"
+use_max_tag = true
+github = "hyprwm/aquamarine"
+prefix = "v"
+
+["quickshell+"]
+source = "gitea"
+use_max_tag = true
+gitea = "quickshell/quickshell"
+host = "git.outfoxxed.me"
+prefix = "v"
+
+[hyprlock]
+source = "github"
+use_max_tag = true
+github = "hyprwm/${pkgname}"
+prefix = "v"
+
+[sdkmanager]
+source = "gitlab"
+use_max_tag = true
+gitlab = "fdroid/sdkmanager"
+host = "gitlab.com"
+
+[python3-textual]
+source = "pypi"
+pypi = "textual"
+EOF
+
+feed_urls_from_nvchecker aquamarine
+it 'nvchecker github rc';   assert_rc $? 0
+it 'nvchecker github xml';  assert_eq "$_feed_xml_url"  'https://github.com/hyprwm/aquamarine/tags.atom'
+it 'nvchecker github html'; assert_eq "$_feed_html_url" 'https://github.com/hyprwm/aquamarine/releases'
+
+feed_urls_from_nvchecker 'quickshell+'
+it 'nvchecker gitea xml';  assert_eq "$_feed_xml_url"  'https://git.outfoxxed.me/quickshell/quickshell/tags.rss'
+it 'nvchecker gitea html'; assert_eq "$_feed_html_url" 'https://git.outfoxxed.me/quickshell/quickshell/tags'
+
+feed_urls_from_nvchecker hyprlock
+it 'nvchecker pkgname subst'; assert_eq "$_feed_xml_url" 'https://github.com/hyprwm/hyprlock/tags.atom'
+
+feed_urls_from_nvchecker sdkmanager
+it 'nvchecker gitlab xml';  assert_eq "$_feed_xml_url"  'https://gitlab.com/fdroid/sdkmanager/-/tags?format=atom'
+it 'nvchecker gitlab html'; assert_eq "$_feed_html_url" 'https://gitlab.com/fdroid/sdkmanager/-/tags'
+
+it 'nvchecker pypi rc'
+feed_urls_from_nvchecker 'python3-textual'
+assert_rc $? 1
+
+it 'nvchecker missing rc'
+feed_urls_from_nvchecker no-such-pkg
+assert_rc $? 1
+
+rm -f "$NVCONF"
+it 'nvchecker missing file rc'
+feed_urls_from_nvchecker aquamarine
+assert_rc $? 1
+
+feed_urls_from_homepage 'https://github.com/zen-browser/desktop'
+it 'homepage github xml';  assert_eq "$_feed_xml_url"  'https://github.com/zen-browser/desktop/tags.atom'
+it 'homepage github html'; assert_eq "$_feed_html_url" 'https://github.com/zen-browser/desktop/releases'
+
+feed_urls_from_homepage 'https://codeberg.org/oSoWoSo/gum'
+it 'homepage codeberg xml'; assert_eq "$_feed_xml_url" 'https://codeberg.org/oSoWoSo/gum/tags.rss'
+
+feed_urls_from_homepage 'https://gitlab.com/fdroid/sdkmanager'
+it 'homepage gitlab xml'; assert_eq "$_feed_xml_url" 'https://gitlab.com/fdroid/sdkmanager/-/tags?format=atom'
+
+it 'homepage website rc'
+feed_urls_from_homepage 'https://hyprland.org/'
+assert_rc $? 1
+
+cat > "$FEED_OPML" <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+    <body>
+        <outline text="All">
+            <outline title="Repology" text="Repology" xmlUrl="https://repology.org/a.atom" htmlUrl="https://repology.org/" type="rss"></outline>
+        </outline>
+        <outline text="package-update">
+            <outline title="drako" text="drako" xmlUrl="https://github.com/lucky7xz/drako/tags.atom" htmlUrl="https://github.com/lucky7xz/drako/releases" type="rss"></outline>
+            <outline title="quickshell+" text="quickshell+" xmlUrl="https://git.outfoxxed.me/quickshell/quickshell/tags.atom" htmlUrl="https://git.outfoxxed.me/quickshell/quickshell/tags" type="rss"></outline>
+        </outline>
+    </body>
+</opml>
+EOF
+
+feed_opml_has drako;       assert_rc $? 0
+feed_opml_has 'quickshell+'; assert_rc $? 0
+feed_opml_has gofer;       assert_rc $? 1
+feed_opml_has _t;          assert_rc $? 1
+
+rm -f "$FEED_OPML"
+feed_opml_has drako;       assert_rc $? 1
+
+it 'xml escape'; assert_eq "$(feed_xml_escape 'a&b<c>d"e')" 'a&amp;b&lt;c&gt;d&quot;e'
 
 echo '== fetch_remote_list =='
 

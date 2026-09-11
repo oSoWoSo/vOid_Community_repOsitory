@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0" xmlns:miniflux="https://miniflux.app/opml">
+    <head>
+        <title>Miniflux</title>
+        <dateCreated>Tue, 08 Sep 2026 18:07:58 UTC</dateCreated>
+    </head>
+    <body>
+        <outline text="All">
+            <outline title="Repology feed for zen@osowoso.org" text="Repology feed for zen@osowoso.org" xmlUrl="https://repology.org/maintainer/zen%40osowoso.org/feed-for-repo/void_x86_64/atom" htmlUrl="https://repology.org/maintainer/zen%40osowoso.org/feed-for-repo/void_x86_64" type="rss"></outline>
+            <outline title="Tags from add-to-miniflux" text="Tags from add-to-miniflux" xmlUrl="https://github.com/orellazri/add-to-miniflux/tags.atom" htmlUrl="https://github.com/orellazri/add-to-miniflux/releases" type="rss"></outline>
+        </outline>
+        <outline text="Distros">
+            <outline title="DistroWatch.com: Distributions" text="DistroWatch.com: Distributions" xmlUrl="https://distrowatch.com/news/dwd.xml" htmlUrl="https://distrowatch.com/" description="Latest distribution releases" type="rss"></outline>
+            <outline title="ZimaOS" text="ZimaOS" xmlUrl="https://github.com/IceWhaleTech/ZimaOS/tags.atom" htmlUrl="https://github.com/IceWhaleTech/ZimaOS/releases" type="rss"></outline>
+        </outline>
+        <outline text="Odyssey Linux">
+            <outline title="Odyssey · forum" text="Odyssey · forum" xmlUrl="https://argonauts.odysseylinux.org/feed.php" htmlUrl="https://argonauts.odysseylinux.org/forum.php" description="Discussions from the Odyssey Linux community forum." type="rss"></outline>
+        </outline>
+        <outline text="Void Linux">
+            <outline title="Void news" text="Void news" xmlUrl="https://voidlinux.org/atom.xml" htmlUrl="https://voidlinux.org/" description="Follow Void Linux news" type="rss"></outline>
+            <outline title="void-packages" text="void-packages" xmlUrl="https://github.com/void-linux/void-packages/commits/master.atom" htmlUrl="https://github.com/void-linux/void-packages/commits/master" type="rss"></outline>
+        </outline>
+        <outline text="package-update">
+            <outline title="android-sdk" text="android-sdk" xmlUrl="https://github.com/ivan-hc/AM/tags.atom" htmlUrl="https://github.com/ivan-hc/AM/releases" description="Android SDK platform 36 and build-tools 29.0.3" type="rss"></outline>
+            <outline title="aquamarine" text="aquamarine" xmlUrl="https://github.com/hyprwm/aquamarine/tags.atom" htmlUrl="https://github.com/hyprwm/aquamarine/releases" description="Aquamarine - Hyprland&#39;s backend" type="rss"></outline>
+            <outline title="BoxBuddyRS" text="BoxBuddyRS" xmlUrl="https://github.com/Dvlv/BoxBuddyRS/tags.atom" htmlUrl="https://github.com/Dvlv/BoxBuddyRS/releases" type="rss"></outline>
+            <outline title="brave-browser" text="brave-browser" xmlUrl="https://github.com/brave/brave-browser/tags.atom" htmlUrl="https://github.com/brave/brave-browser/releases" miniflux:blocklistRules="EntryTitle=(?i)Nightly" miniflux:keeplistRules="EntryTitle=(?i)Release" type="rss"></outline>
+            <outline title="brow6el" text="brow6el" xmlUrl="https://tangled.org/janantos.tngl.sh/brow6el/feed.atom?include=tags" htmlUrl="https://tangled.org/janantos.tngl.sh/brow6el" description="Web browser for the terminal using Chromium (CEF) with support for Sixel and Kitty graphics protocols" type="rss"></outline>
+            <outline title="BSSG" text="BSSG" xmlUrl="https://brew.bsd.cafe/stefano/BSSG/tags.rss" htmlUrl="https://brew.bsd.cafe/stefano/BSSG/tags" description="BSSG - Bash Static Site Generator. A simple, efficient, and portable SSG written entirely in Bash. Converts Markdown posts/pages into static HTML sites with RSS, sitemaps, tags, archives, and easy CSS theming. Runs on Linux, macOS, and BSDs." type="rss"></outline>
+            <outline title="btrfs-progs" text="btrfs-progs" xmlUrl="https://github.com/kdave/btrfs-progs/tags.atom" htmlUrl="https://github.com/kdave/btrfs-progs/releases" type="rss"></outline>
+            <outline title="bulletty" text="bulletty" xmlUrl="https://github.com/crocidb/bulletty/tags.atom" htmlUrl="https://github.com/crocidb/bulletty/releases" miniflux:blockFilterEntryRules="EntryTitle=(?i)Nightly" type="rss"></outline>
+            <outline title="bun" text="bun" xmlUrl="https://github.com/oven-sh/bun/tags.atom" htmlUrl="https://github.com/oven-sh/bun/releases" type="rss"></outline>
+            <outline title="caerus" text="caerus" xmlUrl="https://github.com/mendescotta/Caerus/tags.atom" htmlUrl="https://github.com/mendescotta/Caerus/releases" type="rss"></outline>
+            <outline title="candy-icons-git" text="candy-icons-git" xmlUrl="https://github.com/EliverLara/candy-icons/commits/master.atom" htmlUrl="https://github.com/EliverLara/candy-icons" description="Candy Icons for OCO" type="rss"></outline>
+            <outline title="cc-switch" text="cc-switch" xmlUrl="https://github.com/farion1231/cc-switch/tags.atom" htmlUrl="https://github.com/farion1231/cc-switch/releases" type="rss"></outline>
+            <outline title="cliamp" text="cliamp" xmlUrl="https://github.com/bjarneo/cliamp/tags.atom" htmlUrl="https://github.com/bjarneo/cliamp/releases" type="rss"></outline>
+            <outline title="clitest" text="clitest" xmlUrl="https://github.com/aureliojargas/clitest/tags.atom" htmlUrl="https://github.com/aureliojargas/clitest/releases" type="rss"></outline>
+            <outline title="corekeyboard tags" text="corekeyboard tags" xmlUrl="https://gitlab.com/cubocore/coreapps/corekeyboard/-/tags?format=atom" htmlUrl="https://gitlab.com/cubocore/coreapps/corekeyboard/-/tags" type="rss"></outline>
+            <outline title="cosign" text="cosign" xmlUrl="https://github.com/sigstore/cosign/tags.atom" htmlUrl="https://github.com/sigstore/cosign/releases" type="rss"></outline>
+            <outline title="cosmic-applets" text="cosmic-applets" xmlUrl="https://github.com/pop-os/cosmic-applets/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-applets/releases" type="rss"></outline>
+            <outline title="cosmic-applibrary" text="cosmic-applibrary" xmlUrl="https://github.com/pop-os/cosmic-applibrary/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-applibrary/releases" type="rss"></outline>
+            <outline title="cosmic-bg" text="cosmic-bg" xmlUrl="https://github.com/pop-os/cosmic-bg/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-bg/releases" type="rss"></outline>
+            <outline title="cosmic-comp" text="cosmic-comp" xmlUrl="https://github.com/pop-os/cosmic-comp/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-comp/releases" type="rss"></outline>
+            <outline title="cosmic-desktop-full" text="cosmic-desktop-full" xmlUrl="https://github.com/pop-os/cosmic-epoch/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-epoch/releases" type="rss"></outline>
+            <outline title="cosmic-edit" text="cosmic-edit" xmlUrl="https://github.com/pop-os/cosmic-edit/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-edit/releases" type="rss"></outline>
+            <outline title="cosmic-files" text="cosmic-files" xmlUrl="https://github.com/pop-os/cosmic-files/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-files/releases" type="rss"></outline>
+            <outline title="cosmic-greeter" text="cosmic-greeter" xmlUrl="https://github.com/pop-os/cosmic-greeter/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-greeter/releases" type="rss"></outline>
+            <outline title="cosmic-icons" text="cosmic-icons" xmlUrl="https://github.com/pop-os/cosmic-icons/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-icons/releases" type="rss"></outline>
+            <outline title="cosmic-idle" text="cosmic-idle" xmlUrl="https://github.com/pop-os/cosmic-idle/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-idle/releases" type="rss"></outline>
+            <outline title="cosmic-launcher" text="cosmic-launcher" xmlUrl="https://github.com/pop-os/cosmic-launcher/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-launcher/releases" type="rss"></outline>
+            <outline title="cosmic-monitor" text="cosmic-monitor" xmlUrl="https://github.com/pop-os/cosmic-monitor/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-monitor/releases" type="rss"></outline>
+            <outline title="cosmic-notifications" text="cosmic-notifications" xmlUrl="https://github.com/pop-os/cosmic-notifications/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-notifications/releases" type="rss"></outline>
+            <outline title="cosmic-osd" text="cosmic-osd" xmlUrl="https://github.com/pop-os/cosmic-osd/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-osd/releases" type="rss"></outline>
+            <outline title="cosmic-panel" text="cosmic-panel" xmlUrl="https://github.com/pop-os/cosmic-panel/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-panel/releases" type="rss"></outline>
+            <outline title="cosmic-player" text="cosmic-player" xmlUrl="https://github.com/pop-os/cosmic-player/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-player/releases" type="rss"></outline>
+            <outline title="cosmic-randr" text="cosmic-randr" xmlUrl="https://github.com/pop-os/cosmic-randr/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-randr/releases" type="rss"></outline>
+            <outline title="cosmic-screenshot" text="cosmic-screenshot" xmlUrl="https://github.com/pop-os/cosmic-screenshot/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-screenshot/releases" type="rss"></outline>
+            <outline title="cosmic-session" text="cosmic-session" xmlUrl="https://github.com/pop-os/cosmic-session/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-session/releases" type="rss"></outline>
+            <outline title="cosmic-settings" text="cosmic-settings" xmlUrl="https://github.com/pop-os/cosmic-settings/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-settings/releases" type="rss"></outline>
+            <outline title="cosmic-settings-daemon" text="cosmic-settings-daemon" xmlUrl="https://github.com/pop-os/cosmic-settings-daemon/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-settings-daemon/releases" type="rss"></outline>
+            <outline title="cosmic-term" text="cosmic-term" xmlUrl="https://github.com/pop-os/cosmic-term/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-term/releases" type="rss"></outline>
+            <outline title="cosmic-tweaks" text="cosmic-tweaks" xmlUrl="https://github.com/cosmic-utils/cosmic-tweaks/tags.atom" htmlUrl="https://github.com/cosmic-utils/cosmic-tweaks/releases" type="rss"></outline>
+            <outline title="cosmic-wallpapers" text="cosmic-wallpapers" xmlUrl="https://github.com/pop-os/cosmic-wallpapers/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-wallpapers/releases" type="rss"></outline>
+            <outline title="cosmic-workspaces-epoch" text="cosmic-workspaces-epoch" xmlUrl="https://github.com/pop-os/cosmic-workspaces-epoch/tags.atom" htmlUrl="https://github.com/pop-os/cosmic-workspaces-epoch/releases" type="rss"></outline>
+            <outline title="crush" text="crush" xmlUrl="https://github.com/charmbracelet/crush/tags.atom" htmlUrl="https://github.com/charmbracelet/crush/releases" type="rss"></outline>
+            <outline title="cwal" text="cwal" xmlUrl="https://github.com/nitinbhat972/cwal/tags.atom" htmlUrl="https://github.com/nitinbhat972/cwal/releases" type="rss"></outline>
+            <outline title="dankcalendar" text="dankcalendar" xmlUrl="https://github.com/AvengeMedia/dankcalendar/tags.atom" htmlUrl="https://github.com/AvengeMedia/dankcalendar/releases" type="rss"></outline>
+            <outline title="dashy" text="dashy" xmlUrl="https://github.com/lissy93/dashy/tags.atom" htmlUrl="https://github.com/lissy93/dashy/releases" type="rss"></outline>
+            <outline title="desktop-tui" text="desktop-tui" xmlUrl="https://github.com/Julien-cpsn/desktop-tui/tags.atom" htmlUrl="https://github.com/Julien-cpsn/desktop-tui/releases" type="rss"></outline>
+            <outline title="devedeng" text="devedeng" xmlUrl="https://gitlab.com/rastersoft/devedeng/-/tags?format=atom" htmlUrl="https://gitlab.com/rastersoft/devedeng/-/tags" type="rss"></outline>
+            <outline title="distrobox" text="distrobox" xmlUrl="https://github.com/89luca89/distrobox/tags.atom" htmlUrl="https://github.com/89luca89/distrobox/releases" miniflux:blockFilterEntryRules="EntryTitle=rc" type="rss"></outline>
+            <outline title="dragonfly-reverb" text="dragonfly-reverb" xmlUrl="https://github.com/michaelwillis/dragonfly-reverb/tags.atom" htmlUrl="https://github.com/michaelwillis/dragonfly-reverb/releases" type="rss"></outline>
+            <outline title="drako" text="drako" xmlUrl="https://github.com/lucky7xz/drako/tags.atom" htmlUrl="https://github.com/lucky7xz/drako/releases" type="rss"></outline>
+            <outline title="easybashgui" text="easybashgui" xmlUrl="https://github.com/BashGui/easybashgui/tags.atom" htmlUrl="https://github.com/BashGui/easybashgui/releases" type="rss"></outline>
+            <outline title="faugus-launcher" text="faugus-launcher" xmlUrl="https://github.com/Faugus/faugus-launcher/tags.atom" htmlUrl="https://github.com/Faugus/faugus-launcher/releases" type="rss"></outline>
+            <outline title="fcitx5-lotus" text="fcitx5-lotus" xmlUrl="https://github.com/LotusInputMethod/fcitx5-lotus/tags.atom" htmlUrl="https://github.com/LotusInputMethod/fcitx5-lotus/releases" type="rss"></outline>
+            <outline title="fluxer" text="fluxer" xmlUrl="https://github.com/fluxerapp/fluxer/tags.atom" htmlUrl="https://github.com/fluxerapp/fluxer/releases" miniflux:blockFilterEntryRules="EntryTitle=(?i)fluxer-app" type="rss"></outline>
+            <outline title="flyline" text="flyline" xmlUrl="https://github.com/HalFrgrd/flyline/tags.atom" htmlUrl="https://github.com/HalFrgrd/flyline/releases" type="rss"></outline>
+            <outline title="forgejo-runner" text="forgejo-runner" xmlUrl="https://code.forgejo.org/forgejo/runner/tags.rss" htmlUrl="https://code.forgejo.org/forgejo/runner/tags" description="A daemon that connects to a Forgejo instance and runs jobs for continuous integration. The installation and usage instructions are part of the Forgejo documentation" type="rss"></outline>
+            <outline title="FreeTube" text="FreeTube" xmlUrl="https://github.com/FreeTubeApp/FreeTube/tags.atom" htmlUrl="https://github.com/FreeTubeApp/FreeTube/releases" type="rss"></outline>
+            <outline title="FTXUI" text="FTXUI" xmlUrl="https://github.com/ArthurSonzogni/FTXUI/tags.atom" htmlUrl="https://github.com/ArthurSonzogni/FTXUI/releases" type="rss"></outline>
+            <outline title="gama" text="gama" xmlUrl="https://github.com/termkit/gama/tags.atom" htmlUrl="https://github.com/termkit/gama/releases" type="rss"></outline>
+            <outline title="gh-dash" text="gh-dash" xmlUrl="https://github.com/dlvhdr/gh-dash/tags.atom" htmlUrl="https://github.com/dlvhdr/gh-dash/releases" type="rss"></outline>
+            <outline title="gh-lazy" text="gh-lazy" xmlUrl="https://github.com/gizmo385/gh-lazy/tags.atom" htmlUrl="https://github.com/gizmo385/gh-lazy/releases" type="rss"></outline>
+            <outline title="ghgrab" text="ghgrab" xmlUrl="https://github.com/abhixdd/ghgrab/tags.atom" htmlUrl="https://github.com/abhixdd/ghgrab/releases" type="rss"></outline>
+            <outline title="glaze" text="glaze" xmlUrl="https://github.com/stephenberry/glaze/tags.atom" htmlUrl="https://github.com/stephenberry/glaze/releases" type="rss"></outline>
+            <outline title="Gofer" text="Gofer" xmlUrl="https://codeberg.org/JakeAtLinux/Gofer/tags.rss" htmlUrl="https://codeberg.org/JakeAtLinux/Gofer/tags" description="A fast, minimal application launcher for Wayland or X11 written in pure Go. Zero C dependencies, single static binary." type="rss"></outline>
+            <outline title="gradle" text="gradle" xmlUrl="https://github.com/gradle/gradle/tags.atom" htmlUrl="https://github.com/gradle/gradle/releases" type="rss"></outline>
+            <outline title="graphite-gtk-theme" text="graphite-gtk-theme" xmlUrl="https://github.com/vinceliuice/Graphite-gtk-theme/tags.atom" htmlUrl="https://github.com/vinceliuice/Graphite-gtk-theme/releases" type="rss"></outline>
+            <outline title="guile-fibers" text="guile-fibers" xmlUrl="https://codeberg.org/guile/fibers/tags.rss" htmlUrl="https://codeberg.org/guile/fibers/tags" description="Concurrent ML-like concurrency for Guile" type="rss"></outline>
+            <outline title="gum" text="gum" xmlUrl="https://github.com/charmbracelet/gum/tags.atom" htmlUrl="https://github.com/charmbracelet/gum/releases" type="rss"></outline>
+            <outline title="gum-panel" text="gum-panel" xmlUrl="https://codeberg.org/oSoWoSo/gum/tags.rss" htmlUrl="https://codeberg.org/oSoWoSo/gum/tags" description="Tool for glamorous shell scripts" type="rss"></outline>
+            <outline title="helium-browser-bin" text="helium-browser-bin" xmlUrl="https://github.com/imputnet/helium/tags.atom" htmlUrl="https://github.com/imputnet/helium/releases" type="rss"></outline>
+            <outline title="hister" text="hister" xmlUrl="https://github.com/asciimoo/hister/tags.atom" htmlUrl="https://github.com/asciimoo/hister/releases" type="rss"></outline>
+            <outline title="hyprcursor" text="hyprcursor" xmlUrl="https://github.com/hyprwm/hyprcursor/tags.atom" htmlUrl="https://github.com/hyprwm/hyprcursor/releases" type="rss"></outline>
+            <outline title="hyprdynamicmonitors" text="hyprdynamicmonitors" xmlUrl="https://github.com/fiffeek/hyprdynamicmonitors/tags.atom" htmlUrl="https://github.com/fiffeek/hyprdynamicmonitors/releases" type="rss"></outline>
+            <outline title="hyprgraphics" text="hyprgraphics" xmlUrl="https://github.com/hyprwm/hyprgraphics/tags.atom" htmlUrl="https://github.com/hyprwm/hyprgraphics/releases" type="rss"></outline>
+            <outline title="hypridle" text="hypridle" xmlUrl="https://github.com/hyprwm/hypridle/tags.atom" htmlUrl="https://github.com/hyprwm/hypridle/releases" type="rss"></outline>
+            <outline title="hyprland" text="hyprland" xmlUrl="https://github.com/hyprwm/hyprland/tags.atom" htmlUrl="https://github.com/hyprwm/hyprland/releases" type="rss"></outline>
+            <outline title="hyprlang" text="hyprlang" xmlUrl="https://github.com/hyprwm/hyprlang/tags.atom" htmlUrl="https://github.com/hyprwm/hyprlang/releases" type="rss"></outline>
+            <outline title="hyprlock" text="hyprlock" xmlUrl="https://github.com/hyprwm/hyprlock/tags.atom" htmlUrl="https://github.com/hyprwm/hyprlock/releases" type="rss"></outline>
+            <outline title="hyprmoncfg" text="hyprmoncfg" xmlUrl="https://github.com/crmne/hyprmoncfg/tags.atom" htmlUrl="https://github.com/crmne/hyprmoncfg/releases" type="rss"></outline>
+            <outline title="hyprpaper" text="hyprpaper" xmlUrl="https://github.com/hyprwm/hyprpaper/tags.atom" htmlUrl="https://github.com/hyprwm/hyprpaper/releases" type="rss"></outline>
+            <outline title="hyprpicker" text="hyprpicker" xmlUrl="https://github.com/hyprwm/hyprpicker/tags.atom" htmlUrl="https://github.com/hyprwm/hyprpicker/releases" type="rss"></outline>
+            <outline title="hyprpolkitagent" text="hyprpolkitagent" xmlUrl="https://github.com/hyprwm/hyprpolkitagent/tags.atom" htmlUrl="https://github.com/hyprwm/hyprpolkitagent/releases" type="rss"></outline>
+            <outline title="hyprsunset" text="hyprsunset" xmlUrl="https://github.com/hyprwm/hyprsunset/tags.atom" htmlUrl="https://github.com/hyprwm/hyprsunset/releases" type="rss"></outline>
+            <outline title="hyprsysteminfo" text="hyprsysteminfo" xmlUrl="https://github.com/hyprwm/hyprsysteminfo/tags.atom" htmlUrl="https://github.com/hyprwm/hyprsysteminfo/releases" type="rss"></outline>
+            <outline title="hyprtoolkit" text="hyprtoolkit" xmlUrl="https://github.com/hyprwm/hyprtoolkit/tags.atom" htmlUrl="https://github.com/hyprwm/hyprtoolkit/releases" type="rss"></outline>
+            <outline title="hyprutils" text="hyprutils" xmlUrl="https://github.com/hyprwm/hyprutils/tags.atom" htmlUrl="https://github.com/hyprwm/hyprutils/releases" type="rss"></outline>
+            <outline title="hyprwayland-scanner" text="hyprwayland-scanner" xmlUrl="https://github.com/hyprwm/hyprwayland-scanner/tags.atom" htmlUrl="https://github.com/hyprwm/hyprwayland-scanner/releases" type="rss"></outline>
+            <outline title="Jan AI" text="Jan AI" xmlUrl="https://github.com/janhq/jan/tags.atom" htmlUrl="https://github.com/janhq/jan/releases" type="rss"></outline>
+            <outline title="kairo" text="kairo" xmlUrl="https://github.com/programmersd21/kairo/tags.atom" htmlUrl="https://github.com/programmersd21/kairo/releases" type="rss"></outline>
+            <outline title="kando" text="kando" xmlUrl="https://github.com/kando-menu/kando/tags.atom" htmlUrl="https://github.com/kando-menu/kando/releases" type="rss"></outline>
+            <outline title="kmscon" text="kmscon" xmlUrl="https://github.com/kmscon/kmscon/tags.atom" htmlUrl="https://github.com/kmscon/kmscon/releases" type="rss"></outline>
+            <outline title="lazyrsync" text="lazyrsync" xmlUrl="https://github.com/westpoint-io/lazyrsync/tags.atom" htmlUrl="https://github.com/westpoint-io/lazyrsync/releases" type="rss"></outline>
+            <outline title="lgogdownloader" text="lgogdownloader" xmlUrl="https://github.com/Sude-/lgogdownloader/tags.atom" htmlUrl="https://github.com/Sude-/lgogdownloader/releases" type="rss"></outline>
+            <outline title="libcprime" text="libcprime" xmlUrl="https://gitlab.com/cubocore/libcprime/-/tags?format=atom" htmlUrl="https://gitlab.com/cubocore/libcprime/-/tags" type="rss"></outline>
+            <outline title="librewolf-bin" text="librewolf-bin" xmlUrl="https://librewolf.dev/librewolf/bsys6/tags.rss" htmlUrl="https://librewolf.dev/librewolf/bsys6/tags.rss" description="LibreWolf Binary" type="rss"></outline>
+            <outline title="libspng" text="libspng" xmlUrl="https://github.com/randy408/libspng/tags.atom" htmlUrl="https://github.com/randy408/libspng/releases" type="rss"></outline>
+            <outline title="linuxcommandlibrary" text="linuxcommandlibrary" xmlUrl="https://github.com/SimonSchubert/LinuxCommandLibrary/tags.atom" htmlUrl="https://github.com/SimonSchubert/LinuxCommandLibrary/releases" type="rss"></outline>
+            <outline title="llama.cpp" text="llama.cpp" xmlUrl="https://github.com/ggerganov/llama.cpp/tags.atom" htmlUrl="https://github.com/ggerganov/llama.cpp/releases" type="rss"></outline>
+            <outline title="llmfit" text="llmfit" xmlUrl="https://github.com/AlexsJones/llmfit/tags.atom" htmlUrl="https://github.com/AlexsJones/llmfit/releases" type="rss"></outline>
+            <outline title="logseq" text="logseq" xmlUrl="https://github.com/logseq/logseq/tags.atom" htmlUrl="https://github.com/logseq/logseq/releases" type="rss"></outline>
+            <outline title="lunasvg" text="lunasvg" xmlUrl="https://github.com/sammycage/lunasvg/tags.atom" htmlUrl="https://github.com/sammycage/lunasvg/releases" type="rss"></outline>
+            <outline title="ly" text="ly" xmlUrl="https://codeberg.org/fairyglade/ly/tags.rss" htmlUrl="https://codeberg.org/fairyglade/ly/tags" description="TUI display manager" type="rss"></outline>
+            <outline title="lycan" text="lycan" xmlUrl="https://github.com/tutkuofnight/lycan/tags.atom" htmlUrl="https://github.com/tutkuofnight/lycan/releases" type="rss"></outline>
+            <outline title="nebula-gtk" text="nebula-gtk" xmlUrl="https://github.com/Letdown2491/nebula-gtk/tags.atom" htmlUrl="https://github.com/Letdown2491/nebula-gtk/releases" type="rss"></outline>
+            <outline title="ngit-cli" text="ngit-cli" xmlUrl="https://github.com/DanConwayDev/ngit-cli/tags.atom" htmlUrl="https://github.com/DanConwayDev/ngit-cli/releases" type="rss"></outline>
+            <outline title="notesnook" text="notesnook" xmlUrl="https://github.com/streetwriters/notesnook/tags.atom" htmlUrl="https://github.com/streetwriters/notesnook/releases" miniflux:blockFilterEntryRules="EntryTitle=(?i)Android" miniflux:keepFilterEntryRules="EntryTitle=(?i)Desktop" type="rss"></outline>
+            <outline title="nvchecker" text="nvchecker" xmlUrl="https://github.com/lilydjwg/nvchecker/tags.atom" htmlUrl="https://github.com/lilydjwg/nvchecker/releases" type="rss"></outline>
+            <outline title="nwg-bar" text="nwg-bar" xmlUrl="https://github.com/nwg-piotr/nwg-bar/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-bar/releases" type="rss"></outline>
+            <outline title="nwg-clipman" text="nwg-clipman" xmlUrl="https://github.com/nwg-piotr/nwg-clipman/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-clipman/releases" type="rss"></outline>
+            <outline title="nwg-displays" text="nwg-displays" xmlUrl="https://github.com/nwg-piotr/nwg-displays/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-displays/releases" type="rss"></outline>
+            <outline title="nwg-dock" text="nwg-dock" xmlUrl="https://github.com/nwg-piotr/nwg-dock/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-dock/releases" type="rss"></outline>
+            <outline title="nwg-dock-hyprland" text="nwg-dock-hyprland" xmlUrl="https://github.com/nwg-piotr/nwg-dock-hyprland/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-dock-hyprland/releases" type="rss"></outline>
+            <outline title="nwg-drawer" text="nwg-drawer" xmlUrl="https://github.com/nwg-piotr/nwg-drawer/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-drawer/releases" type="rss"></outline>
+            <outline title="nwg-hello" text="nwg-hello" xmlUrl="https://github.com/nwg-piotr/nwg-hello/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-hello/releases" type="rss"></outline>
+            <outline title="nwg-icon-picker" text="nwg-icon-picker" xmlUrl="https://github.com/nwg-piotr/nwg-icon-picker/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-icon-picker/releases" type="rss"></outline>
+            <outline title="nwg-menu" text="nwg-menu" xmlUrl="https://github.com/nwg-piotr/nwg-menu/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-menu/releases" type="rss"></outline>
+            <outline title="nwg-panel" text="nwg-panel" xmlUrl="https://github.com/nwg-piotr/nwg-panel/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-panel/releases" type="rss"></outline>
+            <outline title="nwg-readme-browser" text="nwg-readme-browser" xmlUrl="https://github.com/nwg-piotr/nwg-readme-browser/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-readme-browser/releases" type="rss"></outline>
+            <outline title="nwg-shell" text="nwg-shell" xmlUrl="https://github.com/nwg-piotr/nwg-shell/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-shell/releases" type="rss"></outline>
+            <outline title="nwg-shell-config" text="nwg-shell-config" xmlUrl="https://github.com/nwg-piotr/nwg-shell-config/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-shell-config/releases" type="rss"></outline>
+            <outline title="nwg-shell-wallpapers" text="nwg-shell-wallpapers" xmlUrl="https://github.com/nwg-piotr/nwg-shell-wallpapers/tags.atom" htmlUrl="https://github.com/nwg-piotr/nwg-shell-wallpapers/releases" type="rss"></outline>
+            <outline title="odin2" text="odin2" xmlUrl="https://github.com/TheWaveWarden/odin2/tags.atom" htmlUrl="https://github.com/TheWaveWarden/odin2/releases" type="rss"></outline>
+            <outline title="opencode" text="opencode" xmlUrl="https://github.com/anomalyco/opencode/tags.atom" htmlUrl="https://github.com/anomalyco/opencode/releases" type="rss"></outline>
+            <outline title="OpenHands" text="OpenHands" xmlUrl="https://github.com/OpenHands/OpenHands/tags.atom" htmlUrl="https://github.com/OpenHands/OpenHands/releases" type="rss"></outline>
+            <outline title="Pinguin-Installer" text="Pinguin-Installer" xmlUrl="https://codeberg.org/pinguin-void/Pinguin-Installer.rss" htmlUrl="https://codeberg.org/pinguin-void/Pinguin-Installer" description="GUI-Installer for Void" type="rss"></outline>
+            <outline title="pop-fonts" text="pop-fonts" xmlUrl="https://github.com/pop-os/fonts/tags.atom" htmlUrl="https://github.com/pop-os/fonts/releases" type="rss"></outline>
+            <outline title="pop-icons" text="pop-icons" xmlUrl="https://github.com/pop-os/icon-theme/tags.atom" htmlUrl="https://github.com/pop-os/icon-theme/releases" type="rss"></outline>
+            <outline title="pop-launcher" text="pop-launcher" xmlUrl="https://github.com/pop-os/launcher/tags.atom" htmlUrl="https://github.com/pop-os/launcher/releases" type="rss"></outline>
+            <outline title="pop-sounds-theme" text="pop-sounds-theme" xmlUrl="https://github.com/pop-os/gtk-theme/tags.atom" htmlUrl="https://github.com/pop-os/gtk-theme/releases" type="rss"></outline>
+            <outline title="python3-PyGithub" text="python3-PyGithub" xmlUrl="https://github.com/PyGithub/PyGithub/tags.atom" htmlUrl="https://github.com/PyGithub/PyGithub/releases" type="rss"></outline>
+            <outline title="python3-structlog" text="python3-structlog" xmlUrl="https://github.com/hynek/structlog/tags.atom" htmlUrl="https://github.com/hynek/structlog/releases" type="rss"></outline>
+            <outline title="python3-textual" text="python3-textual" xmlUrl="https://github.com/Textualize/textual/tags.atom" htmlUrl="https://github.com/Textualize/textual/releases" type="rss"></outline>
+            <outline title="qrunsvmgr" text="qrunsvmgr" xmlUrl="https://codeberg.org/ItsZariep/qrunsvmgr/tags.rss" htmlUrl="https://codeberg.org/ItsZariep/qrunsvmgr/tags" description="Service manager GUI (Qt6), supporting Runit and Dinit" type="rss"></outline>
+            <outline title="quickemu" text="quickemu" xmlUrl="https://github.com/quickemu-project/quickemu/tags.atom" htmlUrl="https://github.com/quickemu-project/quickemu/releases" type="rss"></outline>
+            <outline title="quickshell+" text="quickshell+" xmlUrl="https://git.outfoxxed.me/quickshell/quickshell/tags.atom" htmlUrl="https://github.com/quickshell-mirror/quickshell/releases" type="rss"></outline>
+            <outline title="radicle" text="radicle" xmlUrl="https://github.com/radicle-dev/radicle/tags.atom" htmlUrl="https://github.com/radicle-dev/radicle/releases" type="rss"></outline>
+            <outline title="raysession" text="raysession" xmlUrl="https://github.com/Houston4444/RaySession/tags.atom" htmlUrl="https://github.com/Houston4444/RaySession/releases" type="rss"></outline>
+            <outline title="rebos" text="rebos" xmlUrl="https://gitlab.com/Oglo12/rebos/-/tags?feed_token=glft-04c863438e0e5dd2f35a7a72b90423aea8c204e4c72e28538bbb63cd430709ee-3344642&amp;format=atom" htmlUrl="https://gitlab.com/Oglo12/rebos/-/tags" type="rss"></outline>
+            <outline title="rgc" text="rgc" xmlUrl="https://github.com/flameshikari/rgc/tags.atom" htmlUrl="https://github.com/flameshikari/rgc/releases" type="rss"></outline>
+            <outline title="river-compositor" text="river-compositor" xmlUrl="https://codeberg.org/river/river/tags.rss" htmlUrl="https://codeberg.org/river/river/tags" description="River compositor" type="rss"></outline>
+            <outline title="runkit" text="runkit" xmlUrl="https://github.com/Letdown2491/runkit/tags.atom" htmlUrl="https://github.com/Letdown2491/runkit/releases" type="rss"></outline>
+            <outline title="rustdesk" text="rustdesk" xmlUrl="https://github.com/rustdesk/rustdesk/tags.atom" htmlUrl="https://github.com/rustdesk/rustdesk/releases" type="rss"></outline>
+            <outline title="sdkmanager" text="sdkmanager" xmlUrl="https://gitlab.com/fdroid/sdkmanager/-/tags?format=atom" htmlUrl="https://gitlab.com/fdroid/sdkmanager/-/tags" type="rss"></outline>
+            <outline title="seamonkey-bin" text="seamonkey-bin" xmlUrl="https://gitlab.com/seamonkey-project/seamonkey-2.53-comm/-/tags?format=atom" htmlUrl="https://www.seamonkey-project.org/releases/" description="SeaMonkey Binary" type="rss"></outline>
+            <outline title="sfizz" text="sfizz" xmlUrl="https://github.com/sfztools/sfizz/tags.atom" htmlUrl="https://github.com/sfztools/sfizz/releases" type="rss"></outline>
+            <outline title="shattered-pixel-dungeon" text="shattered-pixel-dungeon" xmlUrl="https://github.com/00-Evan/shattered-pixel-dungeon/tags.atom" htmlUrl="https://github.com/00-Evan/shattered-pixel-dungeon/releases" type="rss"></outline>
+            <outline title="shepherd" text="shepherd" xmlUrl="https://codeberg.org/shepherd/shepherd/tags.rss" htmlUrl="https://codeberg.org/shepherd/shepherd/tags" description="The Shepherd—extensible service manager" type="rss"></outline>
+            <outline title="surge-xt" text="surge-xt" xmlUrl="https://github.com/surge-synthesizer/surge/tags.atom" htmlUrl="https://github.com/surge-synthesizer/surge/releases" miniflux:keepFilterEntryRules="EntryTitle=(?i)release" type="rss"></outline>
+            <outline title="sv-helper" text="sv-helper" xmlUrl="https://github.com/rubyists/sv-helper/tags.atom" htmlUrl="https://github.com/rubyists/sv-helper/releases" type="rss"></outline>
+            <outline title="SyncMarks" text="SyncMarks" xmlUrl="https://codeberg.org/Offerel/SyncMarks-Webapp/tags.rss" htmlUrl="https://codeberg.org/Offerel/SyncMarks-Webapp/tags" description="Sync and manage your browser bookmarks from Edge, Firefox and Chromium with this Webapp." type="rss"></outline>
+            <outline title="SysMan" text="SysMan" xmlUrl="https://codeberg.org/oSoWoSo/SysMan/tags.rss" htmlUrl="https://codeberg.org/oSoWoSo/SysMan/tags" description="System Manager" type="rss"></outline>
+            <outline title="tiki" text="tiki" xmlUrl="https://github.com/boolean-maybe/tiki/tags.atom" htmlUrl="https://github.com/boolean-maybe/tiki/releases" type="rss"></outline>
+            <outline title="tls-client" text="tls-client" xmlUrl="https://github.com/bogdanfinn/tls-client/tags.atom" htmlUrl="https://github.com/bogdanfinn/tls-client/releases" type="rss"></outline>
+            <outline title="tomlplusplus" text="tomlplusplus" xmlUrl="https://github.com/marzer/tomlplusplus/tags.atom" htmlUrl="https://github.com/marzer/tomlplusplus/releases" type="rss"></outline>
+            <outline title="Trilium" text="Trilium" xmlUrl="https://github.com/TriliumNext/Trilium/tags.atom" htmlUrl="https://github.com/TriliumNext/Trilium/releases" type="rss"></outline>
+            <outline title="tufw" text="tufw" xmlUrl="https://github.com/peltho/tufw/tags.atom" htmlUrl="https://github.com/peltho/tufw/releases" type="rss"></outline>
+            <outline title="tui-kernel-manager" text="tui-kernel-manager" xmlUrl="https://codeberg.org/pinguin-void/tui-kernel-manager.rss" htmlUrl="https://codeberg.org/pinguin-void/tui-kernel-manager" description="Kernel installieren und entfernen unter Void Linux" type="rss"></outline>
+            <outline title="typobuster" text="typobuster" xmlUrl="https://github.com/nwg-piotr/typobuster/tags.atom" htmlUrl="https://github.com/nwg-piotr/typobuster/releases" type="rss"></outline>
+            <outline title="vbm" text="vbm" xmlUrl="https://codeberg.org/oSoWoSo/vbm/tags.rss" htmlUrl="https://codeberg.org/oSoWoSo/vbm/tags" description="Void Baseline Manager" type="rss"></outline>
+            <outline title="Vesktop" text="Vesktop" xmlUrl="https://github.com/Vencord/Vesktop/tags.atom" htmlUrl="https://github.com/Vencord/Vesktop/releases" type="rss"></outline>
+            <outline title="vibepanel" text="vibepanel" xmlUrl="https://github.com/prankstr/vibepanel/tags.atom" htmlUrl="https://github.com/prankstr/vibepanel/releases" type="rss"></outline>
+            <outline title="Vish" text="Vish" xmlUrl="https://github.com/Lluciocc/Vish/tags.atom" htmlUrl="https://github.com/Lluciocc/Vish/releases" type="rss"></outline>
+            <outline title="vm-curator" text="vm-curator" xmlUrl="https://github.com/mroboff/vm-curator/tags.atom" htmlUrl="https://github.com/mroboff/vm-curator/releases" type="rss"></outline>
+            <outline title="Void-Driver-App" text="Void-Driver-App" xmlUrl="https://codeberg.org/pinguin-void/Void-Driver-App.rss" htmlUrl="https://codeberg.org/pinguin-void/Void-Driver-App" description="A modern GTK4 setup tool for Void Linux&#xD;&#xA;Graphics drivers, printers, and scanners—all with a single click." type="rss"></outline>
+            <outline title="void-hardwaremanager-git" text="void-hardwaremanager-git" xmlUrl="https://codeberg.org/pinguin-void/Void-Driver-App/tags.rss" htmlUrl="https://codeberg.org/pinguin-void/Void-Driver-App/tags" description="Void Hardware Manager" type="rss"></outline>
+            <outline title="void-kernel-manager" text="void-kernel-manager" xmlUrl="https://codeberg.org/pinguin-void/kernel-manager.rss" htmlUrl="https://codeberg.org/pinguin-void/kernel-manager" type="rss"></outline>
+            <outline title="void-live-creator" text="void-live-creator" xmlUrl="https://codeberg.org/pinguin-void/void-live-creator.rss" htmlUrl="https://codeberg.org/pinguin-void/void-live-creator" description="Create a live ISO from a running system" type="rss"></outline>
+            <outline title="void-software-store" text="void-software-store" xmlUrl="https://codeberg.org/pinguin-void/void-software-store.rss" htmlUrl="https://codeberg.org/pinguin-void/void-software-store" description="GUI-Softwareverwaltung" type="rss"></outline>
+            <outline title="void-src-builder" text="void-src-builder" xmlUrl="https://codeberg.org/pinguin-void/void-src-builder.rss" htmlUrl="https://codeberg.org/pinguin-void/void-src-builder" description="Build packages from the Void source code" type="rss"></outline>
+            <outline title="void-user-manager" text="void-user-manager" xmlUrl="https://codeberg.org/pinguin-void/void-user-manager.rss" htmlUrl="https://codeberg.org/pinguin-void/void-user-manager" type="rss"></outline>
+            <outline title="vote" text="vote" xmlUrl="https://codeberg.org/oSoWoSo/vote/tags.rss" htmlUrl="https://codeberg.org/oSoWoSo/vote/tags" description="Void Linux Templater" type="rss"></outline>
+            <outline title="vtm" text="vtm" xmlUrl="https://github.com/directvt/vtm/tags.atom" htmlUrl="https://github.com/directvt/vtm/releases" type="rss"></outline>
+            <outline title="waterfox-bin" text="waterfox-bin" xmlUrl="https://github.com/BrowserWorks/waterfox/tags.atom" htmlUrl="https://github.com/BrowserWorks/waterfox/releases" type="rss"></outline>
+            <outline title="wpgtk" text="wpgtk" xmlUrl="https://github.com/deviantfero/wpgtk/tags.atom" htmlUrl="https://github.com/deviantfero/wpgtk/releases" type="rss"></outline>
+            <outline title="xdg-desktop-portal-cosmic" text="xdg-desktop-portal-cosmic" xmlUrl="https://github.com/pop-os/xdg-desktop-portal-cosmic/tags.atom" htmlUrl="https://github.com/pop-os/xdg-desktop-portal-cosmic/releases" type="rss"></outline>
+            <outline title="xdg-desktop-portal-hyprland" text="xdg-desktop-portal-hyprland" xmlUrl="https://github.com/hyprwm/xdg-desktop-portal-hyprland/tags.atom" htmlUrl="https://github.com/hyprwm/xdg-desktop-portal-hyprland/releases" type="rss"></outline>
+            <outline title="xut" text="xut" xmlUrl="https://codeberg.org/mobinmob/xut/tags.rss" htmlUrl="https://codeberg.org/mobinmob/xut/tags" description="xtra user templates - Build and install packages for Void Linux, using templates from  the abyss-packages unofficial repo" type="rss"></outline>
+            <outline title="xxtools-git" text="xxtools-git" xmlUrl="https://github.com/Piraty/xxtools/tags.atom" htmlUrl="https://github.com/Piraty/xxtools/releases" type="rss"></outline>
+            <outline title="zen-browser-bin" text="zen-browser-bin" xmlUrl="https://github.com/zen-browser/desktop/tags.atom" htmlUrl="https://github.com/zen-browser/desktop/releases" type="rss"></outline>
+            <outline title="zig" text="zig" xmlUrl="https://github.com/ziglang/zig/tags.atom" htmlUrl="https://github.com/ziglang/zig/releases" description="Programming language designed for robustness, optimality, and clarity" type="rss"></outline>
+        </outline>
+    </body>
+</opml>
