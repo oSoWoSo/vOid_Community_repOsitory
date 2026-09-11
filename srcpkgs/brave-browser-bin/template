@@ -1,6 +1,6 @@
 # Template file for 'brave-browser-bin'
 pkgname=brave-browser-bin
-version=1.94.121
+version=1.95.101
 revision=1
 archs="x86_64 aarch64"
 hostmakedepends="unzip"
@@ -11,8 +11,8 @@ homepage="https://www.brave.com/"
 changelog="https://raw.githubusercontent.com/brave/brave-browser/refs/heads/master/CHANGELOG_DESKTOP.md"
 distfiles="https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser-${version}-linux-amd64.zip
  https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser-${version}-linux-arm64.zip"
-checksum="33a0c940037d97844c1848907b81de4418b98d07287f46220d07d88543b8a4b5
- 23be774849966e7de35429bde652cb0e583237d803fb8f596422419fdea1be8d"
+checksum="d30e9e1206074c0f24ad0eca1ca44b9a3abcde05a837074ec9045c8e599b6733
+ 324df5dd35fea33f09410af9ea6cf7775ace25af90e745a1da06c462e938b60a"
 replaces="brave-browser-arm-bin>=0"
 skip_extraction=yes
 repository=nonfree
