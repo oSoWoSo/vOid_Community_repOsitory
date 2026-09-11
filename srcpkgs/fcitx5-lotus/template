@@ -9,6 +9,7 @@ configure_args="-DLOTUS_UINPUT_PROXY_USER=_uinput_proxy -DINSTALL_RUNIT=ON -DRUN
 hostmakedepends="extra-cmake-modules pkg-config gettext go python3 librsvg-utils"
 makedepends="libfcitx5-devel libinput-devel eudev-libudev-devel acl-devel libX11-devel"
 depends="fcitx5 acl acl-progs"
+checkdepends="fcitx5 iso-codes xkeyboard-config"
 short_desc="Fcitx5 - Vietnamese IME"
 maintainer="Coolllyn <leanhduc673@gmail.com>"
 license="GPL-3.0-or-later"
