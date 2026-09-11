@@ -47,6 +47,23 @@ pre_build() {
 	fi
 }
 
+do_check() {
+	# The headless integration tests build a real LotusEngine, whose Go core
+	# silently returns a null handle when the Vietnamese dictionary is missing
+	# via fcitx5 StandardPaths (PkgData: lotus/vietnamese.cm.dict). That file
+	# is only placed after installation (upstream CI runs 'cmake --install'
+	# before ctest), so expose it from the source tree through a temporary
+	# XDG_DATA_DIRS entry. Without this every key event is silently dropped
+	# and 5 integration tests fail with "key was not accepted".
+	local _lotus_share="${wrksrc}/.lotus-check/share"
+	mkdir -p "${_lotus_share}/fcitx5/lotus"
+	cp "${wrksrc}/data/dictionaries/vietnamese.cm.dict" \
+		"${_lotus_share}/fcitx5/lotus/"
+
+	XDG_DATA_DIRS="${_lotus_share}:/usr/local/share:/usr/share" \
+		 ctest --test-dir "${wrksrc}/${cmake_builddir:-build}" --output-on-failure
+}
+
 fcitx5-lotus-settings_package() {
 	short_desc+=" - Settings"
 	depends="fcitx5-lotus python3 python3-QtPy python3-pyqt6 python3-dbus python3-pyqt6-widgets python3-pyqt6-gui qt6-wayland"
