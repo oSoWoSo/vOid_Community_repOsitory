@@ -101,7 +101,8 @@ jobs:
           if curl -fsSL -H "Authorization: Bearer ${GH_TOKEN}" \
               "https://api.github.com/repos/${GH_REPO}/issues/${ISSUE_NUMBER}/comments?per_page=100" \
               | grep -q '<!-- autobump:'; then
-            echo "handled=true" >> "$GITHUB_OUTPUT"
+            #echo "handled=true" >> "$GITHUB_OUTPUT"
+            echo "handled=false" >> "$GITHUB_OUTPUT"
             echo "Already handled: skipping"
           else
             echo "handled=false" >> "$GITHUB_OUTPUT"
