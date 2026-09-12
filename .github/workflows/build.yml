@@ -341,7 +341,7 @@ concurrency:
       format('{0} (#{1})', github.event.pull_request.title, github.event.pull_request.number) ||
       'matrix build'
     }}
-  cancel-in-progress: true
+  cancel-in-progress: false
   queue: max
 
 jobs:
