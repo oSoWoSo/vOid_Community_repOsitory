@@ -79,20 +79,6 @@ jobs:
           echo "TEMPLATE=$TEMPLATE" >> "$GITHUB_ENV"
           echo "template=$TEMPLATE" >> "$GITHUB_OUTPUT"
 
-      - name: Whitelist check
-        id: whitelist
-        if: steps.marker.outputs.handled == 'false'
-        run: |
-          if ! grep -qxF "$TEMPLATE" extra/src/autobump-pkgs; then
-            echo "in_list=false" >> "$GITHUB_OUTPUT"
-            curl -fsSL -X POST -H "Authorization: Bearer ${OCO_TOKEN:-$GITHUB_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${GH_REPO}/issues/${ISSUE_NUMBER}/comments" \
-              -d "$(printf '{"body":"Autobump skipped: **%s** is not listed in `src/autobump-pkgs`.\\n\\nAdd the template there to enable automatic updates."' "$TEMPLATE" )" || true
-            exit 0
-          fi
-          echo "in_list=true" >> "$GITHUB_OUTPUT"
-
       - name: Skip if already handled
         id: marker
         env:
@@ -107,6 +93,20 @@ jobs:
           else
             echo "handled=false" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Whitelist check
+        id: whitelist
+        if: steps.marker.outputs.handled == 'false'
+        run: |
+          if ! grep -qxF "$TEMPLATE" extra/src/autobump-pkgs; then
+            echo "in_list=false" >> "$GITHUB_OUTPUT"
+            curl -fsSL -X POST -H "Authorization: Bearer ${OCO_TOKEN:-$GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GH_REPO}/issues/${ISSUE_NUMBER}/comments" \
+              -d "$(printf '{"body":"Autobump skipped: **%s** is not listed in `src/autobump-pkgs`.\\n\\nAdd the template there to enable automatic updates."' "$TEMPLATE" )" || true
+            exit 0
+          fi
+          echo "in_list=true" >> "$GITHUB_OUTPUT"
 
       - name: Merge templates and edit shlibs
         if: steps.whitelist.outputs.in_list == 'true'
