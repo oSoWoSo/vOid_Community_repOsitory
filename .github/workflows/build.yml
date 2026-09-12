@@ -330,7 +330,17 @@ permissions:
   packages: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: >-
+    ${{
+      github.event_name == 'workflow_dispatch' &&
+      (inputs.all == 'true' && 'build: all packages' ||
+       inputs.template != '' && format('build: {0}', inputs.template) ||
+       inputs.templates != '' && format('build: {0}', inputs.templates)) ||
+      github.event_name == 'push' && github.event.head_commit.message ||
+      github.event_name == 'pull_request' &&
+      format('{0} (#{1})', github.event.pull_request.title, github.event.pull_request.number) ||
+      'matrix build'
+    }}
   cancel-in-progress: false
   queue: max
 
