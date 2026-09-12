@@ -3,6 +3,7 @@ pkgname=fcitx5-lotus
 version=3.5.9
 revision=1
 _bamboo_commit="f976d2d1f639fca86f798a8f978b6883c854d45b"
+archs="~*-musl"
 build_style=cmake
 pycompile_dirs="usr/share/${pkgname}/settings-gui"
 configure_args="-DLOTUS_UINPUT_PROXY_USER=_uinput_proxy -DINSTALL_RUNIT=ON -DRUNIT_SV_DIR=/usr/share/examples/sv -DLOTUS_BYTECOMPILE_PYTHON=OFF"
