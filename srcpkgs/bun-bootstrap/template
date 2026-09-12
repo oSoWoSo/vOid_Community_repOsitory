@@ -1,6 +1,6 @@
 # Template file for 'bun-bootstrap'
 pkgname=bun-bootstrap
-version=1.4.0
+version=1.4.2
 revision=1
 archs="x86_64* aarch64*"
 hostmakedepends="patchelf unzip"
