@@ -13,10 +13,10 @@ distfiles="https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-
  https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-linux-aarch64.zip
  https://github.com/oven-sh/bun/releases/download/bun-v${version}/bun-linux-aarch64-musl.zip
  https://raw.githubusercontent.com/oven-sh/bun/refs/tags/bun-v${version}/LICENSE.md"
-checksum="2d03fb5fb83ac8b567aca0a281b2ce1a1a19d488f56c2968d88c3f25e92fe452
- 83b5f12fd258dd8d4fdcaea65ede954366aa717dab399e20093ecab280d54e7a
+checksum="36368faef7527875d5ffa52e53cd48021741f2a83eb6208a8dd64068d422a913
+ 4835eca59d6da70f4674f5642f6e459dcadab773695b2ed9922d131057989742
  4b1a332ee861983eb93bcfe6f770fff94e3e31b2c388bdaea3c8ed35e58eed0e
- 576300ce33ff16ffcd455bf178c2f095f9df845c6cc3d0284ba1c96ca0e80473
+ 71760b6c8ea30623b81a4907cb815d48e2ea266f2e73e751534a44a0607950df
  b9caf52728691b4057e371232c221a132883198be2f3d2ddf92c90404c984b1a"
 skip_extraction="bun-linux-x64.zip bun-linux-x64-musl.zip bun-linux-aarch64.zip bun-linux-aarch64-musl.zip LICENSE.md"
 repository=bootstrap
