@@ -288,7 +288,7 @@ Create PR
 | python3-hishel | 1.1.9 | [home](https://github.com/karpetrosyan/hishel) | zenobit |  |  Elegant HTTP Caching for Python |
 | python3-inline-snapshot | 0.32.6 | [home](https://15r10nk.github.io/inline-snapshot/latest) | zenobit |  | Boosts efficiency when writing tests |
 | python3-linkify-it-py | 2.1.0 | [home](https://github.com/tsutsu3/linkify-it-py) | Orphaned |  | Linkify plugin for markdown-it-py |
-| python3-PyGithub | 2.8.1 | [home](https://pygithub.readthedocs.io/) | Orphan |  | Python library to access the GitHub API v3 |
+| python3-PyGithub | 2.10.0 | [home](https://pygithub.readthedocs.io/) | Orphan |  | Python library to access the GitHub API v3 |
 | python3-structlog | 26.1.0 | [home](https://github.com/hynek/structlog) | zenobit |  | Simple, powerful, and fast logging for Python |
 | python3-textual | 5.3.0 | [home](https://textual.textualize.io) | icp |  | Modern Text User Interface framework |
 | python3-uc-micro-py | 2.0.0 | [home](https://github.com/tsutsu3/uc.micro-py) | Orphaned |  | Unicode category micro library |
