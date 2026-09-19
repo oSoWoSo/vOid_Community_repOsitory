@@ -1,8 +1,8 @@
 # Template file for 'fcitx5-lotus'
 pkgname=fcitx5-lotus
-version=3.5.9
-revision=4
-_bamboo_commit="f976d2d1f639fca86f798a8f978b6883c854d45b"
+version=3.5.10
+revision=1
+_bamboo_commit="30e8457584ff36767e9de40161728c004b1281b0"
 archs="~*-musl"
 build_style=cmake
 pycompile_dirs="usr/share/${pkgname}/settings-gui"
@@ -14,15 +14,17 @@ short_desc="Fcitx5 - Vietnamese IME"
 maintainer="Coolllyn <leanhduc673@gmail.com>"
 license="GPL-3.0-or-later"
 homepage="https://github.com/LotusInputMethod/fcitx5-lotus"
+changelog="https://github.com/LotusInputMethod/fcitx5-lotus/releases"
 distfiles="https://github.com/LotusInputMethod/fcitx5-lotus/archive/refs/tags/v${version}.tar.gz>fcitx5-lotus-${version}.tar.gz
  https://github.com/LotusInputMethod/bamboo-core/archive/${_bamboo_commit}.tar.gz>bamboo-core-${_bamboo_commit}.tar.gz"
-checksum="0b499e12b83660a576f5042f4fef43608e332fc312076fc1251648e5c89811ba
- 83a094caa4ba0db1abb1842d727233ae921c20aed85956bc14850bbff63d803c"
+checksum="ab68fe48e0e7caf0d88d6f3be1f9e2f5d98d769222ec1fc0dc07892a85d13a57
+ 916fd2a26552cb0320d673c85d9ca5f13859f43e0847622935b6db32737c6f83"
 python_version=3
 skip_extraction="bamboo-core-${_bamboo_commit}.tar.gz"
 system_accounts="_uinput_proxy"
 _uinput_proxy_groups="input"
 
+export CGO_ENABLED=1
 case "${XBPS_TARGET_MACHINE}" in
 	aarch64*) export GOARCH=arm64 ;;
 	armv5*)   export GOARCH=arm; export GOARM=5 ;;
@@ -39,28 +41,12 @@ case "${XBPS_TARGET_MACHINE}" in
 	*) broken="Unsupported architecture ${XBPS_TARGET_MACHINE}" ;;
 esac
 
-if [ "$CROSS_BUILD" ]; then
-	if [ "${XBPS_MACHINE%%-musl}" = "${XBPS_TARGET_MACHINE%%-musl}" ]; then
-		broken="Cross-compiling to different libc is not supported"
-	fi
-fi
-
 if [ "$XBPS_CHECK_PKGS" ]; then
 	configure_args+=" -DBUILD_TESTING=ON"
 fi
 
 post_extract() {
 	vsrcextract -C bamboo/bamboo-core "bamboo-core-${_bamboo_commit}.tar.gz"
-}
-
-do_check() {
-	local _lotus_share="${wrksrc}/.lotus-check/share"
-	mkdir -p "${_lotus_share}/fcitx5/lotus"
-	cp "${wrksrc}/data/dictionaries/vietnamese.cm.dict" \
-		"${_lotus_share}/fcitx5/lotus/"
-
-	XDG_DATA_DIRS="${_lotus_share}:/usr/local/share:/usr/share" \
-		 ctest --test-dir "${wrksrc}/${cmake_builddir:-build}" --output-on-failure
 }
 
 fcitx5-lotus-settings_package() {
