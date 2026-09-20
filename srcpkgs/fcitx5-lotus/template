@@ -5,9 +5,8 @@ revision=1
 _bamboo_commit="30e8457584ff36767e9de40161728c004b1281b0"
 archs="~*-musl"
 build_style=cmake
-pycompile_dirs="usr/share/${pkgname}/settings-gui"
 configure_args="-DLOTUS_UINPUT_PROXY_USER=_uinput_proxy -DINSTALL_RUNIT=ON -DRUNIT_SV_DIR=/usr/share/examples/sv -DLOTUS_BYTECOMPILE_PYTHON=OFF"
-hostmakedepends="extra-cmake-modules pkgconf gettext go python3 librsvg-utils"
+hostmakedepends="extra-cmake-modules pkgconf gettext go librsvg-utils"
 makedepends="libfcitx5-devel libinput-devel eudev-libudev-devel"
 depends="fcitx5 acl-progs"
 short_desc="Fcitx5 - Vietnamese IME"
@@ -19,10 +18,13 @@ distfiles="https://github.com/LotusInputMethod/fcitx5-lotus/archive/refs/tags/v$
  https://github.com/LotusInputMethod/bamboo-core/archive/${_bamboo_commit}.tar.gz>bamboo-core-${_bamboo_commit}.tar.gz"
 checksum="ab68fe48e0e7caf0d88d6f3be1f9e2f5d98d769222ec1fc0dc07892a85d13a57
  916fd2a26552cb0320d673c85d9ca5f13859f43e0847622935b6db32737c6f83"
-python_version=3
 skip_extraction="bamboo-core-${_bamboo_commit}.tar.gz"
 system_accounts="_uinput_proxy"
 _uinput_proxy_groups="input"
+
+if [ "$XBPS_CHECK_PKGS" ]; then
+	configure_args+=" -DBUILD_TESTING=ON"
+fi
 
 export CGO_ENABLED=1
 case "${XBPS_TARGET_MACHINE}" in
@@ -41,17 +43,16 @@ case "${XBPS_TARGET_MACHINE}" in
 	*) broken="Unsupported architecture ${XBPS_TARGET_MACHINE}" ;;
 esac
 
-if [ "$XBPS_CHECK_PKGS" ]; then
-	configure_args+=" -DBUILD_TESTING=ON"
-fi
-
 post_extract() {
 	vsrcextract -C bamboo/bamboo-core "bamboo-core-${_bamboo_commit}.tar.gz"
 }
 
 fcitx5-lotus-settings_package() {
 	short_desc+=" - Settings"
-	depends="${sourcepkg}>=${version}_${revision} python3 python3-QtPy python3-pyqt6 python3-dbus python3-pyqt6-widgets python3-pyqt6-gui"
+	depends="${sourcepkg}>=${version}_${revision} python3 python3-QtPy
+ python3-pyqt6 python3-dbus python3-pyqt6-widgets python3-pyqt6-gui"
+	pycompile_dirs="usr/share/${pkgname}/settings-gui"
+	python_version=3
 	pkg_install() {
 		vmove usr/bin/fcitx5-lotus-settings
 		vmove usr/share/fcitx5-lotus/settings-gui
