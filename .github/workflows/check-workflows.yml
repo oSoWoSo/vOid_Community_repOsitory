@@ -1,0 +1,370 @@
+name: Check GitHub Actions
+
+on:
+  push:
+    paths:
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-actions:
+    name: Check action versions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Check action versions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          declare -A checked
+          declare -A results
+
+          outdated=0
+          warnings=0
+          total=0
+
+          summary_file="$GITHUB_STEP_SUMMARY"
+
+          {
+            echo "# GitHub Actions version check"
+            echo
+            echo "| Workflow | Action | Current | Latest | Status |"
+            echo "|---|---|---|---|---|"
+          } > "$summary_file"
+
+          version_lt() {
+            # Compare numeric dotted versions.
+            # Returns 0 when $1 < $2.
+            local a="$1"
+            local b="$2"
+
+            IFS='.' read -r -a av <<< "${a#v}"
+            IFS='.' read -r -a bv <<< "${b#v}"
+
+            local max=${#av[@]}
+            (( ${#bv[@]} > max )) && max=${#bv[@]}
+
+            local i ai bi
+
+            for ((i = 0; i < max; i++)); do
+              ai="${av[i]:-0}"
+              bi="${bv[i]:-0}"
+
+              if (( 10#$ai < 10#$bi )); then
+                return 0
+              fi
+
+              if (( 10#$ai > 10#$bi )); then
+                return 1
+              fi
+            done
+
+            return 1
+          }
+
+          normalize_version() {
+            local version="${1#v}"
+            version="${version%%-*}"
+
+            if [[ "$version" =~ ^([0-9]+)(\.[0-9]+)?(\.[0-9]+)?$ ]]; then
+              printf '%s' "$version"
+            else
+              printf ''
+            fi
+          }
+
+          get_latest_release() {
+            local repo="$1"
+            local tag
+
+            tag="$(
+              gh api \
+                "repos/$repo/releases/latest" \
+                --jq '.tag_name' \
+                2>/dev/null || true
+            )"
+
+            printf '%s' "$tag"
+          }
+
+          get_latest_tag() {
+            local repo="$1"
+
+            gh api \
+              --paginate \
+              "repos/$repo/tags?per_page=100" \
+              --jq '.[].name' 2>/dev/null |
+              grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' |
+              sort -V |
+              tail -n1 || true
+          }
+
+          get_sha_for_ref() {
+            local repo="$1"
+            local ref="$2"
+
+            gh api \
+              "repos/$repo/commits/$ref" \
+              --jq '.sha' \
+              2>/dev/null || true
+          }
+
+          get_release_sha() {
+            local repo="$1"
+            local tag="$2"
+
+            gh api \
+              "repos/$repo/git/ref/tags/$tag" \
+              --jq '.object.sha' \
+              2>/dev/null || true
+          }
+
+          check_action() {
+            local workflow="$1"
+            local repo="$2"
+            local current="$3"
+
+            local key="$repo@$current"
+
+            if [[ -n "${checked[$key]+x}" ]]; then
+              return
+            fi
+
+            checked["$key"]=1
+            total=$((total + 1))
+
+            local latest=""
+            local latest_version=""
+            local current_version=""
+            local status="OK"
+
+            # ---------------------------------------------------------
+            # Branch references
+            # ---------------------------------------------------------
+
+            if [[ ! "$current" =~ ^v?[0-9]+(\.[0-9]+){0,2}$ &&
+                  ! "$current" =~ ^[0-9a-fA-F]{40}$ ]]; then
+
+              case "$current" in
+                main|master|develop|development|next|nightly|dev)
+                  status="BRANCH"
+                  warnings=$((warnings + 1))
+                  ;;
+                *)
+                  status="REF"
+                  warnings=$((warnings + 1))
+                  ;;
+              esac
+
+              printf '| `%s` | `%s` | `%s` | — | ⚠️ %s |\n' \
+                "$workflow" "$repo" "$current" "$status" \
+                >> "$summary_file"
+
+              return
+            fi
+
+            # ---------------------------------------------------------
+            # SHA reference
+            # ---------------------------------------------------------
+
+            if [[ "$current" =~ ^[0-9a-fA-F]{40}$ ]]; then
+              latest="$(get_latest_release "$repo")"
+
+              if [[ -z "$latest" ]]; then
+                latest="$(get_latest_tag "$repo")"
+              fi
+
+              if [[ -z "$latest" ]]; then
+                status="NO_RELEASE"
+                warnings=$((warnings + 1))
+
+                printf '| `%s` | `%s` | `%s` | — | ⚠️ %s |\n' \
+                  "$workflow" "$repo" "$current" "$status" \
+                  >> "$summary_file"
+
+                return
+              fi
+
+              local latest_sha
+              latest_sha="$(get_release_sha "$repo" "$latest")"
+
+              if [[ "$current" == "$latest_sha" ]]; then
+                status="OK"
+              else
+                status="SHA_OUTDATED"
+                outdated=$((outdated + 1))
+              fi
+
+              printf '| `%s` | `%s` | `%s` | `%s` | %s |\n' \
+                "$workflow" "$repo" "$current" "$latest" "$status" \
+                >> "$summary_file"
+
+              return
+            fi
+
+            # ---------------------------------------------------------
+            # Version reference
+            # ---------------------------------------------------------
+
+            current_version="$(normalize_version "$current")"
+
+            if [[ -z "$current_version" ]]; then
+              status="UNKNOWN"
+              warnings=$((warnings + 1))
+
+              printf '| `%s` | `%s` | `%s` | — | ⚠️ %s |\n' \
+                "$workflow" "$repo" "$current" "$status" \
+                >> "$summary_file"
+
+              return
+            fi
+
+            latest="$(get_latest_release "$repo")"
+
+            if [[ -z "$latest" ]]; then
+              latest="$(get_latest_tag "$repo")"
+            fi
+
+            if [[ -z "$latest" ]]; then
+              status="NO_RELEASE"
+              warnings=$((warnings + 1))
+
+              printf '| `%s` | `%s` | `%s` | — | ⚠️ %s |\n' \
+                "$workflow" "$repo" "$current" "$status" \
+                >> "$summary_file"
+
+              return
+            fi
+
+            latest_version="$(normalize_version "$latest")"
+
+            if [[ -z "$latest_version" ]]; then
+              status="UNKNOWN_LATEST"
+              warnings=$((warnings + 1))
+
+              printf '| `%s` | `%s` | `%s` | `%s` | ⚠️ %s |\n' \
+                "$workflow" "$repo" "$current" "$latest" "$status" \
+                >> "$summary_file"
+
+              return
+            fi
+
+            # ---------------------------------------------------------
+            # Major-only reference, e.g. @v6
+            # ---------------------------------------------------------
+
+            if [[ "$current" =~ ^v?[0-9]+$ ]]; then
+              local current_major="${current#v}"
+              local latest_major="${latest_version%%.*}"
+
+              if (( latest_major > current_major )); then
+                status="NEW_MAJOR"
+                outdated=$((outdated + 1))
+              else
+                status="OK"
+              fi
+
+            # ---------------------------------------------------------
+            # Full/partial version, e.g. @v6.1 or @v6.1.2
+            # ---------------------------------------------------------
+
+            else
+              if version_lt "$current_version" "$latest_version"; then
+                status="OUTDATED"
+                outdated=$((outdated + 1))
+              else
+                status="OK"
+              fi
+            fi
+
+            printf '| `%s` | `%s` | `%s` | `%s` | %s |\n' \
+              "$workflow" "$repo" "$current" "$latest" "$status" \
+              >> "$summary_file"
+          }
+
+          echo "Scanning .github/workflows..."
+
+          while IFS= read -r -d '' file; do
+            workflow="${file#./}"
+
+            # Read every uses: occurrence.
+            while IFS= read -r line; do
+
+              # Remove comments.
+              line="${line%%#*}"
+
+              [[ "$line" =~ uses:[[:space:]]* ]] || continue
+
+              value="${line#*uses:}"
+              value="${value#"${value%%[![:space:]]*}"}"
+              value="${value%%[[:space:]]*}"
+
+              # Remove YAML quotes.
+              value="${value#\"}"
+              value="${value%\"}"
+              value="${value#\'}"
+              value="${value%\'}"
+
+              [[ "$value" == */*'@'* ]] || continue
+
+              repo="${value%@*}"
+              ref="${value##*@}"
+
+              # Local action / reusable workflow.
+              [[ "$repo" == ./* ]] && continue
+              [[ "$repo" == \$/* ]] && continue
+
+              # Must look like owner/repository.
+              [[ "$repo" =~ ^[^/[:space:]]+/[^/[:space:]]+$ ]] || continue
+
+              check_action "$workflow" "$repo" "$ref"
+
+            done < <(
+              grep -E '(^|[[:space:]])uses:[[:space:]]*[^#]+' "$file" || true
+            )
+
+          done < <(
+            find .github/workflows \
+              -type f \
+              \( -name '*.yml' -o -name '*.yaml' \) \
+              -print0
+          )
+
+          {
+            echo
+            echo "## Summary"
+            echo
+            echo "- Checked references: **$total**"
+            echo "- Outdated: **$outdated**"
+            echo "- Warnings: **$warnings**"
+          } >> "$summary_file"
+
+          echo
+          echo "========================================"
+          echo "GitHub Actions version check"
+          echo "========================================"
+          echo "Checked:  $total"
+          echo "Outdated: $outdated"
+          echo "Warnings: $warnings"
+          echo
+
+          if (( outdated > 0 )); then
+            echo "Outdated GitHub Actions found."
+            exit 1
+          fi
+
+          echo "All versioned GitHub Actions are up to date."
