@@ -169,19 +169,19 @@ Create PR
 | dragonfly-reverb-standalone | 3.2.10 | [home](https://michaelwillis.github.io/dragonfly-reverb) | Trve_AY |  | Collection of reverbs |
 | dragonfly-reverb-vst | 3.2.10 | [home](https://michaelwillis.github.io/dragonfly-reverb) | Trve_AY |  | Collection of reverbs |
 | dragonfly-reverb-vst3 | 3.2.10 | [home](https://michaelwillis.github.io/dragonfly-reverb) | Trve_AY |  | Collection of reverbs |
-| drako | 0.4.0 | [home](https://github.com/lucky7xz/drako) | zenobit |  | Grid-based, customizable TUI-Deck launcher |
+| drako | 0.4.1 | [home](https://github.com/lucky7xz/drako) | zenobit |  | Grid-based, customizable TUI-Deck launcher |
 | easybashgui | 15.0.2 | [home](https://github.com/BashGui/easybashgui) | zenobit |  | Bash functions library that aims to give simple GUI functions |
 | faugus-launcher | 2.3.0 | [home](https://github.com/Faugus/faugus-launcher) | zenobit |  | Simple and lightweight app for running Windows games using UMU-Launcher |
-| fcitx5-lotus | 3.5.9 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn | ~*-musl | Fcitx5 - Vietnamese IME |
-| fcitx5-lotus-breeze | 3.5.9 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn | ~*-musl | Fcitx5 - Vietnamese IME |
-| fcitx5-lotus-settings | 3.5.9 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn | ~*-musl | Fcitx5 - Vietnamese IME |
+| fcitx5-lotus | 3.5.10 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn | ~*-musl | Fcitx5 - Vietnamese IME |
+| fcitx5-lotus-breeze | 3.5.10 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn | ~*-musl | Fcitx5 - Vietnamese IME |
+| fcitx5-lotus-settings | 3.5.10 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn | ~*-musl | Fcitx5 - Vietnamese IME |
 | flyline | 1.7.1 | [home](https://github.com/HalFrgrd/flyline) | zenobit |  | Bash plugin to replace readline for a modern line editing experience |
 | forgejo-runner | 13.2.0 | [home](https://code.forgejo.org/forgejo/runner) | zenobit |  | Continuous integration for Forgejo |
 | FreeTube | 0.25.1 | [home](https://github.com/FreeTubeApp/FreeTube) | Bella109 | x86_64 | Client for watching YouTube Videos |
 | ftxui | 7.0.3 | [home](https://github.com/ArthurSonzogni/FTXUI) | zenobit |  | C++ Functional Terminal User Interface |
 | ftxui-devel | 7.0.3 | [home](https://github.com/ArthurSonzogni/FTXUI) | zenobit |  | C++ Functional Terminal User Interface |
 | gama | 1.2.1 | [home](https://github.com/termkit/gama) | zenobit |  | Manage your GitHub Actions from Terminal with great UI |
-| gh-dash | 4.25.2 | [home](https://github.com/dlvhdr/gh-dash) | zenobit |  | Rich terminal UI for GitHub that doesn't break your flow |
+| gh-dash | 4.26.0 | [home](https://github.com/dlvhdr/gh-dash) | zenobit |  | Rich terminal UI for GitHub that doesn't break your flow |
 | gh-lazy | 0.6.6 | [home](https://github.com/gizmo385/gh-lazy) | zenobit |  | Terminal UI for interacting with GitHub |
 | ghgrab | 2.0.2 | [home](https://github.com/abhixdd/ghgrab) | zenobit |  | Terminal tool to browse and download files in git forges |
 | glaze | 8.2.0 | [home](https://github.com/stephenberry/glaze) | zenobit |  | Extremely fast, in memory, JSON and interface library for modern C++ |
@@ -336,7 +336,7 @@ Create PR
 | undelete-btrfs | 1.0 | [home](https://github.com/danthem/undelete-btrfs) | zenobit |  | Undelete files in a BTRFS file system |
 | vbm | 1.0.2 | [home](https://codeberg.org/oSoWoSo/vbm) | zenobit |  | XBPS package management helper for VoidLinux |
 | vibepanel | 0.16.1 | [home](https://github.com/prankstr/vibepanel) | LinuxNation |  | GTK4 panel for Wayland with notifications, OSD, and quick settings |
-| Vish | 1.1.4 | [home](https://github.com/Lluciocc/Vish) | zenobit |  | Visual Scripting for Bash |
+| Vish | 1.1.5 | [home](https://github.com/Lluciocc/Vish) | zenobit |  | Visual Scripting for Bash |
 | vm-curator | 1.4.0 | [home](https://github.com/mroboff/vm-curator) | zenobit |  | TUI to build and manage QEMU/KVM virtual machines |
 | void-hardwaremanager-git | 0.0.0 | [home](https://codeberg.org/pinguin-void/Void-Driver-App) | zenobit | x86_64 aarch64 | Modern GTK4 setup tool for Void Linux |
 | void-live-creator-git | 0.0.0 | [home](https://codeberg.org/pinguin-void/void-live-creator) | zenobit |  | Create a live ISO from a running system |
