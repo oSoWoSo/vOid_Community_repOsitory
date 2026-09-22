@@ -1,6 +1,6 @@
 # Template file for 'brave-origin-bin'
 pkgname=brave-origin-bin
-version=1.95.102
+version=1.95.104
 revision=1
 archs="x86_64 aarc64"
 create_wrksrc=yes
@@ -12,8 +12,8 @@ homepage="https://www.brave.com/"
 changelog="https://brave.com/latest/"
 distfiles="https://github.com/brave/brave-browser/releases/download/v${version}/brave-origin-${version}-linux-amd64.zip
  https://github.com/brave/brave-browser/releases/download/v${version}/brave-origin-${version}-linux-arm64.zip"
-checksum="9949ebc5f47355e4a65c0ed82858a2e161952191bac3a1d68a75b0f2755f0db2
- 9b934973536b2be20cef357bb07e7d44757d3082b8f227222bea3831b767592f"
+checksum="f43cf2295fc5ec3eeed8f9788c0a86ab0d5c5290fa83692686be7c710408b047
+ 74bf690d9efa0008c947f894835bc76adbd17f5770f4321515b07b5f32f8b716"
 skip_extraction=yes
 nostrip=yes
 
