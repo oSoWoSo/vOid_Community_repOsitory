@@ -236,6 +236,7 @@
 !/srcpkgs/python3-textual
 !/srcpkgs/python3-uc-micro-py
 !/srcpkgs/qrunsvmgr
+!/srcpkgs/quickbox-gtk4
 !/srcpkgs/quickemu
 !/srcpkgs/quickosdl
 !/srcpkgs/quickshell+

@@ -260,6 +260,7 @@ on:
         - python3-textual
         - python3-uc-micro-py
         - qrunsvmgr
+        - quickbox-gtk4
         - quickemu
         - quickosdl
         - quickshell+
