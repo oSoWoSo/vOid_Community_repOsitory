@@ -138,7 +138,6 @@ on:
         - easybashgui
         - faugus-launcher
         - fcitx5-lotus
-        - fcitx5-lotus-breeze
         - fcitx5-lotus-settings
         - flyline
         - forgejo-runner
