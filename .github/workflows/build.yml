@@ -261,6 +261,7 @@ on:
         - python3-uc-micro-py
         - qrunsvmgr
         - quickbox-gtk4
+        - quickbox-qt
         - quickemu
         - quickosdl
         - quickshell+
