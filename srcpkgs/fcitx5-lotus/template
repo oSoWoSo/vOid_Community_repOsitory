@@ -3,7 +3,6 @@ pkgname=fcitx5-lotus
 version=3.5.10
 revision=1
 _bamboo_commit="30e8457584ff36767e9de40161728c004b1281b0"
-archs="~*-musl"
 build_style=cmake
 configure_args="-DLOTUS_UINPUT_PROXY_USER=_uinput_proxy -DINSTALL_RUNIT=ON -DRUNIT_SV_DIR=/usr/share/examples/sv -DLOTUS_BYTECOMPILE_PYTHON=OFF"
 hostmakedepends="extra-cmake-modules pkgconf gettext go librsvg-utils"
@@ -24,6 +23,11 @@ _uinput_proxy_groups="input"
 
 if [ "$XBPS_CHECK_PKGS" ]; then
 	configure_args+=" -DBUILD_TESTING=ON"
+fi
+
+if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
+	# Tests fail on musl: https://github.com/golang/go/issues/13492
+	make_check=no
 fi
 
 export CGO_ENABLED=1
@@ -47,6 +51,10 @@ post_extract() {
 	vsrcextract -C bamboo/bamboo-core "bamboo-core-${_bamboo_commit}.tar.gz"
 }
 
+post_install() {
+	vdoc ${FILESDIR}/README.voidlinux
+}
+
 fcitx5-lotus-settings_package() {
 	short_desc+=" - Settings"
 	depends="${sourcepkg}>=${version}_${revision} python3 python3-QtPy
@@ -57,14 +65,5 @@ fcitx5-lotus-settings_package() {
 		vmove usr/bin/fcitx5-lotus-settings
 		vmove usr/share/fcitx5-lotus/settings-gui
 		vmove usr/share/applications/org.fcitx.Fcitx5.Addon.Lotus.Settings.desktop
-	}
-}
-
-fcitx5-lotus-breeze_package() {
-	short_desc+=" - Breeze icons"
-	depends="${sourcepkg}>=${version}_${revision}"
-	pkg_install() {
-		vmove usr/share/icons/breeze
-		vmove usr/share/icons/breeze-dark
 	}
 }
