@@ -1,10 +1,11 @@
 # Template file for 'brave-origin-bin'
 pkgname=brave-origin-bin
 version=1.95.104
-revision=1
-archs="x86_64 aarc64"
+revision=2
+archs="x86_64 aarch64"
 create_wrksrc=yes
 hostmakedepends="unzip"
+depends="desktop-file-utils hicolor-icon-theme hwids xdg-utils"
 short_desc="Minimalist browser from the makers of Brave (binary)"
 maintainer="zenobit <zen@osowoso.org>"
 license="MPL-2.0"
@@ -16,6 +17,8 @@ checksum="f43cf2295fc5ec3eeed8f9788c0a86ab0d5c5290fa83692686be7c710408b047
  74bf690d9efa0008c947f894835bc76adbd17f5770f4321515b07b5f32f8b716"
 skip_extraction=yes
 nostrip=yes
+nopie=yes
+noshlibprovides=yes
 
 do_extract() {
 	case "$XBPS_TARGET_MACHINE" in
@@ -56,7 +59,15 @@ do_install() {
 			vcopy $f opt/brave-origin
 	done
 
+	chmod 755 "${DESTDIR}/opt/brave-origin/brave"
+	chmod 755 "${DESTDIR}/opt/brave-origin/brave-origin"
+	chmod 755 "${DESTDIR}/opt/brave-origin/chrome-sandbox"
+	chmod 755 "${DESTDIR}/opt/brave-origin/chrome_crashpad_handler"
+	chmod 755 "${DESTDIR}/opt/brave-origin/chrome-management-service"
+
 	for size in 16 24 32 48 64 128 256; do
 		vinstall product_logo_${size}.png 644 usr/share/icons/hicolor/${size}x${size}/apps brave-origin.png
 	done
+
+	vinstall ${FILESDIR}/brave-origin.desktop 644 usr/share/applications
 }
