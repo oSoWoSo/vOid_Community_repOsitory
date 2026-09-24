@@ -3,7 +3,6 @@ pkgname=kando
 version=3.0.0
 revision=1
 archs="x86_64 aarch64"
-build_helper="qemu"
 hostmakedepends="cmake pkg-config nodejs base-devel"
 makedepends="libX11-devel libXtst-devel libxkbcommon-devel wayland-devel
  libxkbfile-devel libsecret-devel gobject-introspection"
@@ -15,6 +14,7 @@ homepage="https://kando.menu"
 changelog="https://raw.githubusercontent.com/kando-menu/kando/refs/heads/main/docs/changelog.md"
 distfiles="https://github.com/kando-menu/kando/archive/refs/tags/v${version}.tar.gz"
 checksum=e0bfc34b29808db99b8e8e325f8be10df50aad16fa756472e1b2050bc72a829e
+nocross=yes
 
 case $XBPS_TARGET_MACHINE in
 	x86_64)
