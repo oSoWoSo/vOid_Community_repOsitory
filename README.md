@@ -326,7 +326,7 @@ Create PR
 | SysMan | 0.020 | [home](https://codeberg.org/oSoWoSo/SysMan) | zenobit |  | System Manager |
 | tdf | 0.5.0 | [home](https://github.com/itsjunetime/tdf) | zenobit |  | TUI PDF viewer |
 | tiki | 0.6.1 | [home](https://github.com/boolean-maybe/tiki) | zenobit |  | Terminal Markdown-based shapeless workflow builder |
-| tls-client | 1.15.1 | [home](https://github.com/bogdanfinn/tls-client) | zenobit |  | Net/http.Client like HTTP Client |
+| tls-client | 1.16.0 | [home](https://github.com/bogdanfinn/tls-client) | zenobit |  | Net/http.Client like HTTP Client |
 | tomlplusplus | 3.4.0 | [home](https://marzer.github.io/tomlplusplus/) | zenobit |  | TOML config parser and serializer for C++ |
 | tomlplusplus-devel | 3.4.0 | [home](https://marzer.github.io/tomlplusplus/) | zenobit |  | TOML config parser and serializer for C++ |
 | Trilium | 0.105.0 | [home](https://github.com/TriliumNext/Trilium) | zenobit |  | Build your personal knowledge base with Trilium Notes |
