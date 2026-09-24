@@ -33,6 +33,8 @@
 !/srcpkgs/aquamarine
 !/srcpkgs/blocaled
 !/srcpkgs/brave-browser-bin
+!/srcpkgs/brave-browser-bin-qt5
+!/srcpkgs/brave-browser-bin-qt6
 !/srcpkgs/brave-origin-bin
 !/srcpkgs/brow6el
 !/srcpkgs/btrfs-progs

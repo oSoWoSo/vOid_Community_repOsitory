@@ -57,6 +57,8 @@ on:
         - aquamarine
         - blocaled
         - brave-browser-bin
+        - brave-browser-bin-qt5
+        - brave-browser-bin-qt6
         - brave-origin-bin
         - brow6el
         - btrfs-progs
