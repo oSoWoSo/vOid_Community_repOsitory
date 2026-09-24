@@ -1,9 +1,10 @@
 # Template file for 'brave-browser-bin'
 pkgname=brave-browser-bin
 version=1.95.104
-revision=1
+revision=2
 archs="x86_64 aarch64"
 hostmakedepends="unzip"
+depends="desktop-file-utils hicolor-icon-theme hwids xdg-utils"
 short_desc="One of the most private browsers built on top off Chromium project"
 maintainer="zenobit <zen@osowoso.org>"
 license="MPL-2.0"
@@ -18,6 +19,8 @@ skip_extraction=yes
 repository=nonfree
 restricted=yes
 nostrip=yes
+nopie=yes
+noshlibprovides=yes
 
 do_extract() {
 	case "$XBPS_TARGET_MACHINE" in
@@ -63,8 +66,16 @@ do_install() {
 			vcopy "$f" opt/brave
 	done
 
+	chmod 755 "${DESTDIR}/opt/brave/brave"
+	chmod 755 "${DESTDIR}/opt/brave/brave-browser"
+	chmod 755 "${DESTDIR}/opt/brave/chrome-sandbox"
+	chmod 755 "${DESTDIR}/opt/brave/chrome_crashpad_handler"
+	chmod 755 "${DESTDIR}/opt/brave/chrome-management-service"
+
 	for size in 16 24 32 48 64 128 256; do
 		vinstall product_logo_${size}.png 644 \
 			usr/share/icons/hicolor/${size}x${size}/apps brave-browser.png
 	done
+
+	vinstall ${FILESDIR}/brave-browser.desktop 644 usr/share/applications
 }
