@@ -36,6 +36,8 @@
 !/srcpkgs/brave-browser-bin-qt5
 !/srcpkgs/brave-browser-bin-qt6
 !/srcpkgs/brave-origin-bin
+!/srcpkgs/brave-origin-bin-qt5
+!/srcpkgs/brave-origin-bin-qt6
 !/srcpkgs/brow6el
 !/srcpkgs/btrfs-progs
 !/srcpkgs/bulletty

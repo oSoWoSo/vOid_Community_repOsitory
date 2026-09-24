@@ -1,7 +1,7 @@
 # Template file for 'brave-origin-bin'
 pkgname=brave-origin-bin
 version=1.95.104
-revision=2
+revision=3
 archs="x86_64 aarch64"
 create_wrksrc=yes
 hostmakedepends="unzip"
@@ -70,4 +70,18 @@ do_install() {
 	done
 
 	vinstall ${FILESDIR}/brave-origin.desktop 644 usr/share/applications
+}
+
+brave-origin-bin-qt5_package() {
+	short_desc+=" - Qt5 integration shim"
+	pkg_install() {
+		vmove opt/brave-origin/libqt5_shim.so
+	}
+}
+
+brave-origin-bin-qt6_package() {
+	short_desc+=" - Qt6 integration shim"
+	pkg_install() {
+		vmove opt/brave-origin/libqt6_shim.so
+	}
 }

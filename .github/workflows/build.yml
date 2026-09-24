@@ -60,6 +60,8 @@ on:
         - brave-browser-bin-qt5
         - brave-browser-bin-qt6
         - brave-origin-bin
+        - brave-origin-bin-qt5
+        - brave-origin-bin-qt6
         - brow6el
         - btrfs-progs
         - bulletty
