@@ -354,7 +354,7 @@ Create PR
 | vtm | 2026.09.25 | [home](https://github.com/directvt/vtm) | zenobit |  | Text-based desktop environment |
 | waterfox-bin | 6.7.4 | [home](https://www.waterfox.net) | zenobit | x86_64 aarch64 | Fast and private web browser |
 | wpgtk | 6.7.1 | [home](https://github.com/deviantfero/wpgtk/) | zenobit |  | Colorscheme, wallpaper and template manager for *nix |
-| xdg-desktop-portal-cosmic | 1.8.0 | [home](https://github.com/pop-os/xdg-desktop-portal-cosmic) | zenobit | x86_64* | Backend implementation for xdg-desktop-portal for COSMIC |
+| xdg-desktop-portal-cosmic | 1.9.0 | [home](https://github.com/pop-os/xdg-desktop-portal-cosmic) | zenobit | x86_64* | Backend implementation for xdg-desktop-portal for COSMIC |
 | xdg-desktop-portal-hyprland | 1.3.11 | [home](https://github.com/hyprwm/xdg-desktop-portal-hyprland) | zenobit |  | Backend of xdg-desktop-portal for Hyprland |
 | xut | 0.4.2 | [home](https://codeberg.org/mobinmob/xut) | mobinmob |  | Work with templates from unofficial repositories |
 | xxtools-git | 0.0.0 | [home](https://github.com/Piraty/xxtools) | zenobit |  | Tools to ease packaging tasks for Void Linux |
