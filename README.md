@@ -118,7 +118,7 @@ Create PR
 | cosmic-desktop-full | 1.1.0 | [home](https://github.com/pop-os/cosmic-epoch) | Bella109 | x86_64* | Full Cosmic Desktop |
 | cosmic-desktop-minimal | 1.1.0 | [home](https://github.com/pop-os/cosmic-epoch) | Bella109 | x86_64* | Meta Package for COSMIC Desktop |
 | cosmic-edit | 1.9.0 | [home](https://github.com/pop-os/cosmic-edit) | zenobit | x86_64* | Text editor for the COSMIC desktop |
-| cosmic-files | 1.8.0 | [home](https://github.com/pop-os/cosmic-files) | zenobit | x86_64* | File manager for the COSMIC desktop environment |
+| cosmic-files | 1.9.0 | [home](https://github.com/pop-os/cosmic-files) | zenobit | x86_64* | File manager for the COSMIC desktop environment |
 | cosmic-greeter | 1.9.0 | [home](https://github.com/pop-os/cosmic-greeter) | zenobit | x86_64* | COSMIC greeter for greetd |
 | cosmic-icons | 1.9.0 | [home](https://github.com/pop-os/cosmic-icons) | zenobit | x86_64* | System76 Cosmic icon theme for Linux |
 | cosmic-idle | 1.9.0 | [home](https://github.com/pop-os/cosmic-idle) | zenobit | x86_64* | Idle daemon for the COSMIC desktop |
