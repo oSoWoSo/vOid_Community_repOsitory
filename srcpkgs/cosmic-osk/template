@@ -1,0 +1,28 @@
+# Template file for 'cosmic-osk'
+pkgname=cosmic-osk
+version=1.9.0
+revision=1
+build_style=cargo
+hostmakedepends="pkg-config just"
+makedepends="libxkbcommon-devel eudev-libudev-devel"
+short_desc="COSMIC On-Screen Keyboard"
+maintainer="zenobit <zen@osowoso.org>"
+license="GPL-3.0-only"
+homepage="https://github.com/pop-os/cosmic-osk"
+distfiles="https://github.com/pop-os/cosmic-osk/archive/refs/tags/epoch-${version}.tar.gz"
+checksum=6a4095f0474d55ecefe0e1f4bb24f5a7bffdf0450e87de40c668da1d628bd1f6
+
+do_build() {
+	#cargo build --release --locked --target ${RUST_TARGET}
+	#cargo build --release --locked --target ${RUST_TARGET} --package cosmic-osk
+	just build-release
+}
+
+do_install() {
+	#just --set cargo-target-dir "target/${RUST_TARGET}" --set rootdir ${DESTDIR} --set prefix /usr install
+	just install
+}
+
+post_install() {
+	vbin target/release/cosmic-osk
+}
