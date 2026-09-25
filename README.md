@@ -138,8 +138,8 @@ Create PR
 | cosmic-sound-theme | 1.9.0 | [home](https://github.com/pop-os/cosmic-sound-theme) | zenobit | x86_64* | Sound theme for the COSMIC desktop environment |
 | cosmic-term | 1.9.0 | [home](https://github.com/pop-os/cosmic-term) | zenobit | x86_64* | COSMIC terminal emulator |
 | cosmic-tweaks | 0.2.5 | [home](https://github.com/cosmic-utils/cosmic-tweaks) | Bella109 | x86_64 | Tweaks for COSMIC |
-| cosmic-workspaces-epoch | 1.8.0 | [home](https://github.com/pop-os/cosmic-workspaces-epoch) | zenobit | x86_64* | COSMIC workspaces |
 | cosmic-wallpapers | 1.9.0 | [home](https://github.com/pop-os/cosmic-wallpapers) | zenobit | x86_64* | Wallpapers for the COSMIC Desktop Environment |
+| cosmic-workspaces-epoch | 1.9.0 | [home](https://github.com/pop-os/cosmic-workspaces-epoch) | zenobit | x86_64* | COSMIC workspaces |
 | CRC-black-hole | 1 | [home](https://repo.osowoso.org) | zenobit |  | CRC: Collection of community repositories |
 | CRC-brgvos | 1 | [home](https://repo.osowoso.org) | zenobit |  | CRC: Collection of community repositories |
 | CRC-cereus-core | 1 | [home](https://repo.osowoso.org) | zenobit |  | CRC: Collection of community repositories |
