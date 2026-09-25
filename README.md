@@ -123,7 +123,6 @@ Create PR
 | cosmic-icons | 1.8.0 | [home](https://github.com/pop-os/cosmic-icons) | zenobit | x86_64* | System76 Cosmic icon theme for Linux |
 | cosmic-initial-setup | 1.8.0 | [home](https://github.com/pop-os/cosmic-initial-setup) | zenobit | x86_64* | Initial setup for the COSMIC desktop |
 | cosmic-launcher | 1.8.0 | [home](https://github.com/pop-os/cosmic-launcher) | zenobit | x86_64* | Layer Shell frontend for pop-launcher |
-| cosmic-notifications | 1.8.0 | [home](https://github.com/pop-os/cosmic-notifications) | zenobit | x86_64* | Layer Shell notifications daemon for the COSMIC desktop |
 | cosmic-osd | 1.8.0 | [home](https://github.com/pop-os/cosmic-osd) | zenobit | x86_64* | On-Screen Display daemon for the COSMIC desktop |
 | cosmic-panel | 1.8.0 | [home](https://github.com/pop-os/cosmic-panel) | zenobit | x86_64* | COSMIC applet for creating panels and docks |
 | cosmic-player | 1.8.0 | [home](https://github.com/pop-os/cosmic-player) | zenobit | x86_64* | Media player for the COSMIC desktop |
@@ -137,6 +136,7 @@ Create PR
 | cosmic-term | 1.8.0 | [home](https://github.com/pop-os/cosmic-term) | zenobit | x86_64* | COSMIC terminal emulator |
 | cosmic-idle | 1.9.0 | [home](https://github.com/pop-os/cosmic-idle) | zenobit | x86_64* | Idle daemon for the COSMIC desktop |
 | cosmic-monitor | 1.9.0 | [home](https://github.com/pop-os/cosmic-monitor) | zenobit | x86_64* | System monitor for the COSMIC desktop |
+| cosmic-notifications | 1.9.0 | [home](https://github.com/pop-os/cosmic-notifications) | zenobit | x86_64* | Layer Shell notifications daemon for the COSMIC desktop |
 | cosmic-tweaks | 0.2.5 | [home](https://github.com/cosmic-utils/cosmic-tweaks) | Bella109 | x86_64 | Tweaks for COSMIC |
 | cosmic-wallpapers | 1.8.0 | [home](https://github.com/pop-os/cosmic-wallpapers) | zenobit | x86_64* | Wallpapers for the COSMIC Desktop Environment |
 | cosmic-workspaces-epoch | 1.8.0 | [home](https://github.com/pop-os/cosmic-workspaces-epoch) | zenobit | x86_64* | COSMIC workspaces |
