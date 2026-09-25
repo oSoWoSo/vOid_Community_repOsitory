@@ -121,7 +121,6 @@ Create PR
 | cosmic-files | 1.8.0 | [home](https://github.com/pop-os/cosmic-files) | zenobit | x86_64* | File manager for the COSMIC desktop environment |
 | cosmic-greeter | 1.8.0 | [home](https://github.com/pop-os/cosmic-greeter) | zenobit | x86_64* | COSMIC greeter for greetd |
 | cosmic-icons | 1.8.0 | [home](https://github.com/pop-os/cosmic-icons) | zenobit | x86_64* | System76 Cosmic icon theme for Linux |
-| cosmic-idle | 1.8.0 | [home](https://github.com/pop-os/cosmic-idle) | zenobit | x86_64* | Idle daemon for the COSMIC desktop |
 | cosmic-initial-setup | 1.8.0 | [home](https://github.com/pop-os/cosmic-initial-setup) | zenobit | x86_64* | Initial setup for the COSMIC desktop |
 | cosmic-launcher | 1.8.0 | [home](https://github.com/pop-os/cosmic-launcher) | zenobit | x86_64* | Layer Shell frontend for pop-launcher |
 | cosmic-monitor | 1.8.0 | [home](https://github.com/pop-os/cosmic-monitor) | zenobit | x86_64* | System monitor for the COSMIC desktop |
@@ -137,6 +136,7 @@ Create PR
 | cosmic-sound-theme | 1.8.0 | [home](https://github.com/pop-os/cosmic-sound-theme) | zenobit | x86_64* | Sound theme for the COSMIC desktop environment |
 | cosmic-store | 1.8.0 | [home](https://github.com/pop-os/cosmic-store) | zenobit | x86_64* | Cosmic App Store |
 | cosmic-term | 1.8.0 | [home](https://github.com/pop-os/cosmic-term) | zenobit | x86_64* | COSMIC terminal emulator |
+| cosmic-idle | 1.9.0 | [home](https://github.com/pop-os/cosmic-idle) | zenobit | x86_64* | Idle daemon for the COSMIC desktop |
 | cosmic-tweaks | 0.2.5 | [home](https://github.com/cosmic-utils/cosmic-tweaks) | Bella109 | x86_64 | Tweaks for COSMIC |
 | cosmic-wallpapers | 1.8.0 | [home](https://github.com/pop-os/cosmic-wallpapers) | zenobit | x86_64* | Wallpapers for the COSMIC Desktop Environment |
 | cosmic-workspaces-epoch | 1.8.0 | [home](https://github.com/pop-os/cosmic-workspaces-epoch) | zenobit | x86_64* | COSMIC workspaces |
