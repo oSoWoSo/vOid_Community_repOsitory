@@ -1,6 +1,6 @@
 # Template file for 'cosmic-bg'
 pkgname=cosmic-bg
-version=1.8.0
+version=1.9.0
 revision=1
 archs="x86_64*"
 build_style=cargo
@@ -11,7 +11,7 @@ maintainer="zenobit <zen@osowoso.org>"
 license="MPL-2.0"
 homepage="https://github.com/pop-os/cosmic-bg"
 distfiles="https://github.com/pop-os/cosmic-bg/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=270c7d77e9b6d7283c016c3d2a6b64e4f029b6c419371642f6ce5bef81d1a967
+checksum=848594cabc13d78fef20a907bc79aa2b132986e40bb042b9423779bfc081dcca
 
 do_install() {
 	just --set cargo-target-dir "target/${RUST_TARGET}" --set rootdir ${DESTDIR} --set prefix /usr install
