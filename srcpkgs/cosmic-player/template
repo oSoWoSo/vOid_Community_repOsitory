@@ -1,6 +1,6 @@
 # Template file for 'cosmic-player'
 pkgname=cosmic-player
-version=1.8.0
+version=1.9.0
 revision=1
 archs="x86_64*"
 build_style=cargo
@@ -11,7 +11,7 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-or-later"
 homepage="https://github.com/pop-os/cosmic-player"
 distfiles="https://github.com/pop-os/cosmic-player/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=34e23a39e8cf9d484378355a0890dfdb0f050c0dcc10c37026549ff112e1aa89
+checksum=d2a13306348cdc3886f75c918f00e3722ec85509d0b7f286023f3929b7aa0600
 
 do_install() {
 	just --set cargo-target-dir "target/${RUST_TARGET}" --set rootdir ${DESTDIR} --set prefix /usr install
