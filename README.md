@@ -122,7 +122,6 @@ Create PR
 | cosmic-greeter | 1.8.0 | [home](https://github.com/pop-os/cosmic-greeter) | zenobit | x86_64* | COSMIC greeter for greetd |
 | cosmic-session | 1.8.0 | [home](https://github.com/pop-os/cosmic-session) | zenobit | x86_64* | Session manager for the COSMIC desktop environment |
 | cosmic-settings | 1.8.0 | [home](https://github.com/pop-os/cosmic-settings) | zenobit | x86_64* | Settings application for the COSMIC desktop environment |
-| cosmic-store | 1.8.0 | [home](https://github.com/pop-os/cosmic-store) | zenobit | x86_64* | Cosmic App Store |
 | cosmic-icons | 1.9.0 | [home](https://github.com/pop-os/cosmic-icons) | zenobit | x86_64* | System76 Cosmic icon theme for Linux |
 | cosmic-idle | 1.9.0 | [home](https://github.com/pop-os/cosmic-idle) | zenobit | x86_64* | Idle daemon for the COSMIC desktop |
 | cosmic-initial-setup | 1.9.0 | [home](https://github.com/pop-os/cosmic-initial-setup) | zenobit | x86_64* | Initial setup for the COSMIC desktop |
@@ -136,6 +135,7 @@ Create PR
 | cosmic-screenshot | 1.9.0 | [home](https://github.com/pop-os/cosmic-screenshot) | zenobit | x86_64* | Utility for capturing screenshots via XDG Desktop Portal |
 | cosmic-settings-daemon | 1.9.0 | [home](https://github.com/pop-os/cosmic-settings-daemon) | zenobit | x86_64* | Settings daemon for the COSMIC desktop environment |
 | cosmic-sound-theme | 1.9.0 | [home](https://github.com/pop-os/cosmic-sound-theme) | zenobit | x86_64* | Sound theme for the COSMIC desktop environment |
+| cosmic-store | 1.9.0 | [home](https://github.com/pop-os/cosmic-store) | zenobit | x86_64* | Cosmic App Store |
 | cosmic-term | 1.9.0 | [home](https://github.com/pop-os/cosmic-term) | zenobit | x86_64* | COSMIC terminal emulator |
 | cosmic-tweaks | 0.2.5 | [home](https://github.com/cosmic-utils/cosmic-tweaks) | Bella109 | x86_64 | Tweaks for COSMIC |
 | cosmic-wallpapers | 1.9.0 | [home](https://github.com/pop-os/cosmic-wallpapers) | zenobit | x86_64* | Wallpapers for the COSMIC Desktop Environment |
