@@ -32,6 +32,7 @@ Pick your architecture there and you will see
 - To make CI quicker we use daily updated Bootstrap Docker images from [oco-builder](https://github.com/oSoWoSo/oco-builder)
 - nocross templates build support (GitHub aarch runner)
 - Binary repository https://repo.osowoso.org/
+- Just built (RSS feed) https://repo.osowoso.org/feed.xml
 
 ## What we don't build? (From source)
 Browsers: It's waste of energy and when you finish building is maybe already new version out  
