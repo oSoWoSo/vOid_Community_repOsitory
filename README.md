@@ -285,7 +285,7 @@ Create PR
 | pinguintv-installer-git | 0.0.0 | [home](https://pinguin-tv.de/installer.html) | Bella109 | x86_64 | New GUI Installer for void |
 | pop-fonts | 0.0.0 | [home](https://github.com/pop-os/fonts) | Bella109 |  | Pop Fonts |
 | pop-icons | 3.5.1 | [home](https://github.com/pop-os/icon-theme) | Bella109 |  | TODO: pop-icons short_desc |
-| pop-launcher | 1.8.0 | [home](https://github.com/pop-os/launcher) | zenobit | x86_64* | Modular IPC-based desktop launcher service |
+| pop-launcher | 1.9.0 | [home](https://github.com/pop-os/launcher) | zenobit | x86_64* | Modular IPC-based desktop launcher service |
 | pop-sounds-theme | 5.5.1 | [home](https://github.com/pop-os/gtk-theme) | Bella109 |  | Pop sounds theme |
 | proxelar | 0.5.1 | [home](https://github.com/emanuele-em/proxelar) | zenobit |  | Scriptable local traffic workbench |
 | python3-anysqlite | 0.0.5 | [home](https://github.com/karpetrosyan/anysqlite) | zenobit |  | Provides interface to sqlite3 library and supports trio and asyncio |
