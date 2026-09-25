@@ -112,9 +112,9 @@ Create PR
 | corekeyboard | 5.0.1 | [home](https://gitlab.com/cubocore/coreapps/corekeyboard) | zenobit |  | X11 based virtual keyboard for C Suite |
 | cosign | 3.1.3 | [home](https://github.com/sigstore/cosign) | zenobit |  | Code signing and transparency for containers and binaries |
 | cosmic-applets | 1.8.0 | [home](https://github.com/pop-os/cosmic-applets) | zenobit | x86_64* | Applets for COSMIC Panel |
-| cosmic-applibrary | 1.8.0 | [home](https://github.com/pop-os/cosmic-app-library) | zenobit | x86_64* | Application launcher for the COSMIC desktop |
 | cosmic-bg | 1.8.0 | [home](https://github.com/pop-os/cosmic-bg) | zenobit | x86_64* | COSMIC session service which applies backgrounds to displays |
 | cosmic-comp | 1.8.0 | [home](https://github.com/pop-os/cosmic-comp) | zenobit | x86_64* | Compositor for the COSMIC desktop environment |
+| cosmic-applibrary | 1.9.0 | [home](https://github.com/pop-os/cosmic-app-library) | zenobit | x86_64* | Application launcher for the COSMIC desktop |
 | cosmic-desktop-full | 1.1.0 | [home](https://github.com/pop-os/cosmic-epoch) | Bella109 | x86_64* | Full Cosmic Desktop |
 | cosmic-desktop-minimal | 1.1.0 | [home](https://github.com/pop-os/cosmic-epoch) | Bella109 | x86_64* | Meta Package for COSMIC Desktop |
 | cosmic-edit | 1.8.0 | [home](https://github.com/pop-os/cosmic-edit) | zenobit | x86_64* | Text editor for the COSMIC desktop |
