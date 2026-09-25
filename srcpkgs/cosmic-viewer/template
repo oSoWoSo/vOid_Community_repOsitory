@@ -1,0 +1,32 @@
+# Template file for 'cosmic-viewer'
+pkgname=cosmic-viewer
+version=1.9.0
+revision=1
+build_style=cargo
+hostmakedepends="pkg-config just cmake nasm"
+makedepends="libxkbcommon-devel"
+short_desc="COSMIC Image Viewer"
+maintainer="zenobit <zen@osowoso.org>"
+license="GPL-3.0-only"
+homepage="https://github.com/pop-os/cosmic-viewer"
+distfiles="https://github.com/pop-os/cosmic-viewer/archive/refs/tags/epoch-${version}.tar.gz"
+checksum=a1c3b54c5f7dde278d17e4bd67395cd1ce4ef4a130ec1b0cfeebc05cc0ce3026
+
+do_build() {
+	just build-release
+}
+
+do_install() {
+	#just --set cargo-target-dir "target/${RUST_TARGET}" --set rootdir ${DESTDIR} --set prefix /usr install
+	just install
+}
+
+post_install() {
+	vbin target/release/cosmic-viewer
+	vinstall res/com.system76.CosmicViewer.metainfo.xml 644 usr/share/metainfo
+	vinstall res/com.system76.CosmicViewer.desktop 644 usr/share/applications
+	for size in 16 24 32 48 64 128 256; do
+		vinstall res/icons/hicolor/${size}x${size}/apps/com.system76.CosmicViewer.svg \
+		 644 usr/share/icons/hicolor/${size}x${size}/apps/com.system76.CosmicViewer.svg
+	done
+}

@@ -139,6 +139,7 @@ Create PR
 | cosmic-store | 1.9.0 | [home](https://github.com/pop-os/cosmic-store) | zenobit | x86_64* | Cosmic App Store |
 | cosmic-term | 1.9.0 | [home](https://github.com/pop-os/cosmic-term) | zenobit | x86_64* | COSMIC terminal emulator |
 | cosmic-tweaks | 0.2.5 | [home](https://github.com/cosmic-utils/cosmic-tweaks) | Bella109 | x86_64 | Tweaks for COSMIC |
+| cosmic-viewer | 1.9.0 | [home](https://github.com/pop-os/cosmic-viewer) | zenobit |  | COSMIC Image Viewer |
 | cosmic-wallpapers | 1.9.0 | [home](https://github.com/pop-os/cosmic-wallpapers) | zenobit | x86_64* | Wallpapers for the COSMIC Desktop Environment |
 | cosmic-workspaces-epoch | 1.9.0 | [home](https://github.com/pop-os/cosmic-workspaces-epoch) | zenobit | x86_64* | COSMIC workspaces |
 | CRC-black-hole | 1 | [home](https://repo.osowoso.org) | zenobit |  | CRC: Collection of community repositories |

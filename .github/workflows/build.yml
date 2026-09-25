@@ -103,6 +103,7 @@ on:
         - cosmic-store
         - cosmic-term
         - cosmic-tweaks
+        - cosmic-viewer
         - cosmic-wallpapers
         - cosmic-workspaces-epoch
         - CRC-black-hole
