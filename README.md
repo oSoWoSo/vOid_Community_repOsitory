@@ -124,7 +124,6 @@ Create PR
 | cosmic-initial-setup | 1.8.0 | [home](https://github.com/pop-os/cosmic-initial-setup) | zenobit | x86_64* | Initial setup for the COSMIC desktop |
 | cosmic-launcher | 1.8.0 | [home](https://github.com/pop-os/cosmic-launcher) | zenobit | x86_64* | Layer Shell frontend for pop-launcher |
 | cosmic-randr | 1.8.0 | [home](https://github.com/pop-os/cosmic-randr) | zenobit | x86_64* | Library and utility for displaying and configuring Wayland outputs |
-| cosmic-screenshot | 1.8.0 | [home](https://github.com/pop-os/cosmic-screenshot) | zenobit | x86_64* | Utility for capturing screenshots via XDG Desktop Portal |
 | cosmic-session | 1.8.0 | [home](https://github.com/pop-os/cosmic-session) | zenobit | x86_64* | Session manager for the COSMIC desktop environment |
 | cosmic-settings | 1.8.0 | [home](https://github.com/pop-os/cosmic-settings) | zenobit | x86_64* | Settings application for the COSMIC desktop environment |
 | cosmic-settings-daemon | 1.8.0 | [home](https://github.com/pop-os/cosmic-settings-daemon) | zenobit | x86_64* | Settings daemon for the COSMIC desktop environment |
@@ -137,6 +136,7 @@ Create PR
 | cosmic-osd | 1.9.0 | [home](https://github.com/pop-os/cosmic-osd) | zenobit | x86_64* | On-Screen Display daemon for the COSMIC desktop |
 | cosmic-panel | 1.9.0 | [home](https://github.com/pop-os/cosmic-panel) | zenobit | x86_64* | COSMIC applet for creating panels and docks |
 | cosmic-player | 1.9.0 | [home](https://github.com/pop-os/cosmic-player) | zenobit | x86_64* | Media player for the COSMIC desktop |
+| cosmic-screenshot | 1.9.0 | [home](https://github.com/pop-os/cosmic-screenshot) | zenobit | x86_64* | Utility for capturing screenshots via XDG Desktop Portal |
 | cosmic-tweaks | 0.2.5 | [home](https://github.com/cosmic-utils/cosmic-tweaks) | Bella109 | x86_64 | Tweaks for COSMIC |
 | cosmic-wallpapers | 1.8.0 | [home](https://github.com/pop-os/cosmic-wallpapers) | zenobit | x86_64* | Wallpapers for the COSMIC Desktop Environment |
 | cosmic-workspaces-epoch | 1.8.0 | [home](https://github.com/pop-os/cosmic-workspaces-epoch) | zenobit | x86_64* | COSMIC workspaces |
