@@ -1,8 +1,8 @@
 # Template file for 'fcitx5-lotus'
 pkgname=fcitx5-lotus
-version=3.5.10
+version=3.6.0
 revision=1
-_bamboo_commit="30e8457584ff36767e9de40161728c004b1281b0"
+_bamboo_commit="0daa4e21776c79a974898afd45528d9c698fbbc8"
 build_style=cmake
 configure_args="-DLOTUS_UINPUT_PROXY_USER=_uinput_proxy -DINSTALL_RUNIT=ON -DRUNIT_SV_DIR=/usr/share/examples/sv -DLOTUS_BYTECOMPILE_PYTHON=OFF"
 hostmakedepends="extra-cmake-modules pkgconf gettext go librsvg-utils"
@@ -15,8 +15,8 @@ homepage="https://github.com/LotusInputMethod/fcitx5-lotus"
 changelog="https://github.com/LotusInputMethod/fcitx5-lotus/releases"
 distfiles="https://github.com/LotusInputMethod/fcitx5-lotus/archive/refs/tags/v${version}.tar.gz>fcitx5-lotus-${version}.tar.gz
  https://github.com/LotusInputMethod/bamboo-core/archive/${_bamboo_commit}.tar.gz>bamboo-core-${_bamboo_commit}.tar.gz"
-checksum="ab68fe48e0e7caf0d88d6f3be1f9e2f5d98d769222ec1fc0dc07892a85d13a57
- 916fd2a26552cb0320d673c85d9ca5f13859f43e0847622935b6db32737c6f83"
+checksum="785b785854b12a6bcb321194829c25578df6f48f9a2732b4216183bd8938c609
+ 2806ce1f822f942ffaad2f7085fcba37091a0221d3dc5c54609d437c30f01d2f"
 skip_extraction="bamboo-core-${_bamboo_commit}.tar.gz"
 system_accounts="_uinput_proxy"
 _uinput_proxy_groups="input"
@@ -59,7 +59,7 @@ fcitx5-lotus-settings_package() {
 	short_desc+=" - Settings"
 	depends="${sourcepkg}>=${version}_${revision} python3 python3-QtPy
  python3-pyqt6 python3-dbus python3-pyqt6-widgets python3-pyqt6-gui"
-	pycompile_dirs="usr/share/${pkgname}/settings-gui"
+	pycompile_dirs="usr/share/${sourcepkg}/settings-gui"
 	python_version=3
 	pkg_install() {
 		vmove usr/bin/fcitx5-lotus-settings
