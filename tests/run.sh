@@ -49,6 +49,7 @@ assert_rc() {
 eval "$(awk '
 	/^pkg_name\(\)/        {p=1}
 	/^fetch_remote_list/   {p=1}
+	/^surf_curl\(\)/      {p=1}
 	/^read_template_fields/{p=1}
 	/^feed_xml_escape/     {p=1}
 	/^feed_urls_from_nvchecker/{p=1}
@@ -280,7 +281,7 @@ chmod +x "$_FAKE_BIN/curl"
 
 PATH_BACKUP="$PATH"
 PATH="$_FAKE_BIN:$PATH_BACKUP"
-export PATH SURFER_TOKEN=dummy
+export PATH SURFER_TOKEN=dummy SURFER_USER=dummy-user
 
 export FAKE_CURL_MODE=ok
 it 'ok: returns 0'
@@ -305,6 +306,32 @@ unset FAKE_CURL_MODE
 
 PATH="$PATH_BACKUP"
 
+echo '== surf_curl =='
+
+_ARGV=$(mktemp)
+cat > "$_FAKE_BIN/curl" <<'EOF'
+#!/bin/sh
+# Records argv, one argument per line, then exits 0.
+printf '%s\n' "$@" > "$FAKE_CURL_ARGV"
+exit 0
+EOF
+chmod +x "$_FAKE_BIN/curl"
+
+PATH="$_FAKE_BIN:$PATH_BACKUP"
+export PATH FAKE_CURL_ARGV="$_ARGV"
+
+SURFER_USER=alice SURFER_TOKEN=s3cret surf_curl -fsS -X PROPFIND https://example.com/repo/
+it 'passes user:password via -u'
+assert_eq "$(tr '\n' '|' < "$_ARGV")" \
+	'-u|alice:s3cret|-fsS|-X|PROPFIND|https://example.com/repo/|'
+
+SURFER_USER= SURFER_TOKEN=s3cret surf_curl -sI https://example.com/repo/
+it 'never sends an empty -u value'
+assert_eq "$(tr '\n' '|' < "$_ARGV")" '-u|:s3cret|-sI|https://example.com/repo/|'
+
+unset FAKE_CURL_ARGV
+PATH="$PATH_BACKUP"
+
 echo '== prune_orphans =='
 
 rm -rf srcpkgs
@@ -323,7 +350,7 @@ _DELETED=$(mktemp)
 delete_remote() { printf '%s\n' "$1" >> "$_DELETED"; }
 _SCRIPT_DIR_BACKUP="$SCRIPT_DIR"
 SCRIPT_DIR="$PWD"
-SRCPKGS=srcpkgs SURFER_TOKEN=x ARCH=x86_64 _webdav="https://x/webdav"
+SRCPKGS=srcpkgs SURFER_TOKEN=x SURFER_USER=x ARCH=x86_64 _webdav="https://x/webdav"
 
 _orphans=$(mktemp)
 prune_orphans "$(printf '%s\n' \

@@ -531,6 +531,7 @@ jobs:
           XBPS_ARCH: ${{ matrix.config.arch }}
           XBPS_TARGET_ARCH: ${{ matrix.config.arch }}
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
+          SURFER_USER: ${{ secrets.SURFER_USER }}
         working-directory: /void-packages/hostdir/binpkgs/
         run: |
           export PATH="/opt/xbps/usr/bin/:$PATH"
@@ -601,14 +602,18 @@ jobs:
         env:
           RUN_ID: ${{ github.run_id }}
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
+          SURFER_USER: ${{ secrets.SURFER_USER }}
         run: |
-          curl -sf -u ":${SURFER_TOKEN}" -o extra/src/feed.xml \
+          curl -sf -u "${SURFER_USER}:${SURFER_TOKEN}" -o extra/src/feed.xml \
             "https://repo.osowoso.org/_webdav/feed.xml" || true
           python3 extra/src/gen-feed.py update \
             extra/src/feed.xml extra/results "$RUN_ID" "$(date -u +%Y-%m-%d)"
-          curl -s -T extra/src/feed.xml \
+          curl -sf -T extra/src/feed.xml \
             "https://repo.osowoso.org/_webdav/feed.xml" \
-            -u ":${SURFER_TOKEN}"
+            -u "${SURFER_USER}:${SURFER_TOKEN}" || {
+            echo "::error::feed upload failed (check SURFER_USER/SURFER_TOKEN secrets)"
+            exit 1
+          }
           cd extra
           ./ocoman -u
 

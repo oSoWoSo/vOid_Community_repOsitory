@@ -29,11 +29,13 @@ jobs:
       - name: Mount repo via WebDAV
         env:
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
+          SURFER_USER: ${{ secrets.SURFER_USER }}
           ARCH: ${{ matrix.arch }}
         run: |
           echo user_allow_other >> /etc/fuse.conf
           mkdir -p /repo
           RCLONE_WEBDAV_URL="https://repo.osowoso.org/_webdav/${ARCH}/" \
+          RCLONE_WEBDAV_USER="$SURFER_USER" \
           RCLONE_WEBDAV_PASS="$(rclone obscure "$SURFER_TOKEN")" \
           rclone mount :webdav: /repo \
             --allow-other \

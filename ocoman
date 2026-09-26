@@ -25,6 +25,9 @@ FEED_OPML="${SCRIPT_DIR}/src/feed.opml"
 NVCONF="${SCRIPT_DIR}/.nvchecker/nvchecker.toml"
 
 SURFER_URL='https://repo.osowoso.org'
+# Surfer >= 7.0: API tokens are deprecated -- use a Cloudron app password
+# together with a non-empty username (an empty one is rejected outright).
+SURFER_USER="${SURFER_USER:-}"
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
 SIGNED_BY='oSoWoSo <mail@osowoso.org>'
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
@@ -81,6 +84,21 @@ fatal() {
 
 _re() {
 	fatal "${RED}${*}${NC}"
+}
+
+# --- Surfer (WebDAV) helpers ---
+
+# curl with Surfer credentials. Surfer >= 7.0 requires a username plus a
+# Cloudron app password, so the user may never be left empty.
+surf_curl() {
+	curl -u "${SURFER_USER}:${SURFER_TOKEN}" "$@"
+}
+
+# Fatal unless both Surfer credentials are set.
+surf_auth_check() {
+	[ -n "${SURFER_TOKEN:-}" ] || fatal 'SURFER_TOKEN is required (Surfer >= 7: Cloudron app password)'
+	[ -n "${SURFER_USER:-}" ] || fatal 'SURFER_USER is required (Surfer >= 7 rejects an empty username)'
+	return 0
 }
 
 usage() {
@@ -221,9 +239,8 @@ list_published_pkgs() {
 # Returns 0 on success (printing the file list, possibly empty),
 # nonzero on transport failure (network/auth) so callers can react.
 fetch_remote_list() {
-	_frl_body=$(curl -fsS -X PROPFIND "${1}/" \
-		-H 'Depth: 1' \
-		-u ":${SURFER_TOKEN}" 2>&1)
+	_frl_body=$(surf_curl -fsS -X PROPFIND "${1}/" \
+		-H 'Depth: 1' 2>&1)
 	_frl_rc=$?
 	if [ "$_frl_rc" -ne 0 ]; then
 		echo "Error: PROPFIND ${1} failed (rc=${_frl_rc}): ${_frl_body}" >&2
@@ -234,14 +251,14 @@ fetch_remote_list() {
 }
 
 delete_remote() {
-	curl -s -X DELETE "${1}" -u ":${SURFER_TOKEN}" || true
+	surf_curl -s -X DELETE "${1}" || true
 }
 
 upload_file() {
 	_file="$1" _dest="$2"
 	_fname="$(basename "$_file")"
 	_local_mtime=$(stat -c %Y "$_file")
-	_remote_date=$(curl -sI "$_dest" -u ":${SURFER_TOKEN}" | grep -i '^last-modified:' | cut -d' ' -f2-)
+	_remote_date=$(surf_curl -sI "$_dest" | grep -i '^last-modified:' | cut -d' ' -f2-)
 	if [ -n "$_remote_date" ]; then
 		_remote_mtime=$(date -d "$_remote_date" +%s 2>/dev/null || echo 0)
 		if [ "$_local_mtime" -le "$_remote_mtime" ]; then
@@ -249,7 +266,7 @@ upload_file() {
 		fi
 	fi
 	echo "  Uploading: ${_fname}"
-	if ! curl -s -T "$_file" "$_dest" -u ":${SURFER_TOKEN}"; then
+	if ! surf_curl -s -T "$_file" "$_dest"; then
 		fatal "Failed to upload $(basename "$_file")"
 	fi
 }
@@ -679,14 +696,12 @@ generate_arch_pages() {
 		rm -f "$_nav_tmp" "$_pkg_tmp" "$_svg_tmp"
 		echo "  Generated ($_pkg_count packages): docs/${_arch}/index.html"
 
-		if [ -n "${SURFER_TOKEN:-}" ]; then
+		if surf_auth_check; then
 			_webdav_arch="${SURFER_URL}/_webdav/${_arch}"
-			curl -s -X MKCOL "${_webdav_arch}/" -u ":${SURFER_TOKEN}"
+			surf_curl -s -X MKCOL "${_webdav_arch}/"
 			if ! upload_file "$_out" "${_webdav_arch}/index.html"; then
 				fatal "Failed to upload ${_arch}/index.html!"
 			fi
-		else
-			fatal 'Invalid or no SURFER_TOKEN!'
 		fi
 	done
 }
@@ -709,7 +724,7 @@ build_site() {
 	generate_arch_pages
 	_g "Finished"
 
-	if [ -n "${SURFER_TOKEN:-}" ]; then
+	if surf_auth_check; then
 		_webdav="${SURFER_URL}/_webdav"
 		echo '==> Uploading website assets'
 		_ws_failed=0
@@ -738,7 +753,7 @@ build_main() {
 	_build_main_index "$_title"
 	_g "Finished"
 
-	if [ -n "${SURFER_TOKEN:-}" ]; then
+	if surf_auth_check; then
 		_webdav="${SURFER_URL}/_webdav"
 		echo '==> Uploading website assets'
 		_ws_failed=0
@@ -747,8 +762,6 @@ build_main() {
 			upload_file "$_file" "${_webdav}/$(basename "$_file")" || _ws_failed=1
 		done
 		[ "$_ws_failed" -eq 0 ] || echo '==> Warning: some website asset uploads failed'
-	else
-		fatal 'Invalid or no SURFER_TOKEN!'
 	fi
 }
 
@@ -772,7 +785,7 @@ target_serve() {
 
 do_upload() {
 	[ -n "$ARCH" ]         || fatal 'ARCH is required'
-	[ -n "$SURFER_TOKEN" ] || fatal 'SURFER_TOKEN is required'
+	surf_auth_check
 	[ -n "$PRIV_KEY" ]     || fatal 'PRIV_KEY is required'
 
 	_builddir="${BUILDDIR:-$(pwd)}"
@@ -780,7 +793,7 @@ do_upload() {
 
 	_work_dir=$(mktemp -d)
 
-	curl -s -X MKCOL "${_webdav}/" -u ":${SURFER_TOKEN}" || true
+	surf_curl -s -X MKCOL "${_webdav}/" || true
 
 	echo '==> Fetching remote package list'
 	if ! _remote_list=$(fetch_remote_list "$_webdav"); then
@@ -793,10 +806,10 @@ do_upload() {
 		cd "$_work_dir" || exit 1
 
 		echo '==> Downloading repodata'
-		_repodata_http=$(curl -sS -o "${ARCH}-repodata" \
+		_repodata_http=$(surf_curl -sS -o "${ARCH}-repodata" \
 			-w '%{http_code}' \
 			"${SURFER_URL}/${ARCH}/${ARCH}-repodata" \
-			-u ":${SURFER_TOKEN}" 2>/dev/null) || _repodata_http=0
+			2>/dev/null) || _repodata_http=0
 		case "$_repodata_http" in
 			200) ;;
 			404)
