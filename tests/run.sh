@@ -50,6 +50,8 @@ eval "$(awk '
 	/^pkg_name\(\)/        {p=1}
 	/^fetch_remote_list/   {p=1}
 	/^surf_curl\(\)/      {p=1}
+	/^surf_retry\(\)/     {p=1}
+	/^fetch_repodata\(\)/ {p=1}
 	/^read_template_fields/{p=1}
 	/^feed_xml_escape/     {p=1}
 	/^feed_urls_from_nvchecker/{p=1}
@@ -58,6 +60,9 @@ eval "$(awk '
 	p {print}
 	p && /^}$/             {p=0}
 ' "$SCRIPT_DIR/ocoman")"
+
+# Mirrors ocoman's Surfer retry defaults; individual sections override them.
+export SURF_ATTEMPTS=4 SURF_BACKOFF=0
 
 echo '== pkg_name =='
 it 'plain name';            assert_eq "$(pkg_name 'foo-1.0_1.x86_64')"          'foo'
@@ -330,6 +335,143 @@ it 'never sends an empty -u value'
 assert_eq "$(tr '\n' '|' < "$_ARGV")" '-u|:s3cret|-sI|https://example.com/repo/|'
 
 unset FAKE_CURL_ARGV
+PATH="$PATH_BACKUP"
+
+echo '== surf_retry / fetch_repodata =='
+
+cat > "$_FAKE_BIN/curl" <<'EOF'
+#!/bin/sh
+# Scripted fake curl. One directive per line in $FAKE_CURL_SCRIPT:
+#   http:<code>     response with that status: body goes to the -o target,
+#                   the status is printed (what curl -w '%{http_code}' does)
+#   rc:<n>          fail with exit status n
+#   body:<file>     print that file's contents, exit 0
+# The invocation count is kept in $FAKE_CURL_COUNT; the last line of the
+# script repeats for every further invocation.
+[ -n "${FAKE_CURL_ARGV:-}" ] && printf '%s\n' "$@" > "$FAKE_CURL_ARGV"
+_n=$(cat "${FAKE_CURL_COUNT:-/dev/null}" 2>/dev/null) || _n=0
+[ -n "$_n" ] || _n=0
+_n=$((_n + 1))
+printf '%s' "$_n" > "$FAKE_CURL_COUNT"
+_line=$(sed -n "${_n}p" "$FAKE_CURL_SCRIPT")
+[ -n "$_line" ] || _line=$(tail -n 1 "$FAKE_CURL_SCRIPT")
+case "$_line" in
+	http:*)
+		_code=${_line#http:}
+		_out='' _prev=''
+		for _a in "$@"; do
+			[ "$_prev" = '-o' ] && _out="$_a"
+			_prev="$_a"
+		done
+		[ -n "$_out" ] && printf 'payload\n' > "$_out"
+		printf '%s' "$_code"
+		exit 0 ;;
+	body:*)
+		cat "${_line#body:}"
+		exit 0 ;;
+	rc:*)
+		exit "${_line#rc:}" ;;
+esac
+exit 0
+EOF
+chmod +x "$_FAKE_BIN/curl"
+
+PATH="$_FAKE_BIN:$PATH_BACKUP"
+export PATH SURFER_TOKEN=dummy SURFER_USER=dummy-user
+export SURF_ATTEMPTS=3 SURF_BACKOFF=0
+_ARGV=$(mktemp)
+_SCRIPT=$(mktemp)
+_COUNT=$(mktemp)
+export FAKE_CURL_ARGV="$_ARGV" FAKE_CURL_SCRIPT="$_SCRIPT" FAKE_CURL_COUNT="$_COUNT"
+
+_REPODATA_URL='https://repo.osowoso.org/x86_64/x86_64-repodata'
+
+it '200: downloads and returns 0'
+printf 'http:200\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+rm -f repodata
+fetch_repodata "$_REPODATA_URL" repodata; _rc=$?
+assert_rc "$_rc" 0
+it '200: writes the index file'
+assert_eq "$(cat repodata 2>/dev/null)" 'payload'
+
+it '404: reports "no index yet" without retrying'
+printf 'http:404\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+rm -f repodata
+fetch_repodata "$_REPODATA_URL" repodata; _rc=$?
+assert_rc "$_rc" 1
+it '404: single attempt'
+assert_eq "$(cat "$_COUNT")" '1'
+it '404: leaves no file behind'
+assert_eq "$([ -e repodata ] && echo yes || echo no)" 'no'
+
+it '502 then 200: transient server error is retried'
+printf 'http:502\nhttp:200\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+rm -f repodata
+fetch_repodata "$_REPODATA_URL" repodata 2>/dev/null; _rc=$?
+assert_rc "$_rc" 0
+it '502 then 200: two attempts'
+assert_eq "$(cat "$_COUNT")" '2'
+it '502 then 200: index file present'
+assert_eq "$(cat repodata 2>/dev/null)" 'payload'
+
+it 'persistent 5xx: gives up with rc 2'
+printf 'http:502\nhttp:503\nhttp:502\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+rm -f repodata
+fetch_repodata "$_REPODATA_URL" repodata 2>/dev/null; _rc=$?
+assert_rc "$_rc" 2
+it 'persistent 5xx: stops after SURF_ATTEMPTS'
+assert_eq "$(cat "$_COUNT")" '3'
+it 'persistent 5xx: no truncated file left behind'
+assert_eq "$([ -e repodata ] && echo yes || echo no)" 'no'
+
+it 'transport failure is retried'
+printf 'rc:7\nhttp:200\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+rm -f repodata
+fetch_repodata "$_REPODATA_URL" repodata 2>/dev/null; _rc=$?
+assert_rc "$_rc" 0
+it 'transport failure: two attempts'
+assert_eq "$(cat "$_COUNT")" '2'
+
+it '403: permanent error is not retried'
+printf 'http:403\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+rm -f repodata
+fetch_repodata "$_REPODATA_URL" repodata 2>/dev/null; _rc=$?
+assert_rc "$_rc" 2
+it '403: single attempt'
+assert_eq "$(cat "$_COUNT")" '1'
+
+it 'surf_retry: keeps caller flags and -u intact'
+printf 'rc:0\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+surf_retry -fsS -X PROPFIND https://example.com/repo/; _rc=$?
+assert_rc "$_rc" 0
+assert_eq "$(tr '\n' '|' < "$_ARGV")" \
+	'-u|dummy-user:dummy|-fsS|-X|PROPFIND|https://example.com/repo/|'
+
+it 'surf_retry: retries a failed call until it succeeds'
+printf 'rc:7\nrc:7\nrc:0\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+surf_retry -fsS -T pkg.xbps https://example.com/pkg.xbps 2>/dev/null; _rc=$?
+assert_rc "$_rc" 0
+it 'surf_retry: three attempts'
+assert_eq "$(cat "$_COUNT")" '3'
+
+it 'surf_retry: returns the last curl rc when out of attempts'
+printf 'rc:7\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+surf_retry -fsS -T pkg.xbps https://example.com/pkg.xbps 2>/dev/null; _rc=$?
+assert_rc "$_rc" 7
+it 'surf_retry: three attempts'
+assert_eq "$(cat "$_COUNT")" '3'
+
+printf '<?xml version="1.0"?>\n<D:multistatus xmlns:D="DAV:">\n<D:response><D:href>/x86_64/foo-1.0_1.x86_64.xbps</D:href></D:response>\n</D:multistatus>\n' > "$_SCRIPT.body"
+it 'fetch_remote_list: survives a 502 on the first PROPFIND'
+printf 'rc:22\nbody:%s.body\n' "$_SCRIPT" > "$_SCRIPT"; printf '0' > "$_COUNT"
+_list=$(fetch_remote_list https://example.com/repo 2>/dev/null); _rc=$?
+assert_rc "$_rc" 0
+it 'fetch_remote_list: parses the retried response'
+assert_eq "$_list" 'foo-1.0_1.x86_64.xbps'
+it 'fetch_remote_list: two PROPFIND attempts'
+assert_eq "$(cat "$_COUNT")" '2'
+
+unset FAKE_CURL_ARGV FAKE_CURL_SCRIPT FAKE_CURL_COUNT
 PATH="$PATH_BACKUP"
 
 echo '== prune_orphans =='

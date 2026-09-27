@@ -28,6 +28,8 @@ SURFER_URL='https://repo.osowoso.org'
 # Surfer >= 7.0: API tokens are deprecated -- use a Cloudron app password
 # together with a non-empty username (an empty one is rejected outright).
 SURFER_USER="${SURFER_USER:-}"
+SURF_ATTEMPTS="${SURF_ATTEMPTS:-4}"
+SURF_BACKOFF="${SURF_BACKOFF:-3}"
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
 SIGNED_BY='oSoWoSo <mail@osowoso.org>'
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
@@ -92,6 +94,42 @@ _re() {
 # Cloudron app password, so the user may never be left empty.
 surf_curl() {
 	curl -u "${SURFER_USER}:${SURFER_TOKEN}" "$@"
+}
+
+surf_retry() {
+	_sr_delay="$SURF_BACKOFF" _sr_n=1
+	while :; do
+		_sr_rc=0
+		surf_curl "$@" || _sr_rc=$?
+		[ "$_sr_rc" -eq 0 ] && return 0
+		[ "$_sr_n" -ge "$SURF_ATTEMPTS" ] && return "$_sr_rc"
+		echo "  Surfer: attempt ${_sr_n}/${SURF_ATTEMPTS} failed (curl rc=${_sr_rc}); retrying in ${_sr_delay}s" >&2
+		sleep "$_sr_delay"
+		_sr_delay=$((_sr_delay * 2))
+		_sr_n=$((_sr_n + 1))
+	done
+}
+
+fetch_repodata() {
+	_fr_url="$1" _fr_out="$2"
+	_fr_delay="$SURF_BACKOFF" _fr_n=1
+	while :; do
+		_fr_http=$(surf_curl -sS -o "$_fr_out" -w '%{http_code}' "$_fr_url" 2>/dev/null) || _fr_http=0
+		case "$_fr_http" in
+			200) return 0 ;;
+			404) rm -f "$_fr_out"; return 1 ;;
+			0|429|5??) ;;
+			*) break ;;
+		esac
+		[ "$_fr_n" -ge "$SURF_ATTEMPTS" ] && break
+		echo "  Repodata fetch returned HTTP ${_fr_http}; attempt ${_fr_n}/${SURF_ATTEMPTS}, retrying in ${_fr_delay}s" >&2
+		sleep "$_fr_delay"
+		_fr_delay=$((_fr_delay * 2))
+		_fr_n=$((_fr_n + 1))
+	done
+	rm -f "$_fr_out"
+	echo "  Repodata fetch gave up with HTTP ${_fr_http} after ${SURF_ATTEMPTS} attempt(s)" >&2
+	return 2
 }
 
 # Fatal unless both Surfer credentials are set.
@@ -239,7 +277,7 @@ list_published_pkgs() {
 # Returns 0 on success (printing the file list, possibly empty),
 # nonzero on transport failure (network/auth) so callers can react.
 fetch_remote_list() {
-	_frl_body=$(surf_curl -fsS -X PROPFIND "${1}/" \
+	_frl_body=$(surf_retry -fsS -X PROPFIND "${1}/" \
 		-H 'Depth: 1' 2>&1)
 	_frl_rc=$?
 	if [ "$_frl_rc" -ne 0 ]; then
@@ -251,14 +289,14 @@ fetch_remote_list() {
 }
 
 delete_remote() {
-	surf_curl -s -X DELETE "${1}" || true
+	surf_retry -sf -X DELETE "${1}" || true
 }
 
 upload_file() {
 	_file="$1" _dest="$2"
 	_fname="$(basename "$_file")"
 	_local_mtime=$(stat -c %Y "$_file")
-	_remote_date=$(surf_curl -sI "$_dest" | grep -i '^last-modified:' | cut -d' ' -f2-)
+	_remote_date=$(surf_retry -sI "$_dest" | grep -i '^last-modified:' | cut -d' ' -f2-)
 	if [ -n "$_remote_date" ]; then
 		_remote_mtime=$(date -d "$_remote_date" +%s 2>/dev/null || echo 0)
 		if [ "$_local_mtime" -le "$_remote_mtime" ]; then
@@ -266,7 +304,7 @@ upload_file() {
 		fi
 	fi
 	echo "  Uploading: ${_fname}"
-	if ! surf_curl -s -T "$_file" "$_dest"; then
+	if ! surf_retry -fsS -T "$_file" "$_dest"; then
 		fatal "Failed to upload $(basename "$_file")"
 	fi
 }
@@ -698,7 +736,7 @@ generate_arch_pages() {
 
 		if surf_auth_check; then
 			_webdav_arch="${SURFER_URL}/_webdav/${_arch}"
-			surf_curl -s -X MKCOL "${_webdav_arch}/"
+			surf_retry -sf -X MKCOL "${_webdav_arch}/"
 			if ! upload_file "$_out" "${_webdav_arch}/index.html"; then
 				fatal "Failed to upload ${_arch}/index.html!"
 			fi
@@ -793,7 +831,7 @@ do_upload() {
 
 	_work_dir=$(mktemp -d)
 
-	surf_curl -s -X MKCOL "${_webdav}/" || true
+	surf_retry -sf -X MKCOL "${_webdav}/" || true
 
 	echo '==> Fetching remote package list'
 	if ! _remote_list=$(fetch_remote_list "$_webdav"); then
@@ -806,19 +844,14 @@ do_upload() {
 		cd "$_work_dir" || exit 1
 
 		echo '==> Downloading repodata'
-		_repodata_http=$(surf_curl -sS -o "${ARCH}-repodata" \
-			-w '%{http_code}' \
-			"${SURFER_URL}/${ARCH}/${ARCH}-repodata" \
-			2>/dev/null) || _repodata_http=0
-		case "$_repodata_http" in
-			200) ;;
-			404)
+		fetch_repodata "${SURFER_URL}/${ARCH}/${ARCH}-repodata" "${ARCH}-repodata"
+		case $? in
+			0) ;;
+			1)
 				echo '==> No repodata yet (first run); starting fresh'
-				rm -f "${ARCH}-repodata"
 				;;
 			*)
-				rm -f "${ARCH}-repodata"
-				fatal "==> Error: repodata fetch returned HTTP ${_repodata_http}"
+				fatal "==> Error: repodata fetch failed after ${SURF_ATTEMPTS} attempts"
 				;;
 		esac
 
