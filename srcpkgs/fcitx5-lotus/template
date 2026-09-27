@@ -1,7 +1,7 @@
 # Template file for 'fcitx5-lotus'
 pkgname=fcitx5-lotus
 version=3.6.0
-revision=2
+revision=3
 _bamboo_commit="0daa4e21776c79a974898afd45528d9c698fbbc8"
 build_style=cmake
 configure_args="-DLOTUS_UINPUT_PROXY_USER=_uinput_proxy -DINSTALL_RUNIT=ON -DRUNIT_SV_DIR=/usr/share/examples/sv -DLOTUS_BYTECOMPILE_PYTHON=OFF"
@@ -52,7 +52,7 @@ post_extract() {
 }
 
 post_install() {
-	vlicense bamboo/bamboo-core/LICENSE bamboo-core-LICENSE
+	vlicense bamboo/bamboo-core/LICENSE BAMBOO_CORE_LICENSE.txt
 	vdoc ${FILESDIR}/README.voidlinux
 }
 
