@@ -607,7 +607,7 @@ jobs:
           curl -sf -u "${SURFER_USER}:${SURFER_TOKEN}" -o extra/src/feed.xml \
             "https://repo.osowoso.org/_webdav/feed.xml" || true
           python3 extra/src/gen-feed.py update \
-            extra/src/feed.xml extra/results "$RUN_ID" "$(date -u +%Y-%m-%d)"
+            extra/src/feed.xml extra/results "$RUN_ID" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           curl -sf -T extra/src/feed.xml \
             "https://repo.osowoso.org/_webdav/feed.xml" \
             -u "${SURFER_USER}:${SURFER_TOKEN}" || {

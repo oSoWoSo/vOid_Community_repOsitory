@@ -551,6 +551,72 @@ EOF
 	it 'cap: feed limited to 1000 items'
 	assert_eq "$(grep -c '<item>' "$_gf_wd/cap.xml")" '1000'
 
+	_titles() {
+		python3 -c '
+import sys, xml.etree.ElementTree as ET
+print(" ".join(i.findtext("title", "").split()[0]
+               for i in ET.parse(sys.argv[1]).getroot().iter("item")))
+' "$1"
+	}
+
+	mkdir -p "$_gf_wd/ts/a/build-results-x86_64" \
+		"$_gf_wd/ts/b/build-results-x86_64" \
+		"$_gf_wd/ts/c/build-results-x86_64"
+	printf 'alpha\t1.0\tok\n' > "$_gf_wd/ts/a/build-results-x86_64/results.tsv"
+	printf 'bravo\t1.0\tok\n' > "$_gf_wd/ts/b/build-results-x86_64/results.tsv"
+	printf 'charlie\t1.0\tok\n' > "$_gf_wd/ts/c/build-results-x86_64/results.tsv"
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/ts.xml" "$_gf_wd/ts/a" 200 2026-09-20T08:00:00Z "$_gf_wd/srcpkgs" >/dev/null
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/ts.xml" "$_gf_wd/ts/b" 201 2026-09-20T12:00:00Z "$_gf_wd/srcpkgs" >/dev/null
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/ts.xml" "$_gf_wd/ts/c" 202 2026-09-20T06:00:00Z "$_gf_wd/srcpkgs" >/dev/null
+	it 'ISO run date: pubDate keeps the time of day'
+	grep -q '<pubDate>Sun, 20 Sep 2026 08:00:00 +0000</pubDate>' "$_gf_wd/ts.xml"; assert_rc $? 0
+	it 'ISO run date: description shows the bare date only'
+	grep -q 'Built on: 2026-09-20' "$_gf_wd/ts.xml"; assert_rc $? 0
+	it 'same-day items sort newest first'
+	assert_eq "$(_titles "$_gf_wd/ts.xml")" 'bravo alpha charlie'
+
+	mkdir -p "$_gf_wd/leg/build-results-x86_64"
+	printf 'legacy\t1.0\tok\n' > "$_gf_wd/leg/build-results-x86_64/results.tsv"
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/leg.xml" "$_gf_wd/leg" 300 2026-09-20 "$_gf_wd/srcpkgs" >/dev/null
+	it 'legacy date-only run date means midnight UTC'
+	grep -q '<pubDate>Sun, 20 Sep 2026 00:00:00 +0000</pubDate>' "$_gf_wd/leg.xml"; assert_rc $? 0
+
+	mkdir -p "$_gf_wd/mix/old/build-results-x86_64" \
+		"$_gf_wd/mix/new/build-results-x86_64"
+	printf 'zzz\t1.0\tok\n' > "$_gf_wd/mix/old/build-results-x86_64/results.tsv"
+	printf 'aaa\t1.0\tok\n' > "$_gf_wd/mix/new/build-results-x86_64/results.tsv"
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/mix.xml" "$_gf_wd/mix/old" 400 2026-09-20T08:00:00Z "$_gf_wd/srcpkgs" >/dev/null
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/mix.xml" "$_gf_wd/mix/new" 401 2026-09-21 "$_gf_wd/srcpkgs" >/dev/null
+	it 'legacy midnight item still sorts by its own date'
+	assert_eq "$(_titles "$_gf_wd/mix.xml")" 'aaa zzz'
+
+	mkdir -p "$_gf_wd/off/a/build-results-x86_64" \
+		"$_gf_wd/off/b/build-results-x86_64"
+	printf 'zzz\t1.0\tok\n' > "$_gf_wd/off/a/build-results-x86_64/results.tsv"
+	printf 'aaa\t1.0\tok\n' > "$_gf_wd/off/b/build-results-x86_64/results.tsv"
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/off.xml" "$_gf_wd/off/a" 500 2026-09-20T09:00:00Z "$_gf_wd/srcpkgs" >/dev/null
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/off.xml" "$_gf_wd/off/b" 501 2026-09-20T12:00:00+02:00 "$_gf_wd/srcpkgs" >/dev/null
+	it 'numeric offset: kept in pubDate'
+	grep -q '<pubDate>Sun, 20 Sep 2026 12:00:00 +0200</pubDate>' "$_gf_wd/off.xml"; assert_rc $? 0
+	it 'numeric offset: sorts by instant, not wall clock'
+	assert_eq "$(_titles "$_gf_wd/off.xml")" 'aaa zzz'
+
+	mkdir -p "$_gf_wd/junk/build-results-x86_64"
+	printf 'junked\t1.0\tok\n' > "$_gf_wd/junk/build-results-x86_64/results.tsv"
+	python3 "$SCRIPT_DIR/src/gen-feed.py" update \
+		"$_gf_wd/junk.xml" "$_gf_wd/junk" 600 "not-a-date" "$_gf_wd/srcpkgs" >/dev/null
+	it 'unparsable run date: falls back to now instead of aborting'
+	grep -q "<pubDate>[A-Za-z]*, [0-9][0-9] [A-Za-z]* $(date -u +%Y) " \
+		"$_gf_wd/junk.xml"; assert_rc $? 0
+
 	rm -rf "$_gf_wd"
 else
 	echo '  (skipped: python3 not on PATH)'

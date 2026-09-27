@@ -17,6 +17,10 @@ and capped at MAX_ITEMS (1000) entries.
 
 Optional template metadata (homepage, short_desc) is read from
 SRCPKGS_DIR/<pkg>/template to fill the item link and description.
+
+RUN_DATE is the build instant as ISO-8601 UTC (`2026-09-27T00:16:08Z`) and
+becomes the item pubDate; a bare `2026-09-27` is still accepted and means
+midnight UTC. When it is omitted the current time is used.
 """
 
 from __future__ import annotations
@@ -25,7 +29,7 @@ import datetime as dt
 import os
 import re
 import sys
-from email.utils import format_datetime
+from email.utils import format_datetime, parsedate_to_datetime
 from xml.etree import ElementTree
 
 MAX_ITEMS = 1000
@@ -113,9 +117,53 @@ def read_template(srcpkgs_dir: str, pkg: str) -> tuple[str, str]:
     return homepage, short_desc
 
 
+def _parse_run_date(value: str) -> dt.datetime:
+    """Parse the run timestamp into an aware datetime.
+
+    Accepts full ISO-8601 (`2026-09-27T00:16:08Z`, or with a numeric
+    offset) as passed by the build workflow, the legacy date-only
+    `2026-09-27`, and an empty string (meaning "now"). Anything else falls
+    back to "now" rather than aborting the feed update.
+    """
+    value = (value or "").strip()
+    if not value:
+        return dt.datetime.now(dt.timezone.utc)
+    try:
+        # fromisoformat() only learned to read a trailing "Z" in 3.11.
+        if value.endswith(("Z", "z")):
+            value = value[:-1] + "+00:00"
+        parsed = dt.datetime.fromisoformat(value)
+    except ValueError:
+        pass
+    else:
+        # A date-only value parses to a naive midnight, and format_datetime()
+        # renders naive datetimes as "-0000"; anchor it to UTC.
+        if parsed.tzinfo is None:
+            return parsed.replace(tzinfo=dt.timezone.utc)
+        return parsed
+    try:
+        return dt.datetime.strptime(value, "%Y-%m-%d").replace(
+            tzinfo=dt.timezone.utc
+        )
+    except ValueError:
+        return dt.datetime.now(dt.timezone.utc)
+
+
 def _parse_date(value: str) -> dt.datetime:
-    # Dates are stored as RFC-2822 at 00:00 UTC; the leading YYYY-MM-DD
-    # part is all that matters for ordering.
+    # Sort key for stored items. pubDates are written with
+    # format_datetime(), so they are RFC-2822 and carry a real time of day;
+    # items written before the run date gained a timestamp are still
+    # midnight. Fall back to a bare YYYY-MM-DD prefix, then to EPOCH.
+    try:
+        parsed = parsedate_to_datetime(value)
+    except (TypeError, ValueError):
+        parsed = None
+    if parsed is not None:
+        # RFC-2822 without a zone offset parses to a naive datetime; the
+        # sort compares against aware values, so anchor it to UTC.
+        if parsed.tzinfo is None:
+            return parsed.replace(tzinfo=dt.timezone.utc)
+        return parsed
     m = re.match(r"(?P<d>\d{4}-\d{2}-\d{2})", value or "")
     if m:
         try:
@@ -157,14 +205,9 @@ def default_srcpkgs(feed_path: str) -> str:
 def update_feed(
     feed_path: str, results_dir: str, run_id: str, run_date: str, srcpkgs_dir: str
 ) -> int:
-    parsed_date: dt.datetime
-    if run_date:
-        parsed_date = dt.datetime.strptime(run_date, "%Y-%m-%d").replace(
-            tzinfo=dt.timezone.utc
-        )
-    else:
-        parsed_date = dt.datetime.now(dt.timezone.utc)
-        run_date = parsed_date.date().isoformat()
+    parsed_date = _parse_run_date(run_date)
+    # The description shows a plain date; the full timestamp lives in pubDate.
+    run_date = parsed_date.date().isoformat()
 
     items = parse_feed(feed_path)
     changed = 0

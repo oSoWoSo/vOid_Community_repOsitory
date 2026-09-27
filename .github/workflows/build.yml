@@ -876,12 +876,10 @@ jobs:
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
           SURFER_USER: ${{ secrets.SURFER_USER }}
         run: |
-          # Surfer >= 7 needs a username + Cloudron app password; -f makes a
-          # 401 fail the step instead of silently dropping the feed upload.
           curl -sf -u "${SURFER_USER}:${SURFER_TOKEN}" -o extra/src/feed.xml \
             "https://repo.osowoso.org/_webdav/feed.xml" || true
           python3 extra/src/gen-feed.py update \
-            extra/src/feed.xml extra/results "$RUN_ID" "$(date -u +%Y-%m-%d)"
+            extra/src/feed.xml extra/results "$RUN_ID" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           curl -sf -T extra/src/feed.xml \
             "https://repo.osowoso.org/_webdav/feed.xml" \
             -u "${SURFER_USER}:${SURFER_TOKEN}" || {
