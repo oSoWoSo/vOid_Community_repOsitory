@@ -1,7 +1,7 @@
 # Template file for 'fcitx5-lotus'
 pkgname=fcitx5-lotus
 version=3.6.0
-revision=1
+revision=2
 _bamboo_commit="0daa4e21776c79a974898afd45528d9c698fbbc8"
 build_style=cmake
 configure_args="-DLOTUS_UINPUT_PROXY_USER=_uinput_proxy -DINSTALL_RUNIT=ON -DRUNIT_SV_DIR=/usr/share/examples/sv -DLOTUS_BYTECOMPILE_PYTHON=OFF"
@@ -10,7 +10,7 @@ makedepends="libfcitx5-devel libinput-devel eudev-libudev-devel"
 depends="fcitx5 acl-progs"
 short_desc="Fcitx5 - Vietnamese IME"
 maintainer="Coolllyn <leanhduc673@gmail.com>"
-license="GPL-3.0-or-later"
+license="GPL-3.0-or-later AND LGPL-2.1-or-later AND MIT AND GPL-2.0-or-later"
 homepage="https://github.com/LotusInputMethod/fcitx5-lotus"
 changelog="https://github.com/LotusInputMethod/fcitx5-lotus/releases"
 distfiles="https://github.com/LotusInputMethod/fcitx5-lotus/archive/refs/tags/v${version}.tar.gz>fcitx5-lotus-${version}.tar.gz
@@ -52,6 +52,7 @@ post_extract() {
 }
 
 post_install() {
+	vlicense bamboo/bamboo-core/LICENSE bamboo-core-LICENSE
 	vdoc ${FILESDIR}/README.voidlinux
 }
 
