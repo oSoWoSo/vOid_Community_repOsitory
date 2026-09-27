@@ -1,10 +1,10 @@
 # Template file for 'llama.cpp'
 pkgname=llama.cpp
-version=10568
+version=0.5.0
 revision=1
 build_style=cmake
 configure_args="-DGGML_NATIVE=OFF -DGGML_VULKAN=ON -DGGML_BLAS=ON
- -DGGML_BLAS_VENDOR=OpenBLAS -DGGML_OPENCL=ON -DGGML_RPC=ON -DLLAMA_OPENSSL=ON"
+ -DGGML_BLAS_VENDOR=OpenBLAS -DGGML_OPENCL=ON -DGGML_RPC=ON -DLLAMA_OPENSSL=ON -DGGML_CPU_ALLVARIANTS=ON -DLLAA_BUILD_TOOLS=ON"
 hostmakedepends="nodejs pkg-config shaderc"
 makedepends="openssl-devel libgomp-devel openblas-devel ocl-icd-devel OpenCL-Headers
  libcurl-devel vulkan-loader-devel SPIRV-Headers libgomp"
@@ -13,8 +13,14 @@ short_desc="LLM inference in C/C++"
 maintainer="zenobit <zen@osowoso.org>"
 license="MIT"
 homepage="https://github.com/ggml-org/llama.cpp"
-distfiles="https://github.com/ggml-org/llama.cpp/archive/refs/tags/b${version}.tar.gz"
-checksum=e449131c3ab918aefc3027f8dad880b33d472c2600400ec65925c6e764a17660
+distfiles="https://github.com/ggml-org/llama.cpp/archive/refs/tags/v${version}.tar.gz
+ https://huggingface.co/ggml-org/models/resolve/main/tinyllamas/stories15M-q4_0.gguf"
+checksum="fef9ed754f4e031fb5c663c29260feda4ebc241abb68d64a81c0f1df5f1748e2
+ 66967fbece6dbe97886593fdbb73589584927e29119ec31f08090732d1861739"
+# The test fixtures download this model over HTTP, but cmake's file(DOWNLOAD)
+# cannot follow the redirect huggingface.co replies with. Pre-seed it instead,
+# file(DOWNLOAD) skips fetching when the file already matches EXPECTED_HASH.
+skip_extraction="stories15M-q4_0.gguf"
 replaces="llama-cpp>=0"
 
 case $ARCH in
@@ -23,4 +29,10 @@ esac
 
 post_install() {
 	vlicense LICENSE
+}
+
+pre_check() {
+	mkdir -p ${cmake_builddir:-build}/tinyllamas
+	cp -f ${XBPS_SRCDISTDIR}/${sourcepkg}-${version}/stories15M-q4_0.gguf \
+		${cmake_builddir:-build}/tinyllamas/
 }
