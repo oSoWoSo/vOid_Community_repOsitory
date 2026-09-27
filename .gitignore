@@ -261,6 +261,7 @@ src/__pycache__/
 !/srcpkgs/sfizz-lib
 !/srcpkgs/sfizz-lv2
 !/srcpkgs/sfizz-vst3
+!/srcpkgs/shaderc
 !/srcpkgs/shattered-pixel-dungeon
 !/srcpkgs/simplex-chat
 !/srcpkgs/simplex-chat-desktop

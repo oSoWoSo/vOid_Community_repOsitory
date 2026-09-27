@@ -284,6 +284,7 @@ on:
         - sfizz-lib
         - sfizz-lv2
         - sfizz-vst3
+        - shaderc
         - shattered-pixel-dungeon
         - simplex-chat
         - simplex-chat-desktop

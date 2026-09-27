@@ -320,6 +320,7 @@ Create PR
 | sfizz-lib | 1.2.3 | [home](https://sfztools.github.io/sfizz/) | Trve_AY |  | SFZ sampler |
 | sfizz-lv2 | 1.2.3 | [home](https://sfztools.github.io/sfizz/) | Trve_AY |  | SFZ sampler |
 | sfizz-vst3 | 1.2.3 | [home](https://sfztools.github.io/sfizz/) | Trve_AY |  | SFZ sampler |
+| shaderc | 2026.4 | [home](https://github.com/google/shaderc) | zenobit |  | Collection of tools, libraries and tests for shader compilation |
 | shattered-pixel-dungeon | 4.0.0 | [home](https://github.com/00-Evan/shattered-pixel-dungeon) | zenobit |  | Open-source roguelike dungeon crawler with randomized levels and enemies |
 | simplex-chat | 7.0.0 | [home](https://simplex.chat) | rayfadh | ~i686 | Private and secure messaging application (CLI) |
 | simplex-chat-desktop | 7.0.0 | [home](https://simplex.chat) | rayfadh | ~i686 | Private and secure messaging application (CLI) |
