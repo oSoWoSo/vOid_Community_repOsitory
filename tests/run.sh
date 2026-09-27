@@ -50,8 +50,13 @@ eval "$(awk '
 	/^pkg_name\(\)/        {p=1}
 	/^fetch_remote_list/   {p=1}
 	/^surf_curl\(\)/      {p=1}
+	/^surf_diagnose\(\)/  {p=1}
+	/^surf_retry_loop\(\)/{p=1}
 	/^surf_retry\(\)/     {p=1}
+	/^surf_mkcol\(\)/     {p=1}
+	/^surf_mkcol_try\(\)/ {p=1}
 	/^fetch_repodata\(\)/ {p=1}
+	/^upload_file\(\)/   {p=1}
 	/^read_template_fields/{p=1}
 	/^feed_xml_escape/     {p=1}
 	/^feed_urls_from_nvchecker/{p=1}
@@ -61,8 +66,11 @@ eval "$(awk '
 	p && /^}$/             {p=0}
 ' "$SCRIPT_DIR/ocoman")"
 
-# Mirrors ocoman's Surfer retry defaults; individual sections override them.
+# Mirrors ocoman's Surfer defaults; individual sections override them.
+# Every helper above reads these, so they must exist before the first call.
 export SURF_ATTEMPTS=4 SURF_BACKOFF=0
+export SURF_DEADLINE=1500 SURF_CONNECT_TIMEOUT=20 SURF_MAX_TIME=300 SURF_BACKOFF_MAX=30
+export SURF_SKIP_DELETE=0 SURFER_URL='https://repo.osowoso.org'
 
 echo '== pkg_name =='
 it 'plain name';            assert_eq "$(pkg_name 'foo-1.0_1.x86_64')"          'foo'
@@ -297,7 +305,11 @@ assert_eq "$_list" "$(printf 'foo-1.0_1.x86_64.xbps\nbar-2.0_1.x86_64.xbps')"
 
 export FAKE_CURL_MODE=fail
 it 'fail: nonzero rc'
+# No retry budget: this section exercises PROPFIND parsing, not resilience.
+# A real 25-minute budget here would only make the suite hang.
+SURF_DEADLINE=0
 _list=$(fetch_remote_list https://example.com/repo 2>/dev/null); _rc=$?
+SURF_DEADLINE=1500
 [ "$_rc" -ne 0 ] && _rc=1
 assert_rc "$_rc" 1
 
@@ -328,11 +340,22 @@ export PATH FAKE_CURL_ARGV="$_ARGV"
 SURFER_USER=alice SURFER_TOKEN=s3cret surf_curl -fsS -X PROPFIND https://example.com/repo/
 it 'passes user:password via -u'
 assert_eq "$(tr '\n' '|' < "$_ARGV")" \
-	'-u|alice:s3cret|-fsS|-X|PROPFIND|https://example.com/repo/|'
+	'-u|alice:s3cret|--connect-timeout|20|--max-time|300|-fsS|-X|PROPFIND|https://example.com/repo/|'
 
 SURFER_USER= SURFER_TOKEN=s3cret surf_curl -sI https://example.com/repo/
 it 'never sends an empty -u value'
-assert_eq "$(tr '\n' '|' < "$_ARGV")" '-u|:s3cret|-sI|https://example.com/repo/|'
+assert_eq "$(tr '\n' '|' < "$_ARGV")" \
+	'-u|:s3cret|--connect-timeout|20|--max-time|300|-sI|https://example.com/repo/|'
+
+SURFER_USER=alice SURFER_TOKEN=s3cret surf_curl -fsS -T pkg.xbps https://example.com/pkg.xbps
+it 'a package upload gets no --max-time (truncating it would corrupt the .xbps)'
+assert_eq "$(tr '\n' '|' < "$_ARGV")" \
+	'-u|alice:s3cret|--connect-timeout|20|-fsS|-T|pkg.xbps|https://example.com/pkg.xbps|'
+
+SURFER_USER=alice SURFER_TOKEN=s3cret surf_curl -fsS --upload-file pkg.xbps https://example.com/pkg.xbps
+it '--upload-file also escapes the --max-time cap'
+assert_eq "$(tr '\n' '|' < "$_ARGV")" \
+	'-u|alice:s3cret|--connect-timeout|20|-fsS|--upload-file|pkg.xbps|https://example.com/pkg.xbps|'
 
 unset FAKE_CURL_ARGV
 PATH="$PATH_BACKUP"
@@ -344,6 +367,8 @@ cat > "$_FAKE_BIN/curl" <<'EOF'
 # Scripted fake curl. One directive per line in $FAKE_CURL_SCRIPT:
 #   http:<code>     response with that status: body goes to the -o target,
 #                   the status is printed (what curl -w '%{http_code}' does)
+#   page:<code>:<f> like http:, but the body is the contents of file <f>
+#                   (used to serve Cloudron's HTML error page)
 #   rc:<n>          fail with exit status n
 #   body:<file>     print that file's contents, exit 0
 # The invocation count is kept in $FAKE_CURL_COUNT; the last line of the
@@ -355,16 +380,20 @@ _n=$((_n + 1))
 printf '%s' "$_n" > "$FAKE_CURL_COUNT"
 _line=$(sed -n "${_n}p" "$FAKE_CURL_SCRIPT")
 [ -n "$_line" ] || _line=$(tail -n 1 "$FAKE_CURL_SCRIPT")
+_out='' _prev=''
+for _a in "$@"; do
+	[ "$_prev" = '-o' ] && _out="$_a"
+	_prev="$_a"
+done
 case "$_line" in
 	http:*)
-		_code=${_line#http:}
-		_out='' _prev=''
-		for _a in "$@"; do
-			[ "$_prev" = '-o' ] && _out="$_a"
-			_prev="$_a"
-		done
 		[ -n "$_out" ] && printf 'payload\n' > "$_out"
-		printf '%s' "$_code"
+		printf '%s' "${_line#http:}"
+		exit 0 ;;
+	page:*)
+		_srv_page=${_line#page:}
+		[ -n "$_out" ] && cat "${_srv_page#*:}" > "$_out"
+		printf '%s' "${_srv_page%%:*}"
 		exit 0 ;;
 	body:*)
 		cat "${_line#body:}"
@@ -409,28 +438,39 @@ printf 'http:502\nhttp:200\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
 rm -f repodata
 fetch_repodata "$_REPODATA_URL" repodata 2>/dev/null; _rc=$?
 assert_rc "$_rc" 0
-it '502 then 200: two attempts'
-assert_eq "$(cat "$_COUNT")" '2'
+it '502 then 200: two fetches plus one site-root health probe'
+assert_eq "$(cat "$_COUNT")" '3'
 it '502 then 200: index file present'
 assert_eq "$(cat repodata 2>/dev/null)" 'payload'
 
-it 'persistent 5xx: gives up with rc 2'
+it 'persistent 5xx: an exhausted deadline gives up with rc 2'
 printf 'http:502\nhttp:503\nhttp:502\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
 rm -f repodata
-fetch_repodata "$_REPODATA_URL" repodata 2>/dev/null; _rc=$?
+SURF_DEADLINE=0 fetch_repodata "$_REPODATA_URL" repodata 2>/dev/null; _rc=$?
 assert_rc "$_rc" 2
-it 'persistent 5xx: stops after SURF_ATTEMPTS'
-assert_eq "$(cat "$_COUNT")" '3'
+it 'persistent 5xx: an already-exhausted deadline stops after one attempt'
+assert_eq "$(cat "$_COUNT")" '1'
 it 'persistent 5xx: no truncated file left behind'
 assert_eq "$([ -e repodata ] && echo yes || echo no)" 'no'
+
+it 'the retry budget is wall-clock, not an attempt count'
+printf 'http:502\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+rm -f repodata
+# One fetch, one 1s backoff, then the 1s budget is spent -- so exactly two
+# fetches plus one health probe. An attempt-count budget could not express
+# "keep going for 25 minutes"; a wall-clock one can.
+SURF_DEADLINE=1 SURF_BACKOFF=1 fetch_repodata "$_REPODATA_URL" repodata 2>/dev/null; _rc=$?
+SURF_DEADLINE=1500 SURF_BACKOFF=0
+assert_rc "$_rc" 2
+assert_eq "$(cat "$_COUNT")" '3'
 
 it 'transport failure is retried'
 printf 'rc:7\nhttp:200\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
 rm -f repodata
 fetch_repodata "$_REPODATA_URL" repodata 2>/dev/null; _rc=$?
 assert_rc "$_rc" 0
-it 'transport failure: two attempts'
-assert_eq "$(cat "$_COUNT")" '2'
+it 'transport failure: two fetches plus one health probe'
+assert_eq "$(cat "$_COUNT")" '3'
 
 it '403: permanent error is not retried'
 printf 'http:403\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
@@ -445,31 +485,121 @@ printf 'rc:0\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
 surf_retry -fsS -X PROPFIND https://example.com/repo/; _rc=$?
 assert_rc "$_rc" 0
 assert_eq "$(tr '\n' '|' < "$_ARGV")" \
-	'-u|dummy-user:dummy|-fsS|-X|PROPFIND|https://example.com/repo/|'
+	'-u|dummy-user:dummy|--connect-timeout|20|--max-time|300|-fsS|-X|PROPFIND|https://example.com/repo/|'
 
 it 'surf_retry: retries a failed call until it succeeds'
 printf 'rc:7\nrc:7\nrc:0\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
 surf_retry -fsS -T pkg.xbps https://example.com/pkg.xbps 2>/dev/null; _rc=$?
 assert_rc "$_rc" 0
-it 'surf_retry: three attempts'
+it 'surf_retry: two retries plus one health probe'
 assert_eq "$(cat "$_COUNT")" '3'
 
-it 'surf_retry: returns the last curl rc when out of attempts'
+it 'surf_retry: gives up with rc 1 once the deadline is spent'
 printf 'rc:7\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
-surf_retry -fsS -T pkg.xbps https://example.com/pkg.xbps 2>/dev/null; _rc=$?
-assert_rc "$_rc" 7
-it 'surf_retry: three attempts'
-assert_eq "$(cat "$_COUNT")" '3'
+SURF_DEADLINE=1 SURF_BACKOFF=1 surf_retry -fsS -T pkg.xbps https://example.com/pkg.xbps 2>/dev/null
+_rc=$?
+SURF_DEADLINE=1500 SURF_BACKOFF=0
+assert_rc "$_rc" 1
+
+it 'surf_retry: a rejected password stops the loop immediately'
+# Terminal auth failure: the site root answers 401, so there is no point
+# burning the remaining budget on requests that cannot succeed.
+printf 'rc:22\nhttp:401\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+surf_retry -fsS -X PROPFIND https://example.com/repo/ 2>/dev/null; _rc=$?
+assert_rc "$_rc" 1
+it 'surf_retry: terminal auth failure: no retry after the probe'
+assert_eq "$(cat "$_COUNT")" '2'
 
 printf '<?xml version="1.0"?>\n<D:multistatus xmlns:D="DAV:">\n<D:response><D:href>/x86_64/foo-1.0_1.x86_64.xbps</D:href></D:response>\n</D:multistatus>\n' > "$_SCRIPT.body"
 it 'fetch_remote_list: survives a 502 on the first PROPFIND'
-printf 'rc:22\nbody:%s.body\n' "$_SCRIPT" > "$_SCRIPT"; printf '0' > "$_COUNT"
+printf 'rc:22\nhttp:200\nbody:%s.body\n' "$_SCRIPT" > "$_SCRIPT"; printf '0' > "$_COUNT"
 _list=$(fetch_remote_list https://example.com/repo 2>/dev/null); _rc=$?
 assert_rc "$_rc" 0
 it 'fetch_remote_list: parses the retried response'
 assert_eq "$_list" 'foo-1.0_1.x86_64.xbps'
-it 'fetch_remote_list: two PROPFIND attempts'
-assert_eq "$(cat "$_COUNT")" '2'
+it 'fetch_remote_list: two PROPFINDs plus one health probe'
+assert_eq "$(cat "$_COUNT")" '3'
+
+echo '== surf_diagnose =='
+
+it 'healthy site root is reachable'
+printf 'http:200\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+surf_diagnose 2>/dev/null; _rc=$?
+assert_rc "$_rc" 0
+it 'healthy site root: single request'
+assert_eq "$(cat "$_COUNT")" '1'
+
+it '401 is reported as a terminal auth failure'
+printf 'http:401\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+surf_diagnose 2>/dev/null; _rc=$?
+assert_rc "$_rc" 2
+
+it '403 is reported as a terminal auth failure'
+printf 'http:403\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+surf_diagnose 2>/dev/null; _rc=$?
+assert_rc "$_rc" 2
+
+printf '<html><body><h1>Cloudron: app is not responding</h1></body></html>\n' > "$_SCRIPT.page"
+it 'Cloudron "app is not responding" is diagnosed as down, not as an auth problem'
+printf 'page:502:%s.page\n' "$_SCRIPT" > "$_SCRIPT"; printf '0' > "$_COUNT"
+surf_diagnose 2>/dev/null; _rc=$?
+assert_rc "$_rc" 1
+it '"app is not responding": single request'
+assert_eq "$(cat "$_COUNT")" '1'
+
+it 'an empty 502 body is still diagnosed as down'
+printf 'http:502\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+surf_diagnose 2>/dev/null; _rc=$?
+assert_rc "$_rc" 1
+
+echo '== surf_mkcol =='
+
+it '405 (collection already exists) counts as success'
+printf 'http:405\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+surf_mkcol https://example.com/_webdav/x86_64/; _rc=$?
+assert_rc "$_rc" 0
+it '405: no retry, single request'
+assert_eq "$(cat "$_COUNT")" '1'
+
+it '201 (collection created) counts as success'
+printf 'http:201\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+surf_mkcol https://example.com/_webdav/x86_64/; _rc=$?
+assert_rc "$_rc" 0
+
+it 'a real failure is retried and then reported'
+printf 'http:500\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+SURF_DEADLINE=0 surf_mkcol https://example.com/_webdav/x86_64/ 2>/dev/null; _rc=$?
+SURF_DEADLINE=1500
+assert_rc "$_rc" 1
+
+echo '== upload_file =='
+
+printf 'xbps-payload' > up.xbps
+it 'a failed PUT is reported, not fatal'
+# The HEAD probe answers 200 with no Last-Modified, so the upload is attempted
+# and fails. upload_file must return 1 so do_upload can collect every failure
+# instead of aborting on the first one.
+printf 'http:200\nrc:22\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+SURF_DEADLINE=0 upload_file up.xbps https://example.com/_webdav/x86_64/up.xbps 2>/dev/null
+_rc=$?
+SURF_DEADLINE=1500
+assert_rc "$_rc" 1
+
+it 'a successful PUT returns 0'
+printf 'http:200\nhttp:200\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+SURF_DEADLINE=0 upload_file up.xbps https://example.com/_webdav/x86_64/up.xbps 2>/dev/null
+_rc=$?
+SURF_DEADLINE=1500
+assert_rc "$_rc" 0
+
+it 'a remote copy that is at least as new is skipped'
+# Last-Modified newer than the local file => nothing is uploaded at all.
+printf 'last-modified: Thu, 01 Jan 2099 00:00:00 GMT\n' > "$_SCRIPT.mod"
+printf 'body:%s.mod\n' "$_SCRIPT" > "$_SCRIPT"; printf '0' > "$_COUNT"
+upload_file up.xbps https://example.com/_webdav/x86_64/up.xbps; _rc=$?
+assert_rc "$_rc" 0
+it 'skipped upload makes a single HEAD request only'
+assert_eq "$(cat "$_COUNT")" '1'
 
 unset FAKE_CURL_ARGV FAKE_CURL_SCRIPT FAKE_CURL_COUNT
 PATH="$PATH_BACKUP"
@@ -517,6 +647,103 @@ assert_eq "$(grep -c 'gone-1.0_1.x86_64.xbps' "$_DELETED")" '2'
 rm -f "$_orphans" "$_DELETED"
 rm -rf srcpkgs
 SCRIPT_DIR="$_SCRIPT_DIR_BACKUP"
+
+echo '== SURF_SKIP_DELETE =='
+
+# The section above stubs delete_remote, so restore the real one: the point of
+# SURF_SKIP_DELETE is that the real function must not reach the network at all.
+eval "$(awk '
+	/^delete_remote\(\)/ {p=1}
+	/^prune_orphans\(\)/ {p=1}
+	p {print}
+	p && /^}$/           {p=0}
+' "$SCRIPT_DIR/ocoman")"
+
+_PATH_BACKUP="$PATH"
+PATH="$_FAKE_BIN:$_PATH_BACKUP"
+_COUNT=$(mktemp)
+export PATH FAKE_CURL_ARGV="$_ARGV" FAKE_CURL_SCRIPT="$_SCRIPT" FAKE_CURL_COUNT="$_COUNT"
+export SURF_SKIP_DELETE=1
+
+it 'delete_remote returns success without issuing a request'
+printf 'http:204\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+delete_remote 'https://example.com/_webdav/x86_64/gone-1.0_1.x86_64.xbps'
+_rc=$?
+assert_rc "$_rc" 0
+it 'delete_remote: zero HTTP requests'
+assert_eq "$(cat "$_COUNT")" '0'
+
+it 'prune_orphans is a no-op while deletes are suppressed'
+mkdir -p srcpkgs/keepme
+: > srcpkgs/keepme/template
+SCRIPT_DIR="$PWD" SRCPKGS=srcpkgs _webdav='https://example.com/_webdav'
+_orphans=$(mktemp)
+printf 'payload\n' > "$_orphans"
+prune_orphans "$(printf '%s\n' \
+	'keepme-1.0_1.x86_64.xbps' \
+	'gone-1.0_1.x86_64.xbps')" "$_orphans" >/dev/null 2>&1
+_rc=$?
+assert_rc "$_rc" 0
+it 'prune_orphans: still zero HTTP requests'
+assert_eq "$(cat "$_COUNT")" '0'
+it 'prune_orphans emits no orphan names (the index must not start lying)'
+assert_eq "$([ -s "$_orphans" ] && echo nonempty || echo empty)" 'empty'
+
+it 'the same call does delete when SURF_SKIP_DELETE=0'
+export SURF_SKIP_DELETE=0
+printf 'http:204\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+SURF_DEADLINE=0 prune_orphans "$(printf '%s\n' 'gone-1.0_1.x86_64.xbps')" "$_orphans" \
+	>/dev/null 2>&1
+SURF_DEADLINE=1500
+if [ "$(cat "$_COUNT")" -gt 0 ]; then
+	assert_eq 'ok' 'ok'
+else
+	assert_eq 'no DELETE was issued' 'ok'
+fi
+it 'and that call does list the orphan'
+assert_eq "$(sort "$_orphans" | tr '\n' ',')" 'gone,'
+
+rm -f "$_orphans"
+rm -rf srcpkgs
+export SURF_SKIP_DELETE=0
+unset FAKE_CURL_ARGV FAKE_CURL_SCRIPT FAKE_CURL_COUNT
+PATH="$_PATH_BACKUP"
+SCRIPT_DIR="$_SCRIPT_DIR_BACKUP"
+
+echo '== do_upload: arch isolation (P0) =='
+
+# xbps-src leaves every architecture's .xbps in one binpkgs/ directory. An
+# unqualified glob therefore republishes foreign arches into this arch's
+# directory -- which happened on 2026-09-27 (an aarch64-musl job uploaded
+# lunasvg-3.5.0_3.x86_64-musl.xbps). Assert on the source text: the glob is
+# the thing that must stay pinned to ${ARCH}.
+_DOUPLOAD=$(sed -n '/^do_upload()/,/^}$/p' "$SCRIPT_DIR/ocoman")
+
+it 'new packages are copied with an architecture filter'
+assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -c 'cp "${_builddir}"/\*\."${ARCH}"\.xbps ')" '1'
+
+it 'xbps-rindex only indexes this architecture'
+assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -c 'xbps-rindex -a \./\*\."${ARCH}"\.xbps')" '1'
+
+it 'both upload loops filter on the architecture'
+# Packages and signatures go up in one pass, so the globs share a line.
+assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -c 'for _file in \./\*\."${ARCH}"\.xbps \./\*\."${ARCH}"\.xbps\.sig2')" '1'
+assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -c 'for _file in \./\*-repodata')" '1'
+
+it 'no unfiltered package glob survives anywhere in do_upload'
+assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -cE '\./\*\.xbps|"\$\{_builddir\}"/\*\.xbps')" '0'
+
+it 'packages are uploaded before the index'
+_pkg_line=$(printf '%s' "$_DOUPLOAD" | grep -n '==> Uploading packages' | cut -d: -f1)
+_idx_line=$(printf '%s' "$_DOUPLOAD" | grep -n '==> Uploading repository index' | cut -d: -f1)
+if [ -n "$_pkg_line" ] && [ -n "$_idx_line" ] && [ "$_pkg_line" -lt "$_idx_line" ]; then
+	assert_eq 'ok' 'ok'
+else
+	assert_eq "packages at ${_pkg_line}, index at ${_idx_line}" 'ok'
+fi
+
+it 'a failed package upload aborts before the index is published'
+assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -c 'remote repodata left untouched')" '1'
 
 echo '== repodata-list.py =='
 

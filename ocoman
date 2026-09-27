@@ -28,8 +28,28 @@ SURFER_URL='https://repo.osowoso.org'
 # Surfer >= 7.0: API tokens are deprecated -- use a Cloudron app password
 # together with a non-empty username (an empty one is rejected outright).
 SURFER_USER="${SURFER_USER:-}"
+# Deprecated, kept only so existing callers keep working: retries are now
+# bounded by SURF_DEADLINE wall-clock, not by an attempt count.
 SURF_ATTEMPTS="${SURF_ATTEMPTS:-4}"
+# Initial retry delay; doubles each attempt, capped by SURF_BACKOFF_MAX.
 SURF_BACKOFF="${SURF_BACKOFF:-3}"
+# Wall-clock budget for a single retried request, replacing the old fixed
+# SURF_ATTEMPTS count: a 2026-09-27 outage lasted ~16 minutes, so a fixed
+# attempt count is not a meaningful safety net.
+SURF_DEADLINE="${SURF_DEADLINE:-1500}"
+# Never wait on a dead socket; but do not cap a package upload, which may
+# legitimately take minutes and must not be truncated mid-PUT.
+SURF_CONNECT_TIMEOUT="${SURF_CONNECT_TIMEOUT:-20}"
+SURF_MAX_TIME="${SURF_MAX_TIME:-300}"
+SURF_BACKOFF_MAX="${SURF_BACKOFF_MAX:-30}"
+# Surfer 7 ships webdav-server v2, where every WebDAV DELETE kills the app:
+# Surfer's SiteFileSystem is not registered in server.fileSystems, so
+# getFileSystemPathSync() returns null and FileSystem.js:1289 dereferences it
+# (`fsPath.getChildPath(path)`) -> uncaught TypeError -> Node exits ->
+# Cloudron restarts -> nginx serves "app is not responding" (HTTP 502) for
+# every request in that window. Retrying cannot fix it: the next DELETE
+# crashes the app again. Hence deletions are opt-in.
+SURF_SKIP_DELETE="${SURF_SKIP_DELETE:-1}"
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
 SIGNED_BY='oSoWoSo <mail@osowoso.org>'
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
@@ -93,42 +113,139 @@ _re() {
 # curl with Surfer credentials. Surfer >= 7.0 requires a username plus a
 # Cloudron app password, so the user may never be left empty.
 surf_curl() {
-	curl -u "${SURFER_USER}:${SURFER_TOKEN}" "$@"
+	# A package upload may legitimately run for minutes; a blanket --max-time
+	# would truncate it mid-PUT and leave a corrupt .xbps on the server, so
+	# only non-upload requests get a hard cap.
+	case " $* " in
+		*' -T '* | *' --upload-file '*)
+			curl -u "${SURFER_USER}:${SURFER_TOKEN}" \
+				--connect-timeout "$SURF_CONNECT_TIMEOUT" "$@"
+			;;
+		*)
+			curl -u "${SURFER_USER}:${SURFER_TOKEN}" \
+				--connect-timeout "$SURF_CONNECT_TIMEOUT" \
+				--max-time "$SURF_MAX_TIME" "$@"
+			;;
+	esac
+}
+
+# Classify why a Surfer request failed, by probing the site root.
+# Returns: 0 reachable, 1 host down/unhealthy, 2 auth rejected (terminal).
+surf_diagnose() {
+	_sd_body=$(mktemp)
+	_sd_code=$(surf_curl -s -o "$_sd_body" -w '%{http_code}' "${SURFER_URL}/" 2>/dev/null) || _sd_code=0
+	case "$_sd_code" in
+		401 | 403)
+			rm -f "$_sd_body"
+			echo "::error::Surfer rejected our credentials (HTTP ${_sd_code}); check SURFER_USER/SURFER_TOKEN" >&2
+			return 2
+			;;
+		200 | 30[0-9])
+			rm -f "$_sd_body"
+			return 0
+			;;
+	esac
+	# Cloudron serves an HTML error page (HTTP 502) while the app restarts.
+	if grep -qiE 'app is not responding|Cloudron App Error' "$_sd_body" 2>/dev/null; then
+		rm -f "$_sd_body"
+		echo "::error::Surfer app is DOWN (${SURFER_URL}/ -> HTTP ${_sd_code}, Cloudron \"app is not responding\")." >&2
+		echo "::error::If uploads keep failing, check whether Surfer crashed -- host 'docker logs' for 'getChildPath'." >&2
+		return 1
+	fi
+	rm -f "$_sd_body"
+	echo "::error::Surfer host unreachable or unhealthy (${SURFER_URL}/ -> HTTP ${_sd_code:-000})" >&2
+	return 1
+}
+
+# Shared retry driver: run "$@" until it succeeds or the SURF_DEADLINE
+# wall-clock budget is spent. A fixed attempt count cannot cover a host that
+# is down for a quarter of an hour, so the budget is the contract.
+surf_retry_loop() {
+	_srl_start=$(date +%s)
+	_srl_delay="$SURF_BACKOFF"
+	_srl_n=0
+	_srl_probed=0
+	while :; do
+		_srl_n=$((_srl_n + 1))
+		"$@" && return 0
+		_srl_now=$(date +%s)
+		_srl_used=$((_srl_now - _srl_start))
+		if [ "$_srl_used" -ge "$SURF_DEADLINE" ]; then
+			echo "  Surfer: giving up after ${_srl_n} attempt(s) over ${_srl_used}s" >&2
+			return 1
+		fi
+		echo "  Surfer: attempt ${_srl_n} failed (${_srl_used}s/${SURF_DEADLINE}s); retrying in ${_srl_delay}s" >&2
+		# Probe the site root once, not once per attempt: on a host that is
+		# already failing, extra requests only add load, and a terminal
+		# 401/403 shows up on the very first failure anyway.
+		if [ "$_srl_probed" -eq 0 ]; then
+			_srl_probed=1
+			_srl_sd=0
+			surf_diagnose || _srl_sd=$?
+			# Bad credentials never fix themselves; stop burning the budget.
+			[ "$_srl_sd" -eq 2 ] && return 1
+		fi
+		sleep "$_srl_delay"
+		_srl_delay=$((_srl_delay * 2))
+		[ "$_srl_delay" -gt "$SURF_BACKOFF_MAX" ] && _srl_delay="$SURF_BACKOFF_MAX"
+	done
 }
 
 surf_retry() {
-	_sr_delay="$SURF_BACKOFF" _sr_n=1
-	while :; do
-		_sr_rc=0
-		surf_curl "$@" || _sr_rc=$?
-		[ "$_sr_rc" -eq 0 ] && return 0
-		[ "$_sr_n" -ge "$SURF_ATTEMPTS" ] && return "$_sr_rc"
-		echo "  Surfer: attempt ${_sr_n}/${SURF_ATTEMPTS} failed (curl rc=${_sr_rc}); retrying in ${_sr_delay}s" >&2
-		sleep "$_sr_delay"
-		_sr_delay=$((_sr_delay * 2))
-		_sr_n=$((_sr_n + 1))
-	done
+	surf_retry_loop surf_curl "$@"
+}
+
+# MKCOL against an existing collection answers 405, which is a success for us
+# but used to be retried four times (~21s of pointless waiting per arch).
+surf_mkcol() {
+	_SMK_URL="$1"
+	surf_retry_loop surf_mkcol_try
+}
+
+surf_mkcol_try() {
+	_smt_code=$(surf_curl -s -o /dev/null -w '%{http_code}' -X MKCOL "$_SMK_URL") || _smt_code=000
+	case "$_smt_code" in
+		200 | 201 | 204 | 301 | 405) return 0 ;;
+	esac
+	return 1
 }
 
 fetch_repodata() {
-	_fr_url="$1" _fr_out="$2"
-	_fr_delay="$SURF_BACKOFF" _fr_n=1
+	_fr_url="$1"
+	_fr_out="$2"
+	_fr_start=$(date +%s)
+	_fr_delay="$SURF_BACKOFF"
+	_fr_n=0
+	_fr_http=0
+	_fr_probed=0
 	while :; do
+		_fr_n=$((_fr_n + 1))
 		_fr_http=$(surf_curl -sS -o "$_fr_out" -w '%{http_code}' "$_fr_url" 2>/dev/null) || _fr_http=0
 		case "$_fr_http" in
 			200) return 0 ;;
-			404) rm -f "$_fr_out"; return 1 ;;
-			0|429|5??) ;;
+			404)
+				rm -f "$_fr_out"
+				return 1
+				;;
+			0 | 429 | 5??) ;;
 			*) break ;;
 		esac
-		[ "$_fr_n" -ge "$SURF_ATTEMPTS" ] && break
-		echo "  Repodata fetch returned HTTP ${_fr_http}; attempt ${_fr_n}/${SURF_ATTEMPTS}, retrying in ${_fr_delay}s" >&2
+		_fr_now=$(date +%s)
+		_fr_used=$((_fr_now - _fr_start))
+		[ "$_fr_used" -ge "$SURF_DEADLINE" ] && break
+		echo "  Repodata fetch returned HTTP ${_fr_http}; attempt ${_fr_n}, ${_fr_used}s/${SURF_DEADLINE}s, retrying in ${_fr_delay}s" >&2
+		if [ "$_fr_probed" -eq 0 ]; then
+			_fr_probed=1
+			_fr_sd=0
+			surf_diagnose || _fr_sd=$?
+			[ "$_fr_sd" -eq 2 ] && break
+		fi
 		sleep "$_fr_delay"
 		_fr_delay=$((_fr_delay * 2))
-		_fr_n=$((_fr_n + 1))
+		[ "$_fr_delay" -gt "$SURF_BACKOFF_MAX" ] && _fr_delay="$SURF_BACKOFF_MAX"
 	done
 	rm -f "$_fr_out"
-	echo "  Repodata fetch gave up with HTTP ${_fr_http} after ${SURF_ATTEMPTS} attempt(s)" >&2
+	echo "  Repodata fetch gave up with HTTP ${_fr_http} after ${_fr_n} attempt(s) over ${SURF_DEADLINE}s" >&2
 	return 2
 }
 
@@ -289,6 +406,12 @@ fetch_remote_list() {
 }
 
 delete_remote() {
+	if [ "$SURF_SKIP_DELETE" -eq 1 ]; then
+		# A WebDAV DELETE crashes Surfer 7 (webdav-server null-derefs the
+		# unregistered SiteFileSystem), so we must not issue one at all.
+		# Suppressed, not failed: the package is stale, not broken.
+		return 0
+	fi
 	surf_retry -sf -X DELETE "${1}" || true
 }
 
@@ -304,17 +427,32 @@ upload_file() {
 		fi
 	fi
 	echo "  Uploading: ${_fname}"
+	# Report, do not abort: do_upload() decides whether one bad file is fatal
+	# (it is for .xbps, it is not for an index page), and it needs the chance
+	# to collect every failure before deciding.
 	if ! surf_retry -fsS -T "$_file" "$_dest"; then
-		fatal "Failed to upload $(basename "$_file")"
+		echo "::error::Failed to upload ${_fname} to ${_dest}" >&2
+		return 1
 	fi
+	return 0
 }
 
 prune_orphans() {
 	# Args:
 	#   $1: remote pkg list (one filename per line)
 	#   $2: optional path to write orphan PACKAGE NAMES (dedup, one per line)
-	_remote_list="$1"
 	_orphans_out="${2:-}"
+	if [ "$SURF_SKIP_DELETE" -eq 1 ]; then
+		# We are not deleting, so a remote .xbps has not been removed -- yet.
+		# Emitting its name would tell repodata-strip.py to hide a package
+		# that is still really on the server, i.e. the index would start
+		# lying. Keep the orphan list empty: stale versions stay indexed,
+		# which is harmless, instead of vanishing packages, which is not.
+		echo '==> Skipping orphan pruning (SURF_SKIP_DELETE=1); stale packages stay indexed'
+		[ -n "$_orphans_out" ] && : > "$_orphans_out"
+		return 0
+	fi
+	_remote_list="$1"
 	[ -n "$_orphans_out" ] && : > "$_orphans_out"
 	echo '==> Pruning orphan packages (no template in srcpkgs)'
 	_srcpkgs="${SCRIPT_DIR}/${SRCPKGS}"
@@ -736,7 +874,7 @@ generate_arch_pages() {
 
 		if surf_auth_check; then
 			_webdav_arch="${SURFER_URL}/_webdav/${_arch}"
-			surf_retry -sf -X MKCOL "${_webdav_arch}/"
+			surf_mkcol "${_webdav_arch}/" || true
 			if ! upload_file "$_out" "${_webdav_arch}/index.html"; then
 				fatal "Failed to upload ${_arch}/index.html!"
 			fi
@@ -831,7 +969,7 @@ do_upload() {
 
 	_work_dir=$(mktemp -d)
 
-	surf_retry -sf -X MKCOL "${_webdav}/" || true
+	surf_mkcol "${_webdav}/" || true
 
 	echo '==> Fetching remote package list'
 	if ! _remote_list=$(fetch_remote_list "$_webdav"); then
@@ -851,16 +989,19 @@ do_upload() {
 				echo '==> No repodata yet (first run); starting fresh'
 				;;
 			*)
-				fatal "==> Error: repodata fetch failed after ${SURF_ATTEMPTS} attempts"
+				fatal "==> Error: repodata fetch failed (deadline ${SURF_DEADLINE}s exhausted)"
 				;;
 		esac
 
-		if ls "${_builddir}"/*.xbps 1>/dev/null 2>&1; then
-			cp "${_builddir}"/*.xbps . 2>/dev/null || true
-			cp "${_builddir}"/*.xbps.sig2 . 2>/dev/null || true
+		# xbps-src drops every architecture into one binpkgs/, so an
+		# unqualified glob would republish other arches' .xbps into our
+		# ${ARCH} directory. Filter on the filename's architecture suffix.
+		if ls "${_builddir}"/*."${ARCH}".xbps >/dev/null 2>&1; then
+			cp "${_builddir}"/*."${ARCH}".xbps . 2>/dev/null || true
+			cp "${_builddir}"/*."${ARCH}".xbps.sig2 . 2>/dev/null || true
 
 			echo '==> Cleaning old package versions from remote'
-			for _new_pkg in "${_builddir}"/*.xbps; do
+			for _new_pkg in ./*."${ARCH}".xbps; do
 				[ -f "$_new_pkg" ] || continue
 				_new_basename=$(basename "$_new_pkg")
 				_name=$(pkg_name "${_new_basename%.xbps}")
@@ -899,9 +1040,9 @@ do_upload() {
 			fi
 		fi
 
-		if ls ./*.xbps 1>/dev/null 2>&1; then
+		if ls ./*."${ARCH}".xbps >/dev/null 2>&1; then
 			echo '==> Updating repository index'
-			xbps-rindex -a ./*.xbps 2>/dev/null || true
+			xbps-rindex -a ./*."${ARCH}".xbps 2>/dev/null || true
 		fi
 
 		echo '==> Signing repository'
@@ -912,14 +1053,33 @@ do_upload() {
 		xbps-rindex -s --signedby "$SIGNED_BY" --privkey private.pem "$PWD"
 		rm -f private.pem
 
-		echo '==> Uploading'
+		if [ "$SURF_SKIP_DELETE" -eq 1 ]; then
+			echo "::warning::SURF_SKIP_DELETE=1: remote deletes are disabled, old versions and orphans stay indexed. Set SURF_SKIP_DELETE=0 once the Surfer host no longer crashes on DELETE." >&2
+		fi
+
+		echo '==> Uploading packages'
+		# Two phases. The remote repodata is the base index that xbps-rindex -a
+		# builds on, so publishing it while a package upload is still missing
+		# would leave the repo advertising a download that 404s. Packages go
+		# first; the index is published only if every single one landed.
 		_upload_failed=0
-		for _file in ./*.xbps ./*.xbps.sig2 ./*-repodata; do
+		for _file in ./*."${ARCH}".xbps ./*."${ARCH}".xbps.sig2; do
 			[ -f "$_file" ] || continue
 			_fname=$(basename "$_file")
 			upload_file "$_file" "${_webdav}/${_fname}" || _upload_failed=1
 		done
-		[ "$_upload_failed" -eq 0 ] || fatal '==> Error: one or more uploads failed'
+		if [ "$_upload_failed" -ne 0 ]; then
+			fatal '==> Error: one or more package uploads failed; remote repodata left untouched'
+		fi
+
+		echo '==> Uploading repository index'
+		for _file in ./*-repodata; do
+			[ -f "$_file" ] || continue
+			_fname=$(basename "$_file")
+			upload_file "$_file" "${_webdav}/${_fname}" \
+				|| fatal "==> Error: failed to upload ${_fname}"
+		done
+
 	)
 	_upload_status=$?
 	rm -rf "$_work_dir"
