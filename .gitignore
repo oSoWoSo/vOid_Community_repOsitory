@@ -176,6 +176,7 @@ src/__pycache__/
 !/srcpkgs/hyprwayland-scanner
 !/srcpkgs/kairo
 !/srcpkgs/kando
+!/srcpkgs/kernwatch
 !/srcpkgs/kmscon
 !/srcpkgs/lazyrsync
 !/srcpkgs/lemonade-server

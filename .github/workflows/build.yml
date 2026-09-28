@@ -199,6 +199,7 @@ on:
         - hyprwayland-scanner
         - kairo
         - kando
+        - kernwatch
         - kmscon
         - lazyrsync
         - lemonade-server
