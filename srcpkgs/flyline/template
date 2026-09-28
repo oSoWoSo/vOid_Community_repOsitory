@@ -1,6 +1,6 @@
 # Template file for 'flyline'
 pkgname=flyline
-version=1.7.1
+version=1.9.0
 revision=1
 build_style=cargo
 hostmakedepends="pkg-config"
@@ -10,7 +10,7 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-only, MIT"
 homepage="https://github.com/HalFrgrd/flyline"
 distfiles="https://github.com/HalFrgrd/flyline/archive/refs/tags/v${version}.tar.gz"
-checksum=067b68de0d1484a43fb77124fd2544f19b3ee30691635d038e94f13868ddb27f
+checksum=7d0af846bbfaa48f4ebe3c78f24135f3a6298990cd98903c39601be89e510b71
 pre_check() {
 	# Remove failing tests
 	rm tests/docker_integration_tests.rs
@@ -18,7 +18,7 @@ pre_check() {
 }
 
 do_install() {
-	vbin target/${RUST_TARGET}/release/libflyline.so flyline
+	vinstall target/${RUST_TARGET}/release/libflyline.so 755 usr/lib/bash
 }
 
 post_install() {
