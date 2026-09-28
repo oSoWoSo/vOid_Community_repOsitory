@@ -298,6 +298,7 @@ on:
         - surge-xt-vst3
         - svi
         - SysMan
+        - syswatch
         - tdf
         - tiki
         - tls-client
