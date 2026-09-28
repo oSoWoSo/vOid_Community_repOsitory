@@ -132,6 +132,7 @@ on:
         - default-cursors
         - desktop-tui
         - devedeng
+        - diskwatch
         - distrobox
         - dragonfly-reverb
         - dragonfly-reverb-clap

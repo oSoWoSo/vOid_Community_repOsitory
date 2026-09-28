@@ -1,0 +1,19 @@
+# Template file for 'diskwatch'
+pkgname=diskwatch
+version=0.5.8
+revision=1
+build_style=cargo
+hostmakedepends="pkg-config nasm"
+depends="smartmontools"
+short_desc="Single-host, read-only disk diagnostics TUI"
+maintainer="nerdyslacker <karyan40024@gmail.com>"i
+maintainer="zenobit <zen@osowoso.org>"
+license="MIT"
+homepage="https://www.netwatchlabs.com"
+distfiles="https://github.com/matthart1983/diskwatch/archive/refs/tags/v${version}.tar.gz"
+checksum=4768e2d8cd86c470f93e152bb262116c75b6316c4b19fa963a4c19888bf18c73
+
+post_install() {
+	vdoc README.md
+	vlicense LICENSE
+}
