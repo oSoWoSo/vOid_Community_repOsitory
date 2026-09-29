@@ -1,7 +1,7 @@
 # Template file for 'svlog'
 pkgname=svlog
 version=0.6.3
-revision=2
+revision=3
 build_style=cargo
 make_install_args="--path svlog"
 short_desc="Display, filter and follow socklog log files on Void Linux"
