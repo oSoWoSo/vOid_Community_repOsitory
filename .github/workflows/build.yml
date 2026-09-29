@@ -297,6 +297,7 @@ on:
         - surge-xt-standalone
         - surge-xt-vst3
         - svi
+        - svlog
         - SysMan
         - syswatch
         - tdf
