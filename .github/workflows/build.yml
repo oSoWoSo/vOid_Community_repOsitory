@@ -250,6 +250,7 @@ on:
         - omniroute
         - opencode
         - patchance
+        - pi
         - pinguintv-installer-git
         - pop-fonts
         - pop-icons

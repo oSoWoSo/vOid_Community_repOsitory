@@ -227,6 +227,7 @@ src/__pycache__/
 !/srcpkgs/omniroute
 !/srcpkgs/opencode
 !/srcpkgs/patchance
+!/srcpkgs/pi
 !/srcpkgs/pinguintv-installer-git
 !/srcpkgs/pop-fonts
 !/srcpkgs/pop-icons
