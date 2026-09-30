@@ -247,8 +247,8 @@ Create PR
 | libcprime | 5.0.1 | [home](https://gitlab.com/cubocore/libcprime) | zenobit |  | Library for bookmarking, saving activities, sharing files and more |
 | librewolf-bin | 157.0.1 | [home](https://librewolf.net) | zenobit | x86_64 aarch64 | Community-maintained fork of Firefox focused on privacy and security |
 | libspng | 0.7.4 | [home](https://libspng.org/) | zenobit |  | Simple, modern libpng alternative |
-| libtsm | 4.7.1 | [home](https://github.com/kmscon/libtsm) | zenobit |  | Terminal-emulator State Machine |
-| libtsm-devel | 4.7.1 | [home](https://github.com/kmscon/libtsm) | zenobit |  | Terminal-emulator State Machine |
+| libtsm | 4.8.0 | [home](https://github.com/kmscon/libtsm) | zenobit |  | Terminal-emulator State Machine |
+| libtsm-devel | 4.8.0 | [home](https://github.com/kmscon/libtsm) | zenobit |  | Terminal-emulator State Machine |
 | linuxcommandlibrary | 4.5.0 | [home](http://linuxcommandlibrary.com/) | zenobit | x86_64 aarch64 | Linux reference app with basics, tips and formatted man pages |
 | linuxcommandlibrary-desktop | 4.5.0 | [home](http://linuxcommandlibrary.com/) | zenobit | x86_64 aarch64 | Linux reference app with basics, tips and formatted man pages |
 | llama.cpp | 0.5.0 | [home](https://github.com/ggml-org/llama.cpp) | zenobit |  | LLM inference in C/C++ |
