@@ -295,7 +295,7 @@ Create PR
 | proxelar | 0.5.1 | [home](https://github.com/emanuele-em/proxelar) | zenobit |  | Scriptable local traffic workbench |
 | python3-anysqlite | 0.0.5 | [home](https://github.com/karpetrosyan/anysqlite) | zenobit |  | Provides interface to sqlite3 library and supports trio and asyncio |
 | python3-geographiclib | 2.1 | [home](https://geographiclib.sourceforge.io/) | zenobit |  | Python implementation of the geodesic routines |
-| python3-geopy | 2.4.1 | [home](https://github.com/geopy/geopy) | zenobit |  | Geocoding library for Python |
+| python3-geopy | 2.5.0 | [home](https://github.com/geopy/geopy) | zenobit |  | Geocoding library for Python |
 | python3-hishel | 1.1.9 | [home](https://github.com/karpetrosyan/hishel) | zenobit |  |  Elegant HTTP Caching for Python |
 | python3-inline-snapshot | 0.32.6 | [home](https://15r10nk.github.io/inline-snapshot/latest) | zenobit |  | Boosts efficiency when writing tests |
 | python3-linkify-it-py | 2.1.0 | [home](https://github.com/tsutsu3/linkify-it-py) | Orphaned |  | Linkify plugin for markdown-it-py |
