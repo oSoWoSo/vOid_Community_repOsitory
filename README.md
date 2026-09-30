@@ -92,9 +92,9 @@ Create PR
 | android-sdk | 36 | [home](https://developer.android.com/studio) | zenobit | x86_64 | Android SDK platform 36 and build-tools 29.0.3 |
 | aquamarine | 0.15.1 | [home](https://github.com/hyprwm/aquamarine) | zenobit |  | Aquamarine is a very light linux rendering backend library |
 | blocaled | 0.7 | [home](https://github.com/lfs-book/blocaled) | zenobit |  | Standalone implementation of the localed D-Bus service |
-| brave-browser-bin | 1.95.104 | [home](https://www.brave.com/) | zenobit | x86_64 aarch64 | One of the most private browsers built on top off Chromium project |
-| brave-browser-bin-qt5 | 1.95.104 | [home](https://www.brave.com/) | zenobit | x86_64 aarch64 | One of the most private browsers built on top off Chromium project |
-| brave-browser-bin-qt6 | 1.95.104 | [home](https://www.brave.com/) | zenobit | x86_64 aarch64 | One of the most private browsers built on top off Chromium project |
+| brave-browser-bin | 1.96.60 | [home](https://www.brave.com/) | zenobit | x86_64 aarch64 | One of the most private browsers built on top off Chromium project |
+| brave-browser-bin-qt5 | 1.96.60 | [home](https://www.brave.com/) | zenobit | x86_64 aarch64 | One of the most private browsers built on top off Chromium project |
+| brave-browser-bin-qt6 | 1.96.60 | [home](https://www.brave.com/) | zenobit | x86_64 aarch64 | One of the most private browsers built on top off Chromium project |
 | brave-origin-bin | 1.95.104 | [home](https://www.brave.com/) | zenobit | x86_64 aarch64 | Minimalist browser from the makers of Brave (binary) |
 | brave-origin-bin-qt5 | 1.95.104 | [home](https://www.brave.com/) | zenobit | x86_64 aarch64 | Minimalist browser from the makers of Brave (binary) |
 | brave-origin-bin-qt6 | 1.95.104 | [home](https://www.brave.com/) | zenobit | x86_64 aarch64 | Minimalist browser from the makers of Brave (binary) |
