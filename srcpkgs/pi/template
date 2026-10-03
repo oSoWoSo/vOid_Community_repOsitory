@@ -1,6 +1,6 @@
 # Template file for 'pi'
 pkgname=pi
-version=1.0.0
+version=1.0.1
 revision=1
 hostmakedepends="nodejs jq"
 depends="nodejs"
@@ -10,7 +10,7 @@ license="MIT"
 homepage="https://github.com/earendil-works/pi"
 distfiles="https://registry.npmjs.org/@earendil-works/pi-coding-agent/-/pi-coding-agent-${version}.tgz
  https://raw.githubusercontent.com/earendil-works/pi/v${version}/LICENSE"
-checksum="638ed3abbe54ef70cbf8673ae4bc531e791613756aac04644cfcdcc4af0fafaf
+checksum="99c2e1958ac6d4c6a36e7f1c3690ae38778bb397c63e9d611d2c09521be735c5
  0457f5bcec3b3b211605dfb5d1a49042fd638f3686a410fe099c24a25af13c48"
 skip_extraction="LICENSE"
 nostrip_files="esbuild linux-platform-x11.node"
@@ -35,14 +35,28 @@ _node_arch() {
 do_build() {
 	jq 'del(.devDependencies)' package.json > package.json.tmp
 	mv package.json.tmp package.json
-	npm ci --omit=dev --include=optional --os=linux --cpu="$(_node_arch)"
+	npm install --omit=dev --include=optional --os=linux --cpu="$(_node_arch)"
+
+	local _arch="$(_node_arch)"
 	local _prebuild
 	for _prebuild in node_modules/@earendil-works/pi-tui/native/*/prebuilds/*; do
 		case "${_prebuild##*/}" in
-		linux-$(_node_arch)) ;;
+		linux-${_arch}) ;;
 		*) rm -rf "${_prebuild}" ;;
 		esac
 	done
+	local _esbuild_lib="node_modules/esbuild" _esbuild_bin
+	_esbuild_bin="node_modules/@esbuild/linux-${_arch}/bin/esbuild"
+	if [ -f "${_esbuild_bin}" ] && \
+	   ! cmp -s "${_esbuild_bin}" "${_esbuild_lib}/bin/esbuild"; then
+		rm -f "${_esbuild_lib}/bin/esbuild"
+		cp -f "${_esbuild_bin}" "${_esbuild_lib}/bin/esbuild"
+		if ls "${_esbuild_lib}"/lib/downloaded-@esbuild-*-esbuild >/dev/null 2>&1; then
+			rm -f "${_esbuild_lib}"/lib/downloaded-@esbuild-*-esbuild
+			cp -f "${_esbuild_bin}" \
+				"${_esbuild_lib}/lib/downloaded-@esbuild-linux-${_arch}-esbuild"
+		fi
+	fi
 }
 
 do_install() {
