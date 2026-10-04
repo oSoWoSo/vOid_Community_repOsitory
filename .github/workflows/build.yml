@@ -224,6 +224,7 @@ on:
         - menu-themes
         - mesa-amber
         - morgenwm
+        - nano-syntax-highlighting
         - nebula-gtk
         - NuvioDesktop
         - nvchecker

@@ -201,6 +201,7 @@ src/__pycache__/
 !/srcpkgs/menu-themes
 !/srcpkgs/mesa-amber
 !/srcpkgs/morgenwm
+!/srcpkgs/nano-syntax-highlighting
 !/srcpkgs/nebula-gtk
 !/srcpkgs/NuvioDesktop
 !/srcpkgs/nvchecker
