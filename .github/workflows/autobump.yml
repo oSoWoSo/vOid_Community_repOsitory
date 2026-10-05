@@ -48,23 +48,6 @@ jobs:
         with:
           path: extra
 
-      - name: Prepare container
-        uses: ./extra/.github/actions/prepare-container
-
-      - name: Install xxtools-git
-        run: |
-          set -e
-          for i in 1 2 3; do
-            if sudo xbps-install -y xxtools-git; then
-              break
-            fi
-            sleep 5
-          done
-          command -v xxautobump || {
-            echo "::error::xxautobump not available (xxtools-git install failed)"
-            exit 1
-          }
-
       - name: Extract template from issue body
         id: template
         env:
@@ -137,6 +120,23 @@ jobs:
             fi
             exit 0
           fi
+
+      - name: Prepare container
+        uses: ./extra/.github/actions/prepare-container
+
+      - name: Install xxtools-git
+        run: |
+          set -e
+          for i in 1 2 3; do
+            if sudo xbps-install -y xxtools-git; then
+              break
+            fi
+            sleep 5
+          done
+          command -v xxautobump || {
+            echo "::error::xxautobump not available (xxtools-git install failed)"
+            exit 1
+          }
 
       - name: Merge templates and edit shlibs
         if: steps.whitelist.outputs.in_list == 'true'
