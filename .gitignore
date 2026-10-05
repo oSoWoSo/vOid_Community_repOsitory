@@ -276,6 +276,7 @@ src/__pycache__/
 !/srcpkgs/surge-xt-lv2
 !/srcpkgs/surge-xt-standalone
 !/srcpkgs/surge-xt-vst3
+!/srcpkgs/sv-helper
 !/srcpkgs/svi
 !/srcpkgs/svlog
 !/srcpkgs/SysMan

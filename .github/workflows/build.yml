@@ -299,6 +299,7 @@ on:
         - surge-xt-lv2
         - surge-xt-standalone
         - surge-xt-vst3
+        - sv-helper
         - svi
         - svlog
         - SysMan

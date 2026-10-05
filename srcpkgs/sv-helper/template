@@ -1,0 +1,25 @@
+# Template file for 'sv-helper'
+pkgname=sv-helper
+version=4.2.1
+revision=1
+depends="runit"
+short_desc="Utilities to help administer a runit-as-pid1 system"
+maintainer="zenobit <zen@osowoso.org>"
+license="MIT"
+homepage="https://github.com/rubyists/sv-helper"
+distfiles="https://github.com/rubyists/sv-helper/archive/v${version}.tar.gz"
+checksum=e6833781766f501181a74057dcca26baf2d132d6f61a92a45971eaf8a10ebb6b
+
+system_accounts="rsvlog"
+rsvlog_homedir="/var/log"
+rsvlog_descr="User for logging"
+
+do_install() {
+	vbin sv-helper.sh sv-helper
+	vbin rsvlog.sh rsvlog
+	for cmd in sv-list svls sv-find sv-enable sv-disable; do
+		ln -s sv-helper $DESTDIR/usr/bin/$cmd
+	done
+	vdoc README.md
+	vlicense COPYING
+}
