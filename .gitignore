@@ -33,6 +33,7 @@ src/__pycache__/
 !/srcpkgs/android-sdk
 !/srcpkgs/aquamarine
 !/srcpkgs/blocaled
+!/srcpkgs/BoxBuddy
 !/srcpkgs/brave-browser-bin
 !/srcpkgs/brave-browser-bin-qt5
 !/srcpkgs/brave-browser-bin-qt6
