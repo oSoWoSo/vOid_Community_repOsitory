@@ -1,6 +1,6 @@
 # Template file for 'pi'
 pkgname=pi
-version=1.0.1
+version=1.0.3
 revision=1
 hostmakedepends="nodejs jq"
 depends="nodejs"
@@ -10,7 +10,7 @@ license="MIT"
 homepage="https://github.com/earendil-works/pi"
 distfiles="https://registry.npmjs.org/@earendil-works/pi-coding-agent/-/pi-coding-agent-${version}.tgz
  https://raw.githubusercontent.com/earendil-works/pi/v${version}/LICENSE"
-checksum="99c2e1958ac6d4c6a36e7f1c3690ae38778bb397c63e9d611d2c09521be735c5
+checksum="106eadb1f823f72f012c08f23bd36e435f9e62f6c81e98a5d8f70c8a9543dd05
  0457f5bcec3b3b211605dfb5d1a49042fd638f3686a410fe099c24a25af13c48"
 skip_extraction="LICENSE"
 nostrip_files="esbuild linux-platform-x11.node"
