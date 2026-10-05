@@ -1,6 +1,6 @@
 # Template file for 'caerus'
 pkgname=caerus
-version=0.6.0
+version=0.7.1
 revision=1
 build_style=cargo
 hostmakedepends="pkg-config clang"
@@ -11,7 +11,7 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-or-later"
 homepage="https://github.com/mendescotta/Caerus"
 distfiles="https://github.com/mendescotta/Caerus/archive/refs/tags/v${version}.tar.gz"
-checksum=ea9676011ede21fd49a16277de58f06cdcd870b13d32f6625808b5d535b1cf53
+checksum=f6ab735c6d20df86996901b948eb9bc3cceb56a79fd75265ffde88a2cbef3ced
 
 do_install() {
 	vbin target/${RUST_TARGET}/release/caerus
