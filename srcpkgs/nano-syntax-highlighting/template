@@ -1,7 +1,7 @@
 # Template file for 'nano-syntax-highlighting'
 pkgname=nano-syntax-highlighting
 version=2026.10.01
-revision=1
+revision=2
 short_desc="Improved nano syntax highlighting files"
 maintainer="Coolllyn <leanhduc673@gmail.com>"
 license="GPL-3.0-or-later"
@@ -10,6 +10,6 @@ distfiles="https://github.com/galenguyer/nano-syntax-highlighting/archive/refs/t
 checksum="0501e7caa18d40f157138cebdf96facf608fa8e6a0706ba8769ecec2fd9c881a"
 
 do_install() {
-	vmkdir usr/share/nano/nano-syntax-highlighting
-	cp -a ${wrksrc}/*.nanorc ${DESTDIR}/usr/share/nano/nano-syntax-highlighting/
+	vmkdir usr/share/nano-syntax-highlighting
+	vcopy *.nanorc usr/share/nano-syntax-highlighting/
 }
