@@ -20,5 +20,5 @@ runs:
         echo "https://repo.osowoso.org/aarch64" >> /void-packages/etc/xbps.d/repos-remote-aarch64.conf
         echo "https://repo.osowoso.org/x86_64-musl" >> /void-packages/etc/xbps.d/repos-remote-musl.conf
         echo "https://repo.osowoso.org/x86_64" >> /void-packages/etc/xbps.d/repos-remote-.conf
-        printf "\n" | xbps-install -Suvy
+        yes | xbps-install -Suvy
         sudo -Eu builder sh -c "cd /void-packages && ./xbps-src bootstrap-update"
