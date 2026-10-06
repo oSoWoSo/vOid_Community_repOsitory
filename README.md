@@ -220,7 +220,7 @@ Create PR
 | hister | 0.20.0 | [home](https://github.com/asciimoo/hister) | zenobit |  | Your own search engine |
 | hyprcursor | 0.1.13 | [home](https://github.com/hyprwm/hyprcursor) | zenobit |  | Hyprland cursor format, library and utilities |
 | hyprdynamicmonitors | 1.4.0 | [home](https://github.com/fiffeek/hyprdynamicmonitors) | zenobit |  | Hyprland configuration based on connected displays, power and lid state |
-| hyprgraphics | 0.3.0 | [home](https://github.com/hyprwm/hyprgraphics) | zenobit |  | Hyprland graphics resources and utilities |
+| hyprgraphics | 0.5.1 | [home](https://github.com/hyprwm/hyprgraphics) | zenobit |  | Hyprland graphics resources and utilities |
 | hypridle | 0.1.7 | [home](https://github.com/hyprwm/hypridle) | zenobit |  | Hyprland's idle daemon |
 | hyprland | 0.52.1 | [home](https://hyprland.org/) | zenobit |  | Dynamic tiling Wayland compositor that doesn't sacrifice on its looks |
 | hyprland-devel | 0.52.1 | [home](https://hyprland.org/) | zenobit |  | Dynamic tiling Wayland compositor that doesn't sacrifice on its looks |
