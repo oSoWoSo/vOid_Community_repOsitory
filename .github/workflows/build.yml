@@ -158,7 +158,7 @@ on:
         - ghgrab
         - glaze
         - gofer
-        - gradle
+        - gradle9
         - graphite-gtk-theme
         - graphite-gtk-theme-all
         - graphite-gtk-theme-black

@@ -135,7 +135,7 @@ src/__pycache__/
 !/srcpkgs/ghgrab
 !/srcpkgs/glaze
 !/srcpkgs/gofer
-!/srcpkgs/gradle
+!/srcpkgs/gradle9
 !/srcpkgs/graphite-gtk-theme
 !/srcpkgs/graphite-gtk-theme-all
 !/srcpkgs/graphite-gtk-theme-black

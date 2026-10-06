@@ -1,5 +1,5 @@
-# Template file for 'gradle'
-pkgname=gradle
+# Template file for 'gradle9'
+pkgname=gradle9
 version=9.8.0
 revision=1
 depends="virtual?java-environment"
