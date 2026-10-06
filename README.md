@@ -295,7 +295,7 @@ Create PR
 | pop-icons | 3.5.1 | [home](https://github.com/pop-os/icon-theme) | Bella109 |  | TODO: pop-icons short_desc |
 | pop-launcher | 1.9.0 | [home](https://github.com/pop-os/launcher) | zenobit | x86_64* | Modular IPC-based desktop launcher service |
 | pop-sounds-theme | 5.5.1 | [home](https://github.com/pop-os/gtk-theme) | Bella109 |  | Pop sounds theme |
-| proxelar | 0.5.1 | [home](https://github.com/emanuele-em/proxelar) | zenobit |  | Scriptable local traffic workbench |
+| proxelar | 0.6.1 | [home](https://github.com/emanuele-em/proxelar) | zenobit |  | Scriptable local traffic workbench |
 | python3-anysqlite | 0.0.5 | [home](https://github.com/karpetrosyan/anysqlite) | zenobit |  | Provides interface to sqlite3 library and supports trio and asyncio |
 | python3-geographiclib | 2.1 | [home](https://geographiclib.sourceforge.io/) | zenobit |  | Python implementation of the geodesic routines |
 | python3-geopy | 2.5.0 | [home](https://github.com/geopy/geopy) | zenobit |  | Geocoding library for Python |
