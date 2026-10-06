@@ -176,6 +176,7 @@ src/__pycache__/
 !/srcpkgs/hyprsunset
 !/srcpkgs/hyprsysteminfo
 !/srcpkgs/hyprtoolkit
+!/srcpkgs/hyprtoolkit-devel
 !/srcpkgs/hyprutils
 !/srcpkgs/hyprutils-devel
 !/srcpkgs/hyprwayland-scanner

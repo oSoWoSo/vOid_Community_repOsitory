@@ -200,6 +200,7 @@ on:
         - hyprsunset
         - hyprsysteminfo
         - hyprtoolkit
+        - hyprtoolkit-devel
         - hyprutils
         - hyprutils-devel
         - hyprwayland-scanner
