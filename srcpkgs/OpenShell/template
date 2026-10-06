@@ -1,7 +1,7 @@
 # Template file for 'OpenShell'
 pkgname=OpenShell
 version=0.1.2
-revision=2
+revision=3
 build_style=cargo
 # Opening /proc/<tid>/mem for writing fails with EROFS
 make_check_args="-- --skip proc_mem_fallback_reads_and_writes_exact_memory"
@@ -21,12 +21,14 @@ do_build() {
 	cargo build --release -p openshell-driver-vm --no-default-features --features defaults-without-telemetry
 }
 
+pre_check() {
+	# oci_workspace tests use /tmp and require it to be world traversable
+	chmod 1777 /tmp
+}
+
 do_install() {
 	local -a _args=(install --target "${RUST_TARGET}" --root "${DESTDIR}/usr" --offline --locked)
-	# the workspace root is a virtual manifest, so install the binary crates one by one
-	cargo "${_args[@]}" --path crates/openshell-gateway \
-		--no-default-features --features defaults-without-telemetry
+	cargo "${_args[@]}" --path crates/openshell-gateway --no-default-features --features defaults-without-telemetry
 	cargo "${_args[@]}" --path crates/openshell-sandbox
-	cargo "${_args[@]}" --path crates/openshell-driver-vm \
-		--no-default-features --features defaults-without-telemetry
+	cargo "${_args[@]}" --path crates/openshell-driver-vm --no-default-features --features defaults-without-telemetry
 }
