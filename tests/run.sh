@@ -850,6 +850,78 @@ else
 	echo '  (skipped: python3 not on PATH)'
 fi
 
+echo '== repo key plists =='
+
+if command -v python3 >/dev/null 2>&1; then
+	for _plist in "$SCRIPT_DIR/oco-repo-key.plist"; do
+		_plist_have=$(python3 - "$_plist" <<'PYEOF'
+import plistlib, base64, hashlib, sys
+d = plistlib.load(open(sys.argv[1], 'rb'))
+pub = d['public-key']
+if d.get('public-key-size') != 4096:
+    raise SystemExit('bad public-key-size')
+if d.get('signature-by') != 'oSoWoSo <mail@osowoso.org>':
+    raise SystemExit('bad signature-by')
+if d.get('signature-type') != 'rsa':
+    raise SystemExit('bad signature-type')
+if not pub.startswith(b'-----BEGIN PUBLIC KEY-----') or not pub.endswith(b'-----END PUBLIC KEY-----\n'):
+    raise SystemExit('public-key is not PEM text')
+# SSH-style RSA fingerprint; must stay df:ec:10:... so the CI key file
+# name keeps matching the repo's index-meta.plist.
+pem = pub.decode().strip()
+der = base64.b64decode(''.join(pem.split('\n')[1:-1]))
+i = 0
+assert der[i] == 0x30; i += 1
+l = der[i]; i += 1
+if l & 0x80:
+    nlen = l & 0x7f
+    l = int.from_bytes(der[i:i+nlen], 'big'); i += nlen
+assert der[i] == 0x30; i += 1
+l = der[i]; i += 1
+if l & 0x80:
+    nlen = l & 0x7f
+    l = int.from_bytes(der[i:i+nlen], 'big'); i += nlen
+i += l
+assert der[i] == 0x03; i += 1
+l = der[i]; i += 1
+if l & 0x80:
+    nlen = l & 0x7f
+    l = int.from_bytes(der[i:i+nlen], 'big'); i += nlen
+i += 1
+assert der[i] == 0x30; i += 1
+l = der[i]; i += 1
+if l & 0x80:
+    nlen = l & 0x7f
+    l = int.from_bytes(der[i:i+nlen], 'big'); i += nlen
+assert der[i] == 0x02; i += 1
+l = der[i]; i += 1
+if l & 0x80:
+    nlen = l & 0x7f
+    l = int.from_bytes(der[i:i+nlen], 'big'); i += nlen
+n = der[i:i+l]; i += l
+assert der[i] == 0x02; i += 1
+l = der[i]; i += 1
+if l & 0x80:
+    nlen = l & 0x7f
+    l = int.from_bytes(der[i:i+nlen], 'big'); i += nlen
+e = der[i:i+l]
+def ssh_encode(b):
+    b = (b'\x00' + b) if b[0] & 0x80 else b
+    return len(b).to_bytes(4, 'big') + b
+blob = b'\x00\x00\x00\x07ssh-rsa' + ssh_encode(e) + ssh_encode(n)
+fp = ':'.join('%02x' % x for x in hashlib.md5(blob).digest())
+if fp != 'df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb':
+    raise SystemExit('fingerprint mismatch: ' + fp)
+print('ok')
+PYEOF
+)
+		it "parses and key fingerprint matches: ${_plist#"$SCRIPT_DIR"/}"
+		assert_eq "$_plist_have" 'ok'
+	done
+else
+	echo '  (skipped: python3 not on PATH)'
+fi
+
 echo '== gen-feed.py =='
 
 if command -v python3 >/dev/null 2>&1; then
