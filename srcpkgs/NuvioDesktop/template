@@ -1,7 +1,7 @@
 # Template file for 'NuvioDesktop'
 pkgname=NuvioDesktop
-version=0.3.5
-revision=2
+version=0.3.8
+revision=1
 archs="x86_64*"
 hostmakedepends="pkg-config"
 makedepends="openjdk21 openjdk21-jmods"
@@ -11,7 +11,7 @@ maintainer="Bella109 <belladev109@proton.me>"
 license="GPL-3.0-only"
 homepage="https://github.com/blarns/NuvioForLinux"
 distfiles="https://github.com/blarns/NuvioForLinux/archive/refs/tags/v${version}.tar.gz"
-checksum=24e0ad1ea115d7672bc3264f4782776a86e0994f91cae8d5688c0a1f5efb1167
+checksum=e4a507f815ee755616edf9ab64f8206504605a5d38cc1dc9a04e8a2bb03425c8
 make_check=no # No test targets
 
 do_build() {
