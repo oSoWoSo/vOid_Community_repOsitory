@@ -234,6 +234,7 @@ Create PR
 | hyprtoolkit | 0.3.0 | [home](https://github.com/hyprwm/hyprtoolkit) | zenobit |  | Modern C++ Wayland-native GUI toolkit |
 | hyprutils | 0.13.1 | [home](https://github.com/hyprwm/hyprutils) | zenobit |  | Hyprland utilities library used across the ecosystem |
 | hyprwayland-scanner | 0.4.5 | [home](https://github.com/hyprwm/hyprwayland-scanner) | zenobit |  | Hyprland's implementation of wayland-scanner |
+| iruka-xbps | 0.1.0 | [home](https://github.com/javiercplus/iruka-xbps) | zenobit |  | Graphical front-end for the XBPS package manager |
 | kairo | 1.7.3 | [home](https://github.com/programmersd21/kairo) | nerdyslacker |  | Fast, keyboard-first terminal task manager |
 | kando | 3.0.0 | [home](https://kando.menu) | zenobit | x86_64 aarch64 | Do things with utmost efficiency |
 | kernwatch | 0.4.1 | [home](https://www.netwatchlabs.com) | zenobit |  | Linux kernel observability in your terminal |

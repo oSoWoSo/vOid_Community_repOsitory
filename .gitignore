@@ -175,6 +175,7 @@ src/__pycache__/
 !/srcpkgs/hyprtoolkit
 !/srcpkgs/hyprutils
 !/srcpkgs/hyprwayland-scanner
+!/srcpkgs/iruka-xbps
 !/srcpkgs/kairo
 !/srcpkgs/kando
 !/srcpkgs/kernwatch

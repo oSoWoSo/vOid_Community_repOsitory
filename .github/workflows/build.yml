@@ -198,6 +198,7 @@ on:
         - hyprtoolkit
         - hyprutils
         - hyprwayland-scanner
+        - iruka-xbps
         - kairo
         - kando
         - kernwatch
