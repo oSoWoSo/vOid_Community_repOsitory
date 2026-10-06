@@ -203,6 +203,8 @@ on:
         - hyprutils
         - hyprutils-devel
         - hyprwayland-scanner
+        - hyprwire
+        - hyprwire-devel
         - iruka-xbps
         - kairo
         - kando

@@ -179,6 +179,8 @@ src/__pycache__/
 !/srcpkgs/hyprutils
 !/srcpkgs/hyprutils-devel
 !/srcpkgs/hyprwayland-scanner
+!/srcpkgs/hyprwire
+!/srcpkgs/hyprwire-devel
 !/srcpkgs/iruka-xbps
 !/srcpkgs/kairo
 !/srcpkgs/kando

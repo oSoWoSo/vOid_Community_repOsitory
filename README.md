@@ -242,6 +242,8 @@ Create PR
 | hyprutils | 0.14.2 | [home](https://github.com/hyprwm/hyprutils) | zenobit |  | Hyprland utilities library used across the ecosystem |
 | hyprutils-devel | 0.14.2 | [home](https://github.com/hyprwm/hyprutils) | zenobit |  | Hyprland utilities library used across the ecosystem |
 | hyprwayland-scanner | 0.4.6 | [home](https://github.com/hyprwm/hyprwayland-scanner) | zenobit |  | Hyprland's implementation of wayland-scanner |
+| hyprwire | 0.3.1 | [home](https://github.com/hyprwm/hyprwire) | zenobit |  | Fast and consistent wire protocol for IPC |
+| hyprwire-devel | 0.3.1 | [home](https://github.com/hyprwm/hyprwire) | zenobit |  | Fast and consistent wire protocol for IPC |
 | iruka-xbps | 0.1.0 | [home](https://github.com/javiercplus/iruka-xbps) | zenobit |  | Graphical front-end for the XBPS package manager |
 | kairo | 1.7.3 | [home](https://github.com/programmersd21/kairo) | nerdyslacker |  | Fast, keyboard-first terminal task manager |
 | kando | 3.0.0 | [home](https://kando.menu) | zenobit | x86_64 aarch64 | Do things with utmost efficiency |
