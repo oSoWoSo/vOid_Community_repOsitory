@@ -45,12 +45,16 @@ are easy to understand READMEs
 Just pick your architecture
 
 ### Install repository key
+xbps looks up repository keys by their RSA fingerprint, so the key file must
+be named `df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist`.
 ```sh
-curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/keys/oco-repo-key.plist" \
+sudo mkdir -p /var/db/xbps/keys
+curl -fsSL "https://codeberg.org/oSoWoSo/oco/raw/branch/OCO/oco-repo-key.plist" \
   -o /tmp/oco-repo-key.plist 2>/dev/null || \
-curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/keys/oco-repo-key.plist" \
+curl -fsSL "https://raw.githubusercontent.com/oSoWoSo/Void_Community_Repository/OCO/oco-repo-key.plist" \
   -o /tmp/oco-repo-key.plist
-sudo cp /tmp/oco-repo-key.plist /var/db/xbps/keys/oco-repo-key.plist
+sudo cp /tmp/oco-repo-key.plist \
+  /var/db/xbps/keys/df:ec:10:ef:5c:03:e9:e0:9e:86:77:08:c2:b5:a8:cb.plist
 ```
 
 ## How to contribute
