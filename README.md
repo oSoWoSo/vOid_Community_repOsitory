@@ -226,8 +226,8 @@ Create PR
 | hyprdynamicmonitors | 1.4.0 | [home](https://github.com/fiffeek/hyprdynamicmonitors) | zenobit |  | Hyprland configuration based on connected displays, power and lid state |
 | hyprgraphics | 0.5.1 | [home](https://github.com/hyprwm/hyprgraphics) | zenobit |  | Hyprland graphics resources and utilities |
 | hypridle | 0.1.7 | [home](https://github.com/hyprwm/hypridle) | zenobit |  | Hyprland's idle daemon |
-| hyprland | 0.52.1 | [home](https://hyprland.org/) | zenobit |  | Dynamic tiling Wayland compositor that doesn't sacrifice on its looks |
-| hyprland-devel | 0.52.1 | [home](https://hyprland.org/) | zenobit |  | Dynamic tiling Wayland compositor that doesn't sacrifice on its looks |
+| hyprland | 0.56.2 | [home](https://hyprland.org/) | zenobit |  | Dynamic tiling Wayland compositor that doesn't sacrifice on its looks |
+| hyprland-devel | 0.56.2 | [home](https://hyprland.org/) | zenobit |  | Dynamic tiling Wayland compositor that doesn't sacrifice on its looks |
 | hyprland-guiutils | 0.1.0 | [home](https://github.com/hyprwm/hyprland-guiutils) | zenobit |  | Qt/QML utility apps for Hyprland |
 | hyprland-protocols | 0.7.1 | [home](https://github.com/hyprwm/hyprland-protocols) | zenobit |  | Wayland protocol extensions for Hyprland |
 | hyprland-qt-support | 0.1.0 | [home](https://github.com/hyprwm/hyprland-qt-support) | zenobit |  | QML style provider for Hypr* QT apps |

@@ -1,5 +1,5 @@
---- a/hyprctl/main.cpp
-+++ b/hyprctl/main.cpp
+--- a/hyprctl/src/main.cpp
++++ b/hyprctl/src/main.cpp
 @@ -268,7 +268,7 @@ int requestIPC(std::string_view request, std::string_view instanceSignature, st
          return 1;
      }
