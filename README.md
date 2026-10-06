@@ -280,6 +280,7 @@ Create PR
 | nwg-shell | 0.5.50 | [home](https://nwg-piotr.github.io/nwg-shell) | zenobit |  | GTK based shell for sway and Hyprland Wayland compositors |
 | nwg-shell-config | 0.5.65 | [home](https://nwg-piotr.github.io/nwg-shell/nwg-shell-config) | zenobit |  | Graphical user interface for configuring sway and Hyprland |
 | nwg-shell-wallpapers | 1.5 | [home](https://github.com/nwg-piotr/nwg-shell-wallpapers) | zenobit |  | Selection of wallpapers contributed to the nwg-shell project |
+| oco-removed-packages | 0.1.20261006 | [home](https://repo.osowoso.org) | zenobit |  | Uninstalls packages removed from OCO repository |
 | odin2 | 2.4.1 | [home](https://thewavewarden.com/pages/odin-2) | Trve_AY |  | 24 voice polyphinic synthesizer with modulation and FX |
 | odin2-clap | 2.4.1 | [home](https://thewavewarden.com/pages/odin-2) | Trve_AY |  | 24 voice polyphinic synthesizer with modulation and FX |
 | odin2-common | 2.4.1 | [home](https://thewavewarden.com/pages/odin-2) | Trve_AY |  | 24 voice polyphinic synthesizer with modulation and FX |

@@ -244,6 +244,7 @@ on:
         - nwg-shell
         - nwg-shell-config
         - nwg-shell-wallpapers
+        - oco-removed-packages
         - odin2
         - odin2-clap
         - odin2-common

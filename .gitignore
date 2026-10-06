@@ -221,6 +221,7 @@ src/__pycache__/
 !/srcpkgs/nwg-shell
 !/srcpkgs/nwg-shell-config
 !/srcpkgs/nwg-shell-wallpapers
+!/srcpkgs/oco-removed-packages
 !/srcpkgs/odin2
 !/srcpkgs/odin2-clap
 !/srcpkgs/odin2-common
