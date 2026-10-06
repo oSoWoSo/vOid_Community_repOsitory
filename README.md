@@ -236,7 +236,8 @@ Create PR
 | hyprsunset | 0.3.3 | [home](https://github.com/hyprwm/hyprsunset) | zenobit |  | Application to enable a blue-light filter on Hyprland |
 | hyprsysteminfo | 0.1.3 | [home](https://github.com/hyprwm/hyprsysteminfo) | zenobit |  | Tiny qt6/qml application to display system informations |
 | hyprtoolkit | 0.3.0 | [home](https://github.com/hyprwm/hyprtoolkit) | zenobit |  | Modern C++ Wayland-native GUI toolkit |
-| hyprutils | 0.13.1 | [home](https://github.com/hyprwm/hyprutils) | zenobit |  | Hyprland utilities library used across the ecosystem |
+| hyprutils | 0.14.2 | [home](https://github.com/hyprwm/hyprutils) | zenobit |  | Hyprland utilities library used across the ecosystem |
+| hyprutils-devel | 0.14.2 | [home](https://github.com/hyprwm/hyprutils) | zenobit |  | Hyprland utilities library used across the ecosystem |
 | hyprwayland-scanner | 0.4.6 | [home](https://github.com/hyprwm/hyprwayland-scanner) | zenobit |  | Hyprland's implementation of wayland-scanner |
 | iruka-xbps | 0.1.0 | [home](https://github.com/javiercplus/iruka-xbps) | zenobit |  | Graphical front-end for the XBPS package manager |
 | kairo | 1.7.3 | [home](https://github.com/programmersd21/kairo) | nerdyslacker |  | Fast, keyboard-first terminal task manager |
