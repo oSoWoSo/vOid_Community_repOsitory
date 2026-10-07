@@ -700,7 +700,7 @@ jobs:
           path: extra
 
       - name: Prepare container
-        uses: ./extra/.github/actions/prepare-container
+        run: oco-prepare
 
       - name: Merge templates and edit shlibs
         run: |
@@ -773,7 +773,7 @@ jobs:
           path: extra
 
       - name: Prepare container
-        uses: ./extra/.github/actions/prepare-container
+        run: oco-prepare
 
       - name: Merge templates and edit shlibs
         run: |
@@ -842,12 +842,11 @@ jobs:
           fi
 
           echo "==> New packages: $(ls "$NEW_PKGS_DIR"/*.xbps | wc -l)"
-          trap 'rm -f /tmp/private.pem' EXIT INT TERM
-          ( umask 077 && printf '%s\n' "$PRIV_KEY" > /tmp/private.pem )
+          . "${GITHUB_WORKSPACE}/extra/src/oco-key.sh"
+          oco_key_write /tmp/private.pem
 
           echo "==> Signing new packages"
           xbps-rindex -S --privkey /tmp/private.pem "$NEW_PKGS_DIR"/*.xbps
-          rm -f /tmp/private.pem
 
           cd "${GITHUB_WORKSPACE}/extra/" || exit 1
           if BUILDDIR="$NEW_PKGS_DIR" ./ocoman -p; then
