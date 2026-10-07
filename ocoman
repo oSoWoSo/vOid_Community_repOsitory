@@ -1048,10 +1048,9 @@ do_upload() {
 		echo '==> Signing repository'
 		# Restrictive umask before write avoids a world-readable window
 		# between create-with-default-umask and chmod 600.
-		trap 'rm -f private.pem' EXIT INT TERM
-		( umask 077 && printf '%s\n' "$PRIV_KEY" > private.pem )
+		. "${SCRIPT_DIR}/src/oco-key.sh"
+		oco_key_write private.pem
 		xbps-rindex -s --signedby "$SIGNED_BY" --privkey private.pem "$PWD"
-		rm -f private.pem
 
 		if [ "$SURF_SKIP_DELETE" -eq 1 ]; then
 			echo "::warning::SURF_SKIP_DELETE=1: remote deletes are disabled, old versions and orphans stay indexed. Set SURF_SKIP_DELETE=0 once the Surfer host no longer crashes on DELETE." >&2

@@ -122,7 +122,7 @@ jobs:
           fi
 
       - name: Prepare container
-        uses: ./extra/.github/actions/prepare-container
+        run: oco-prepare
 
       - name: Install xxtools-git
         run: |
