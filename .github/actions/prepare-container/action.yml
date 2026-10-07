@@ -17,9 +17,9 @@ runs:
         		-o "${OCO_KEY}"
         fi
         # Adding repo to conf
-        sed -i '1i repository=https://repo.osowoso.org/x86_64' etc/xbps.d/repos-remote.conf
-        sed -i '1i repository=https://repo.osowoso.org/x86_64-musl' etc/xbps.d/repos-remote-musl.conf
-        sed -i '1i repository=https://repo.osowoso.org/aarch64' etc/xbps.d/repos-remote-aarch64.conf
-        sed -i '1i repository=https://repo.osowoso.org/aarch64-musl' etc/xbps.d/repos-remote-aarch64-musl.conf
+        sed -i '1i repository=https://repo.osowoso.org/x86_64' /void-packages/etc/xbps.d/repos-remote.conf
+        sed -i '1i repository=https://repo.osowoso.org/x86_64-musl' /void-packages/etc/xbps.d/repos-remote-musl.conf
+        sed -i '1i repository=https://repo.osowoso.org/aarch64' /void-packages/etc/xbps.d/repos-remote-aarch64.conf
+        sed -i '1i repository=https://repo.osowoso.org/aarch64-musl' /void-packages/etc/xbps.d/repos-remote-aarch64-musl.conf
         xbps-install -Suvy
         sudo -Eu builder sh -c "cd /void-packages && ./xbps-src bootstrap-update"
