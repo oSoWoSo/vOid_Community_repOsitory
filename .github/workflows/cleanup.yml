@@ -17,90 +17,104 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-      options: --privileged
-      volumes:
-        - /dev:/dev
     strategy:
       fail-fast: false
       matrix:
         arch: [x86_64, x86_64-musl, aarch64, aarch64-musl]
 
     steps:
-      - name: Mount repo via WebDAV
+      - name: Install surfer CLI
+        run: |
+          export PATH="/opt/xbps/usr/bin/:$PATH"
+          xbps-install -y nodejs
+          command -v npm >/dev/null 2>&1 || { echo "==> ERROR: npm not available"; exit 1; }
+          npm i -g @cloudron/surfer >/dev/null
+          command -v surfer >/dev/null 2>&1 || { echo "==> ERROR: surfer CLI not installed"; exit 1; }
+
+      - name: Fetch remote file list
+        id: fetch
         env:
-          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
           SURFER_USER: ${{ secrets.SURFER_USER }}
+          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
           ARCH: ${{ matrix.arch }}
         run: |
-          echo user_allow_other >> /etc/fuse.conf
-          mkdir -p /repo
-          RCLONE_WEBDAV_URL="https://repo.osowoso.org/_webdav/${ARCH}/" \
-          RCLONE_WEBDAV_USER="$SURFER_USER" \
-          RCLONE_WEBDAV_PASS="$(rclone obscure "$SURFER_TOKEN")" \
-          rclone mount :webdav: /repo \
-            --allow-other \
-            --vfs-cache-mode full \
-            --log-file /tmp/rclone.log &
-          echo $! > /tmp/rclone.pid
-          until mountpoint -q /repo; do
-            sleep 1
-            kill -0 $! 2>/dev/null || { cat /tmp/rclone.log >&2; exit 1; }
+          set -eu
+          SFLAGS="-s repo.osowoso.org -u ${SURFER_USER} -p ${SURFER_TOKEN}"
+          mkdir -p /work
+          surfer $SFLAGS get "${ARCH}/" > /tmp/remote-listing.txt 2>/dev/null || \
+            { echo "==> ERROR: surfer get failed (is the app up? unchecked credentials?)" >&2; exit 1; }
+          grep -E '^[[:space:]]+[^[:space:]]+$' /tmp/remote-listing.txt \
+            | sed 's/^[[:space:]]*//' | grep -E '\.xbps$' > /tmp/remote-files.txt || true
+          [ -s /tmp/remote-files.txt ] || { echo "==> Repo empty, nothing to do"; echo "removed=false" >> "$GITHUB_OUTPUT"; exit 0; }
+          echo "==> Remote files: $(wc -l < /tmp/remote-files.txt)"
+
+      - name: Fetch repository index
+        env:
+          SURFER_USER: ${{ secrets.SURFER_USER }}
+          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
+          ARCH: ${{ matrix.arch }}
+        run: |
+          set -eu
+          SFLAGS="-s repo.osowoso.org -u ${SURFER_USER} -p ${SURFER_TOKEN}"
+          mkdir -p /work
+          for _f in "${ARCH}-repodata" "${ARCH}-repodata.sig2"; do
+            surfer $SFLAGS get "${ARCH}/${_f}" > "/work/${_f}" 2>/dev/null || \
+              { echo "::error::failed to fetch ${_f}" >&2; exit 1; }
           done
 
-      - name: Remove old versions and reindex
+      - name: Determine stale package versions
+        id: decide
         env:
           ARCH: ${{ matrix.arch }}
-          PRIV_KEY: ${{ secrets.PRIV_KEY }}
-        working-directory: /repo
+        working-directory: /work
         run: |
+          set -eu
           export PATH="/opt/xbps/usr/bin/:$PATH"
           export XBPS_TARGET_ARCH="$ARCH"
 
-          ls ./*.xbps 1>/dev/null 2>&1 || { echo "==> Repo empty, nothing to do"; exit 0; }
+          # Never decide against a missing/empty index — that would mark
+          # every package stale and wipe the repo. If the index is unavailable,
+          # fail loudly instead.
+          if [ ! -s "/work/${ARCH}-repodata" ]; then
+            echo "::error::remote index ${ARCH}-repodata is missing or empty; refusing to delete anything" >&2
+            exit 1
+          fi
 
-          # Build index -- keeps only the latest version per package name.
-          xbps-rindex -a ./*.xbps
-
-          # Remove .xbps files that are no longer in the index (old versions).
-          _removed=0
-          for f in ./*.xbps; do
-            [ -f "$f" ] || continue
-            base="${f##*/}"
-            pkgver="${base%.xbps}"
-            pkgver="${pkgver%.*}"   # strip .arch or .noarch suffix
+          : > /tmp/remove-old.txt
+          _stale=0
+          while IFS= read -r _f; do
+            [ -n "$_f" ] || continue
+            base="${_f%.xbps}"
+            pkgver="${base%.*}"          # strip .arch or .noarch suffix
             pkgname=$(xbps-uhelper getpkgname "$pkgver" 2>/dev/null) || continue
-            indexed=$(xbps-query --repository=. -R -ppkgver "$pkgname" 2>/dev/null) || continue
+            indexed=$(xbps-query --repository=/work -R -ppkgver "$pkgname" 2>/dev/null) || continue
             [ "$indexed" = "$pkgver" ] && continue
-            echo "==> Removing old: $base (current: $indexed)"
-            rm -f "$f" "${f}.sig2"
-            _removed=$((_removed + 1))
-          done
+            echo "${_f}"
+            echo "${_f}.sig2"
+            _stale=$((_stale + 1))
+          done < /tmp/remote-files.txt > /tmp/remove-old.txt
 
-          if [ "$_removed" -gt 0 ]; then
-            trap 'rm -f private.pem' EXIT INT TERM
-            ( umask 077 && printf '%s\n' "$PRIV_KEY" > private.pem )
-            xbps-rindex -a ./*.xbps
-            xbps-rindex -s --signedby "zenobit <zen@osowoso.org>" --privkey private.pem .
-            rm -f private.pem
-            echo "Removed ${_removed} old file(s) from ${ARCH}" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$_stale" -gt 0 ]; then
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+            echo "==> ${_stale} old version(s) to remove from ${ARCH}"
+            echo "Removed ${_stale} old file(s) from ${ARCH}" >> "$GITHUB_STEP_SUMMARY"
           else
+            echo "stale=false" >> "$GITHUB_OUTPUT"
             echo "${ARCH}: nothing to clean" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Unmount repo
-        if: always()
+      - name: Delete stale versions remotely
+        if: steps.decide.outputs.stale == 'true'
+        env:
+          SURFER_USER: ${{ secrets.SURFER_USER }}
+          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
+          ARCH: ${{ matrix.arch }}
         run: |
-          if [ -f /tmp/rclone.pid ]; then
-            RCLONE_PID=$(cat /tmp/rclone.pid)
-            kill -TERM "$RCLONE_PID" 2>/dev/null || true
-            fusermount -u /repo 2>/dev/null || true
-            for _i in $(seq 30); do
-              kill -0 "$RCLONE_PID" 2>/dev/null || break
-              sleep 1
-            done
-            if kill -0 "$RCLONE_PID" 2>/dev/null; then
-              echo "==> WARNING: rclone did not exit after 30s, force-killing" >&2
-              kill -9 "$RCLONE_PID" 2>/dev/null || true
-            fi
-            cat /tmp/rclone.log >&2 || true
-          fi
+          set -eu
+          SFLAGS="-s repo.osowoso.org -u ${SURFER_USER} -p ${SURFER_TOKEN}"
+          while IFS= read -r _f; do
+            [ -n "$_f" ] || continue
+            echo "==> Deleting remote: ${_f}"
+            surfer $SFLAGS del "${ARCH}/${_f}" || \
+              { echo "::warning::failed to delete ${_f} (continuing)" >&2; }
+          done < /tmp/remove-old.txt
