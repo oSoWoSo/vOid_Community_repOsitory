@@ -123,6 +123,7 @@ src/__pycache__/
 !/srcpkgs/faugus-launcher
 !/srcpkgs/fcitx5-lotus
 !/srcpkgs/fcitx5-lotus-settings
+!/srcpkgs/floorp-bin
 !/srcpkgs/flyline
 !/srcpkgs/forgejo-runner
 !/srcpkgs/FreeTube
