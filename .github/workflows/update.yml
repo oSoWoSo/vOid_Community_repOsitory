@@ -28,7 +28,8 @@ jobs:
           TOKEN: ${{ secrets.WORKFLOWS }}
         run: |
           set -e
-          sudo apt-get install -y pandoc
+          sudo apt-get install -y pandoc nodejs
+          sudo npm -g install @cloudron/surfer
           ./ocoman -m
           echo "Published to https://repo.osowoso.org/" >> $GITHUB_STEP_SUMMARY
 
