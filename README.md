@@ -320,7 +320,7 @@ Create PR
 | quickbox-qt | 1.3.2 | [home](https://github.com/musqz/quickbox-qt) | zenobit |  | QT6 UI for managing Quickemu VMs |
 | quickemu | 4.9.9 | [home](https://github.com/quickemu-project/quickemu) | zenobit |  | Quickly create and run optimised virtual machines |
 | quickosdl | 0.3.2 | [home](https://github.com/lj3954/quickosdl) | zenobit |  | Tool to quickly find URLs to images and download them |
-| quickshell+ | 0.3.1 | [home](https://quickshell.org) | zenobit |  | Flexible QtQuick-based desktop shell toolkit. Hyprland-enabled |
+| quickshell+ | 0.3.2 | [home](https://quickshell.org) | zenobit |  | Flexible QtQuick-based desktop shell toolkit. Hyprland-enabled |
 | radicle | 1.8.0 | [home](https://radicle.dev/) | zenobit |  | Peer-to-peer code collaboration stack built on Git |
 | raysession | 0.18.0 | [home](https://raysession.tuxfamily.org/) | Trve_AY |  | Session manager for audio programs using the NSM API |
 | rebos | 3.5.2 | [home](https://gitlab.com/Oglo12/rebos) | zenobit |  | NixOS like repeatability for any Linux distribution |
