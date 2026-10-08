@@ -10,6 +10,8 @@ homepage="https://repo.osowoso.org"
 
 replaces="
  gradle<=9.0.0_1
+ tomlplusplus<=3.4.0_1
+ tomlplusplus-devel<=3.4.0_1
 "
 
 if [ "$XBPS_TARGET_LIBC" = "musl" ]; then

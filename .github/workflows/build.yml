@@ -316,8 +316,6 @@ on:
         - tdf
         - tiki
         - tls-client
-        - tomlplusplus
-        - tomlplusplus-devel
         - Trilium
         - tufw
         - tuios
