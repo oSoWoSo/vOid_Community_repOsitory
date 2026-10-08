@@ -577,6 +577,15 @@ jobs:
             exit 1
           fi
 
+  purge-removed:
+    name: Purge removed packages (cleanup.yml)
+    needs: [detect, build]
+    if: ${{ !cancelled() && (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && needs.detect.outputs.removed != '' }}
+    uses: ./.github/workflows/cleanup.yml
+    with:
+      packages: ${{ needs.detect.outputs.removed }}
+    secrets: inherit
+
   update-status:
     name: update
     needs: [detect, build]

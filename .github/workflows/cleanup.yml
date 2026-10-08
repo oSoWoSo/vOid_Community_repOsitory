@@ -1,17 +1,34 @@
-name: Cleanup old package versions
+name: Cleanup repository
 
 on:
-  schedule:
-    - cron: '0 4 * * 0'
+  workflow_call:
+    inputs:
+      packages:
+        description: >-
+          Space-separated package names to strip from the repo index. Used by
+          build.yml when a push deleted srcpkgs/* templates. Empty means
+          "strip every package that has no template in srcpkgs/".
+        required: false
+        type: string
+        default: ''
   workflow_dispatch:
+    inputs:
+      packages:
+        description: >-
+          Space-separated package names to strip from the repo index.
+          Empty = auto-detect packages without a template in srcpkgs/.
+        required: false
+        default: ''
 
 permissions:
+  contents: read
   packages: read
 
 jobs:
   cleanup:
     name: ${{ matrix.arch }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container:
       image: ghcr.io/osowoso/oco-builder-x86_64:latest
       credentials:
@@ -21,100 +38,24 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x86_64, x86_64-musl, aarch64, aarch64-musl]
+    env:
+      ARCH: ${{ matrix.arch }}
 
     steps:
-      - name: Install surfer CLI
-        run: |
-          export PATH="/opt/xbps/usr/bin/:$PATH"
-          xbps-install -y nodejs
-          command -v npm >/dev/null 2>&1 || { echo "==> ERROR: npm not available"; exit 1; }
-          npm i -g @cloudron/surfer >/dev/null
-          command -v surfer >/dev/null 2>&1 || { echo "==> ERROR: surfer CLI not installed"; exit 1; }
+      - name: Checkout this repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
-      - name: Fetch remote file list
-        id: fetch
+      - name: Strip removed packages from remote repodata
         env:
-          SURFER_USER: ${{ secrets.SURFER_USER }}
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
-          ARCH: ${{ matrix.arch }}
-        run: |
-          set -eu
-          SFLAGS="-s repo.osowoso.org -u ${SURFER_USER} -p ${SURFER_TOKEN}"
-          mkdir -p /work
-          surfer $SFLAGS get "${ARCH}/" > /tmp/remote-listing.txt 2>/dev/null || \
-            { echo "==> ERROR: surfer get failed (is the app up? unchecked credentials?)" >&2; exit 1; }
-          grep -E '^[[:space:]]+[^[:space:]]+$' /tmp/remote-listing.txt \
-            | sed 's/^[[:space:]]*//' | grep -E '\.xbps$' > /tmp/remote-files.txt || true
-          [ -s /tmp/remote-files.txt ] || { echo "==> Repo empty, nothing to do"; echo "removed=false" >> "$GITHUB_OUTPUT"; exit 0; }
-          echo "==> Remote files: $(wc -l < /tmp/remote-files.txt)"
-
-      - name: Fetch repository index
-        env:
           SURFER_USER: ${{ secrets.SURFER_USER }}
-          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
-          ARCH: ${{ matrix.arch }}
-        run: |
-          set -eu
-          SFLAGS="-s repo.osowoso.org -u ${SURFER_USER} -p ${SURFER_TOKEN}"
-          mkdir -p /work
-          for _f in "${ARCH}-repodata" "${ARCH}-repodata.sig2"; do
-            surfer $SFLAGS get "${ARCH}/${_f}" > "/work/${_f}" 2>/dev/null || \
-              { echo "::error::failed to fetch ${_f}" >&2; exit 1; }
-          done
-
-      - name: Determine stale package versions
-        id: decide
-        env:
-          ARCH: ${{ matrix.arch }}
-        working-directory: /work
+          PRIV_KEY: ${{ secrets.PRIV_KEY }}
+          SURF_PURGE_PACKAGES: ${{ inputs.packages }}
         run: |
           set -eu
           export PATH="/opt/xbps/usr/bin/:$PATH"
-          export XBPS_TARGET_ARCH="$ARCH"
-
-          # Never decide against a missing/empty index — that would mark
-          # every package stale and wipe the repo. If the index is unavailable,
-          # fail loudly instead.
-          if [ ! -s "/work/${ARCH}-repodata" ]; then
-            echo "::error::remote index ${ARCH}-repodata is missing or empty; refusing to delete anything" >&2
-            exit 1
-          fi
-
-          : > /tmp/remove-old.txt
-          _stale=0
-          while IFS= read -r _f; do
-            [ -n "$_f" ] || continue
-            base="${_f%.xbps}"
-            pkgver="${base%.*}"          # strip .arch or .noarch suffix
-            pkgname=$(xbps-uhelper getpkgname "$pkgver" 2>/dev/null) || continue
-            indexed=$(xbps-query --repository=/work -R -ppkgver "$pkgname" 2>/dev/null) || continue
-            [ "$indexed" = "$pkgver" ] && continue
-            echo "${_f}"
-            echo "${_f}.sig2"
-            _stale=$((_stale + 1))
-          done < /tmp/remote-files.txt > /tmp/remove-old.txt
-
-          if [ "$_stale" -gt 0 ]; then
-            echo "stale=true" >> "$GITHUB_OUTPUT"
-            echo "==> ${_stale} old version(s) to remove from ${ARCH}"
-            echo "Removed ${_stale} old file(s) from ${ARCH}" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "stale=false" >> "$GITHUB_OUTPUT"
-            echo "${ARCH}: nothing to clean" >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: Delete stale versions remotely
-        if: steps.decide.outputs.stale == 'true'
-        env:
-          SURFER_USER: ${{ secrets.SURFER_USER }}
-          SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
-          ARCH: ${{ matrix.arch }}
-        run: |
-          set -eu
-          SFLAGS="-s repo.osowoso.org -u ${SURFER_USER} -p ${SURFER_TOKEN}"
-          while IFS= read -r _f; do
-            [ -n "$_f" ] || continue
-            echo "==> Deleting remote: ${_f}"
-            surfer $SFLAGS del "${ARCH}/${_f}" || \
-              { echo "::warning::failed to delete ${_f} (continuing)" >&2; }
-          done < /tmp/remove-old.txt
+          command -v xbps-rindex >/dev/null 2>&1 || { echo "xbps-rindex not found in builder image" >&2; exit 1; }
+          # ARCH comes from the job env, `ocoman -p` takes no argument.
+          ./ocoman -p

@@ -127,12 +127,7 @@ jobs:
       - name: Install xxtools-git
         run: |
           set -e
-          for i in 1 2 3; do
-            if sudo xbps-install -y xxtools-git; then
-              break
-            fi
-            sleep 5
-          done
+          sudo xbps-install -y xxtools-git
           command -v xxautobump || {
             echo "::error::xxautobump not available (xxtools-git install failed)"
             exit 1
@@ -219,13 +214,36 @@ jobs:
         id: branch
         if: steps.marker.outputs.handled == 'false' && steps.whitelist.outputs.in_list == 'true' && steps.bump.outputs.bumped == 'true' && steps.pr_check.outputs.skip == 'false'
         run: |
+          set -eu
           cd extra
           VERSION="${{ steps.bump.outputs.version }}"
           BRANCH="autobump/${TEMPLATE}-${VERSION}"
           git config user.name  "oSoWoSo-bot"
           git config user.email  "mail@osowoso.org"
-          git checkout -b "$BRANCH"
-          git add "srcpkgs/$TEMPLATE/template"
+
+          # The checkout above is depth 1 and therefore pinned to the OCO SHA
+          # at event time. Its .github/workflows/build.yml blob can differ from
+          # the live default branch, and GitHub refuses an App token that
+          # creates a branch carrying a modified workflow file:
+          #   "refusing to allow a GitHub App to create or update workflow
+          #    .github/workflows/build.yml without workflows permission"
+          # Rebasing onto the live OCO tip makes the blob identical, so the
+          # commit below only ever touches srcpkgs/<pkg>/template.
+          TPL="srcpkgs/$TEMPLATE/template"
+          BUMPED=$(mktemp)
+          cp "$TPL" "$BUMPED"
+
+          git fetch --no-tags --depth=1 origin "+refs/heads/OCO:refs/remotes/origin/OCO"
+          git checkout -B "$BRANCH" refs/remotes/origin/OCO
+          # checkout -B resets the index; restore the version xxautobump wrote.
+          cp "$BUMPED" "$TPL"
+          rm -f "$BUMPED"
+
+          git add "$TPL"
+          if git diff --cached --quiet; then
+            echo "::error::rebase onto OCO left ${TPL} unchanged; nothing to bump"
+            exit 1
+          fi
           git commit -m "$TEMPLATE $VERSION"
           git push "https://x-access-token:${OCO_TOKEN}@github.com/${GH_REPO}.git" "HEAD:${BRANCH}"
           echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"

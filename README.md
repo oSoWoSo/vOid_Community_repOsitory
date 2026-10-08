@@ -355,8 +355,6 @@ Create PR
 | tdf | 0.5.0 | [home](https://github.com/itsjunetime/tdf) | zenobit |  | TUI PDF viewer |
 | tiki | 0.6.1 | [home](https://github.com/boolean-maybe/tiki) | zenobit |  | Terminal Markdown-based shapeless workflow builder |
 | tls-client | 1.16.0 | [home](https://github.com/bogdanfinn/tls-client) | zenobit |  | Net/http.Client like HTTP Client |
-| tomlplusplus | 3.4.0 | [home](https://marzer.github.io/tomlplusplus/) | zenobit |  | TOML config parser and serializer for C++ |
-| tomlplusplus-devel | 3.4.0 | [home](https://marzer.github.io/tomlplusplus/) | zenobit |  | TOML config parser and serializer for C++ |
 | Trilium | 0.105.0 | [home](https://github.com/TriliumNext/Trilium) | zenobit |  | Build your personal knowledge base with Trilium Notes |
 | tufw | 0.2.8 | [home](https://github.com/peltho/tufw) | zenobit |  | Terminal UI for ufw |
 | tuios | 0.7.0 | [home](https://github.com/Gaurav-Gosain/tuios) | zenobit |  | Terminal UI OS (Terminal Multiplexer) |
