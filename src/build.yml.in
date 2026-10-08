@@ -577,6 +577,48 @@ jobs:
             exit 1
           fi
 
+  purge:
+    name: purge ${{ matrix.arch }} removed packages
+    needs: [detect, build]
+    if: ${{ !cancelled() && (github.event_name == 'push' || github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && needs.detect.outputs.removed != '' }}
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/osowoso/oco-builder-x86_64:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64, x86_64-musl, aarch64, aarch64-musl]
+    env:
+      ARCH: ${{ matrix.arch }}
+      SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
+      SURFER_USER: ${{ secrets.SURFER_USER }}
+      PRIV_KEY: ${{ secrets.PRIV_KEY }}
+      SURF_SKIP_DELETE: '0'
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v7
+        with:
+          path: extra
+
+      - name: Strip removed packages from remote repodata
+        working-directory: extra
+        run: |
+          export PATH="/opt/xbps/usr/bin/:$PATH"
+          command -v xbps-rindex >/dev/null 2>&1 || { echo "xbps-rindex not found in builder image" >&2; exit 1; }
+          # Runs AFTER build so the repodata edits never race the package-upload
+          # index rewrite from the build job. The removed templates are gone from
+          # the checked-out srcpkgs/, so prune_orphans flags their .xbps, deletes
+          # them (SURF_SKIP_DELETE=0 above) and republishes a repodata that no
+          # longer advertises them. A removal-only push leaves nothing to build,
+          # so without this job the deleted package stayed forever in the index
+          # -- repo.osowoso.org/*-repodata -- which breaks `xbps-src pkg` of
+          # dependents like hyprcursor (error 16). Note: targets all four arches,
+          # while the build matrix only covers arches that had packages to build.
+          ./ocoman -p
+
   update-status:
     name: update
     needs: [detect, build]

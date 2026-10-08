@@ -1033,10 +1033,29 @@ do_upload() {
 			if command -v python3 >/dev/null 2>&1; then
 				# xargs avoids unquoted-expansion globbing on orphan names
 				xargs python3 "${REPODATA_STRIP_PY}" \
-					"${ARCH}-repodata" < "${PWD}/orphans.txt" \
-					|| echo '  Warning: repodata-strip failed; index may reference deleted packages' >&2
+					"${ARCH}-repodata" < "${PWD}/orphans.txt"
+				_strip_rc=$?
 			else
 				fatal 'python3 not found!'
+			fi
+			if [ "$_strip_rc" -ne 0 ]; then
+				fatal "==> repodata-strip failed; refusing to publish an index that still references deleted packages (${ARCH})"
+			fi
+			# Double-check in the rewritten index that every orphan is actually
+			# gone before we sign + republish it. This guards against a future
+			# change that strips by an inaccurate name, i.e. the exact stale
+			# index (tomlplusplus adverted, .xbps gone) that broke hyprcursor.
+			_still_missing=0
+			while IFS= read -r _orph; do
+				[ -n "$_orph" ] || continue
+				if python3 "${REPODATA_LIST_PY}" "${ARCH}-repodata" | \
+					awk -F '\t' -v p="$_orph" '$1==p {found=1} END {exit !found}' >/dev/null 2>&1; then
+					echo "  ERROR: ${_orph} still present in ${ARCH}-repodata after strip" >&2
+					_still_missing=1
+				fi
+			done < "${PWD}/orphans.txt"
+			if [ "$_still_missing" -ne 0 ]; then
+				fatal "==> orphan entries still present after strip; refusing to upload ${ARCH}-repodata"
 			fi
 		fi
 
