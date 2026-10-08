@@ -913,7 +913,7 @@ generate_arch_pages() {
 		echo "  Generated ($_pkg_count packages): docs/${_arch}/index.html"
 
 		if surf_auth_check; then
-			if ! upload_file "$_out" "/${_arch}/index.html"; then
+			if ! upload_file "$_out" "/${_arch}"; then
 				fatal "Failed to upload ${_arch}/index.html!"
 			fi
 		fi
