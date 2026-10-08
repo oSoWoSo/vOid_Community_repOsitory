@@ -25,39 +25,24 @@ FEED_OPML="${SCRIPT_DIR}/src/feed.opml"
 NVCONF="${SCRIPT_DIR}/.nvchecker/nvchecker.toml"
 
 SURFER_URL='https://repo.osowoso.org'
-# Surfer >= 7.0: API tokens are deprecated -- use a Cloudron app password
-# together with a non-empty username (an empty one is rejected outright).
+# Use a Cloudron app password with username
 SURFER_USER="${SURFER_USER:-}"
 # Deprecated, kept only so existing callers keep working: retries are now
 # bounded by SURF_DEADLINE wall-clock, not by an attempt count.
 SURF_ATTEMPTS="${SURF_ATTEMPTS:-4}"
 # Initial retry delay; doubles each attempt, capped by SURF_BACKOFF_MAX.
 SURF_BACKOFF="${SURF_BACKOFF:-3}"
-# Wall-clock budget for a single retried request, replacing the old fixed
-# SURF_ATTEMPTS count: a 2026-09-27 outage lasted ~16 minutes, so a fixed
-# attempt count is not a meaningful safety net.
+# Wall-clock budget for a single retried request
 SURF_DEADLINE="${SURF_DEADLINE:-1500}"
-# Never wait on a dead socket; but do not cap a package upload, which may
-# legitimately take minutes and must not be truncated mid-PUT.
+# Never wait on a dead socket; but do not cap a package upload
 SURF_CONNECT_TIMEOUT="${SURF_CONNECT_TIMEOUT:-20}"
 SURF_MAX_TIME="${SURF_MAX_TIME:-300}"
 SURF_BACKOFF_MAX="${SURF_BACKOFF_MAX:-30}"
 # Surfer 7 ships webdav-server v2, where every WebDAV DELETE kills the app:
-# Surfer's SiteFileSystem is not registered in server.fileSystems, so
-# getFileSystemPathSync() returns null and FileSystem.js:1289 dereferences it
-# (`fsPath.getChildPath(path)`) -> uncaught TypeError -> Node exits ->
-# Cloudron restarts -> nginx serves "app is not responding" (HTTP 502) for
-# every request in that window. Retrying cannot fix it: the next DELETE
-# crashes the app again. Hence deletions are opt-in.
 SURF_SKIP_DELETE="${SURF_SKIP_DELETE:-1}"
-# Orphans (packages with no template in srcpkgs/) are ALWAYS stripped from the
-# published index -- that is what makes xbps stop resolving them -- but the
-# leftover .xbps binary is only deleted when this is explicitly enabled. The
-# default follows the known DELETE crash above: hide, never touch the file.
+# Orphans are ALWAYS stripped from index
 SURF_DELETE_ORPHANS="${SURF_DELETE_ORPHANS:-0}"
-# Space-separated package names to strip from the repodata regardless of
-# whether a template still exists in srcpkgs/ (used by the cleanup workflow
-# when build.yml dispatches it with the exact set of removed packages).
+# Space-separated package names to strip from the repodata 
 SURF_PURGE_PACKAGES="${SURF_PURGE_PACKAGES:-}"
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
 SIGNED_BY='oSoWoSo <mail@osowoso.org>'
@@ -119,12 +104,8 @@ _re() {
 
 # --- Surfer (WebDAV) helpers ---
 
-# curl with Surfer credentials. Surfer >= 7.0 requires a username plus a
-# Cloudron app password, so the user may never be left empty.
+# curl with Surfer credentials
 surf_curl() {
-	# A package upload may legitimately run for minutes; a blanket --max-time
-	# would truncate it mid-PUT and leave a corrupt .xbps on the server, so
-	# only non-upload requests get a hard cap.
 	case " $* " in
 		*' -T '* | *' --upload-file '*)
 			curl -u "${SURFER_USER}:${SURFER_TOKEN}" \
@@ -167,8 +148,6 @@ surf_diagnose() {
 }
 
 # Shared retry driver: run "$@" until it succeeds or the SURF_DEADLINE
-# wall-clock budget is spent. A fixed attempt count cannot cover a host that
-# is down for a quarter of an hour, so the budget is the contract.
 surf_retry_loop() {
 	_srl_start=$(date +%s)
 	_srl_delay="$SURF_BACKOFF"
@@ -265,17 +244,7 @@ surf_auth_check() {
 	return 0
 }
 
-# Remove a package name so it no longer resolves from OCO. This is the safe
-# way to retire a package (e.g. it was accepted upstream into void-packages):
-# the entry leaves the published index without issuing a WebDAV DELETE.
-#
-# Why not DELETE the .xbps too? Every WebDAV DELETE crashes Surfer 7
-# (webdav-server v2 dereferences a null file-system in getFileSystemPathSync
-# -> uncaught TypeError -> Node exits -> Cloudron restarts -> "app is not
-# responding" for minutes). The 2026-10-08 purge run proved it: the first
-# orphan DELETE bounced the whole repo and the run was canceled after
-# ~13 minutes of retrying against a restarting app. The .xbps staying behind
-# is harmless: xbps only installs what the index advertises.
+# Remove a package name so it no longer resolves from OCO
 strip_orphans() {
 	_orphans_list="$1"
 	_repodata_file="$2"
@@ -489,17 +458,6 @@ prune_orphans() {
 	# Args:
 	#   $1: remote pkg list (one filename per line)
 	#   $2: path to write orphan PACKAGE NAMES (dedup, one per line)
-	#
-	# Orphan = a .xbps whose package name has no template in srcpkgs/.
-	# The name list is ALWAYS produced and is independent of the delete
-	# flag.  Stripping the name from the published index is what actually
-	# makes xbps stop resolving the package; the stray .xbps file on the
-	# server is invisible to installs.  We therefore never need to DELETE
-	# it -- and we must not, because every WebDAV DELETE crashes Surfer 7
-	# (see SURF_SKIP_DELETE) and that is why the purge run, which set
-	# SURF_SKIP_DELETE=0, bounced repo.osowoso.org for ~13 minutes.
-	# Deleting orphan FILES is opt-in via SURF_DELETE_ORPHANS=1 for
-	# operators who know the host no longer crashes on DELETE.
 	_remote_list="$1"
 	_orphans_out="$2"
 	[ -n "$_orphans_out" ] && : > "$_orphans_out"
@@ -522,17 +480,6 @@ delete_orphan_files() {
 	# Args:
 	#   $1: path to orphan PACKAGE NAMES (one per line)
 	#   $2: remote pkg list (one filename per line)
-	#
-	# Issue WebDAV DELETEs for the orphan .xbps (and .sig2).  Off by
-	# default (SURF_DELETE_ORPHANS=0) because each DELETE crashes
-	# Surfer 7; here only for operators who have that fixed.  The DELETE
-	# is issued ONCE with no retry: if the host is restarting, retrying a
-	# crash-inducing DELETE for SURF_DEADLINE seconds is what turned one
-	# bad request into a canceled 13-minute job on 2026-10-08.
-	#
-	# This is the explicit opt-in path, so it deliberately bypasses
-	# delete_remote()'s SURF_SKIP_DELETE gate (which defaults to "no
-	# deletes, ever") and talks to Surfer directly.
 	[ "$SURF_DELETE_ORPHANS" -eq 1 ] || return 0
 	[ -s "$1" ] || return 0
 	echo '==> Deleting orphan package files (SURF_DELETE_ORPHANS=1)'
@@ -798,8 +745,7 @@ feed_urls_from_homepage() {
 
 # Usage: feed_opml_has <pkg>
 # Returns 0 when an <outline> with title="<pkg>" exists under the
-# package-update folder of src/feed.opml, 1 otherwise (also when the
-# file is missing).
+# package-update folder of src/feed.opml, 1 otherwise (also when the file is missing)
 feed_opml_has() {
 	_fun_pkg="$1"
 	[ -f "$FEED_OPML" ] || return 1
@@ -879,15 +825,7 @@ generate_arch_pages() {
 			fi
 		done
 
-		# Determine which packages are actually PUBLISHED for this arch.
-		# Source of truth: the public URL (repo.osowoso.org/${arch}/),
-		# read via `list_published_pkgs` which prefers xbps-query and
-		# falls back to fetching+parsing the repodata.
-		#
-		# _have_remote=1: authoritative listing (even if empty) -- pages
-		# show only the intersection of srcpkgs and what's published.
-		# _have_remote='':  listing unavailable -- fall back to showing
-		# every compatible template, with a warning.
+		# Determine which packages are actually PUBLISHED for this arch
 		_have_remote=''
 		_remote_names=''
 		_lpf=$(mktemp)
@@ -1128,10 +1066,7 @@ do_upload() {
 			if [ "$_strip_rc" -ne 0 ]; then
 				fatal "==> repodata-strip failed; refusing to publish an index that still references removed packages (${ARCH})"
 			fi
-			# Double-check in the rewritten index that every stripped entry is
-			# actually gone before we sign + republish it. This guards against
-			# a future change that strips by an inaccurate name, i.e. the exact
-			# stale index (tomlplusplus adverted, .xbps gone) that broke hyprcursor.
+			# Double-check in the rewritten index that every stripped entry is actually gone before we sign + republish it
 			_still_missing=0
 			while IFS= read -r _orph; do
 				[ -n "$_orph" ] || continue
