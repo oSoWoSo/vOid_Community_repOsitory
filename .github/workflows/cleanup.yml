@@ -60,17 +60,5 @@ jobs:
           command -v xbps-rindex >/dev/null 2>&1 || { echo "xbps-rindex not found in builder image" >&2; exit 1; }
           # Republish a repodata that no longer advertises removed packages.
           # With the defaults here (SURF_SKIP_DELETE=1, SURF_DELETE_ORPHANS=0)
-          # ocoman issues NO WebDAV DELETE: Surfer 7 crashes the app on every
-          # DELETE (webdav-server null-derefs the unregistered SiteFileSystem),
-          # which is what bounced repo.osowoso.org for ~13 minutes on
-          # 2026-10-08 when the old purge job ran with SURF_SKIP_DELETE=0.
-          # Instead ocoman strips the package name from the index (index.plist
-          # keys are package names, so a removed template stops resolving) and
-          # re-signs + republishes the index. The leftover .xbps on the server
-          # is invisible to installs because nothing references it.
-          #
-          # On scheduled runs SURF_PURGE_PACKAGES is empty, so prune_orphans
-          # auto-detects every package that has no template in srcpkgs/ and
-          # strips those. On workflow_call from build.yml the exact set of
-          # removed packages is passed in and merged into the strip list.
-          ./ocoman -p
+          # NO WebDAV DELETE: Surfer 7 crashes the app on every DELETE
+          ./ocoman -p ${{ matrix.arch }}
