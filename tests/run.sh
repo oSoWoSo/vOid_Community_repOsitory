@@ -745,6 +745,13 @@ fi
 it 'a failed package upload aborts before the index is published'
 assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -c 'remote repodata left untouched')" '1'
 
+it 'a failed repodata-strip aborts the upload instead of republishing a stale index'
+# The old code swallowed a strip failure with a warning and kept uploading the
+# still-stale repodata; that is exactly how tomlplusplus/tomlplusplus-devel
+# stayed advertised (with the .xbps gone) and broke `xbps-src pkg hyprcursor`.
+assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -c 'fatal "==> repodata-strip failed')" '1'
+assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -c "|| echo '  Warning: repodata-strip failed")" '0'
+
 echo '== repodata-list.py =='
 
 if command -v python3 >/dev/null 2>&1; then
