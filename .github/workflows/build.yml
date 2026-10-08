@@ -55,6 +55,8 @@ on:
         -
         - android-sdk
         - aquamarine
+        - better-sqlite3
+        - better-sqlite3-devel
         - blocaled
         - BoxBuddy
         - brave-browser-bin
