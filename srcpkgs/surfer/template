@@ -2,7 +2,6 @@
 pkgname=surfer
 version=7.2.6
 revision=1
-archs="x86_64* aarch64*"
 hostmakedepends="nodejs"
 depends="nodejs better-sqlite3"
 short_desc="Simple static file server with web interface and resumable uploads"
@@ -78,9 +77,7 @@ do_check() {
 
 do_install() {
 	local _libdir="usr/lib/surfer" _clidir="usr/lib/surfer/cli"
-	local _arch _mod
-
-	_arch="$(_node_arch)"
+	local _mod
 
 	# devDependencies are only needed for the frontend build and the test suite
 	npm prune --omit=dev
