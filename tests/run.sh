@@ -933,8 +933,11 @@ cat > "$_FAKE_BIN/surfer" <<'EOF'
 #   connect        'Failed to connect to server: ...' (rc 1) -- transport
 #   bytes:<file>   print that file's contents (rc 0) -- a raw download
 #   fail           print 'boom' (rc 1)
-# The real CLI prints errors on stdout, so the fakes must too.
+# The real CLI prints errors on stdout, so the fakes must too, and it prints
+# "Using server <url>" on stderr on every call (cli/actions.js checkConfig),
+# so the fake mirrors that as well.
 [ -n "${FAKE_SURFER_ARGV:-}" ] && printf '%s\n' "$*" >> "$FAKE_SURFER_ARGV"
+printf 'Using server %s\n' "$SURFER_URL" >&2
 _n=$(cat "${FAKE_SURFER_COUNT:-/dev/null}" 2>/dev/null) || _n=0
 [ -n "$_n" ] || _n=0
 _n=$((_n + 1))

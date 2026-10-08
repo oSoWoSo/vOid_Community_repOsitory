@@ -216,7 +216,12 @@ fetch_repodata() {
 	while :; do
 		_fr_n=$((_fr_n + 1))
 		: > "$_fr_out"
-		if surf_cli get "$_fr_rel" > "$_fr_out" 2>&1; then
+		# The CLI prints "Using server <url>" on stderr on every call; merging
+		# stderr into the payload would prepend that banner to the repodata and
+		# make repodata-strip.py misdetect a zstd index as plain tar
+		# ("invalid header"). Errors still go to stdout, so the classification
+		# below keeps working.
+		if surf_cli get "$_fr_rel" > "$_fr_out"; then
 			return 0
 		fi
 		_fr_last=$(cat "$_fr_out")
