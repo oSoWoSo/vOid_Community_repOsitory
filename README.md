@@ -347,7 +347,7 @@ Create PR
 | surge-xt-lv2 | 1.3.4 | [home](https://surge-synthesizer.github.io/) | Trve_AY |  | Subtractive hybrid synthesizer |
 | surge-xt-standalone | 1.3.4 | [home](https://surge-synthesizer.github.io/) | Trve_AY |  | Subtractive hybrid synthesizer |
 | surge-xt-vst3 | 1.3.4 | [home](https://surge-synthesizer.github.io/) | Trve_AY |  | Subtractive hybrid synthesizer |
-| sv-helper | 4.2.1 | [home](https://github.com/rubyists/sv-helper) | zenobit |  | Utilities to help administer a runit-as-pid1 system |
+| sv-helper | 5.0.0 | [home](https://github.com/rubyists/sv-helper) | zenobit |  | Utilities to help administer a runit-as-pid1 system |
 | svi | 0.2.2 | [home](https://codeberg.org/LinuxNation/svi) | zenobit |  | Graphical installer for Void Linux, built with GTK4 and Python |
 | svlog | 0.6.3 | [home](https://github.com/pascal-huber/svlog) | Coolllyn |  | Display, filter and follow socklog log files on Void Linux |
 | SysMan | 0.020 | [home](https://codeberg.org/oSoWoSo/SysMan) | zenobit |  | System Manager |
