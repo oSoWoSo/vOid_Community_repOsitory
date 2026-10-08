@@ -913,7 +913,14 @@ generate_arch_pages() {
 		echo "  Generated ($_pkg_count packages): docs/${_arch}/index.html"
 
 		if surf_auth_check; then
-			if ! upload_file "$_out" "/${_arch}/index.html"; then
+			# upload_file takes a *directory* destination: the Surfer
+			# `put` first probes it and aborts with "Destination is not
+			# a directory" when the path resolves to an existing file.
+			# /x86_64/index.html is a file, so point at the arch
+			# directory (/x86_64/) and let the CLI sync the page into
+			# it. (The old /x86_64/index.html destination only worked
+			# on the very first run, when probing it returned 404.)
+			if ! upload_file "$_out" "/${_arch}"; then
 				fatal "Failed to upload ${_arch}/index.html!"
 			fi
 		fi

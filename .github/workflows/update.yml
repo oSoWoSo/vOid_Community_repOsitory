@@ -10,12 +10,19 @@ on:
       - 'srcpkgs/**'
       - 'src/build.yml.in'
   workflow_dispatch:
-# This workflow commits regenerated README.md + build.yml back to the branch.
-# Concurrent runs on the same branch would both `git push` from the same base
-# and one would fail non-fast-forward (or, worse, both push and interleave).
-# Serialize per branch with an unbounded queue; never cancel in-progress runs.
+# This workflow regenerates README.md + build.yml and pushes them back to the
+# branch. Two problems if it ran freely:
+#   1. Two runs on the same branch would both `git push` from the same base
+#      and one would fail non-fast-forward.
+#   2. Its push modifies .github/workflows/build.yml WHILE a "matrix build"
+#      run of that file is in progress on the same ref. GitHub reacts to a
+#      changed workflow file by CANCELLING the in-progress run, which is why
+#      every templated push ended "cancelled" mid-upload.
+# Join the same concurrency lane as the build workflow ('build-publish', see
+# src/build.yml.in) with an unbounded queue, so the update only ever runs
+# after the build finishes and its push can never cancel a build.
 concurrency:
-  group: update-${{ github.ref }}
+  group: 'build-publish'
   cancel-in-progress: false
   queue: max
 
