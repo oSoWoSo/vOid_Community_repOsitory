@@ -27,7 +27,6 @@ jobs:
   cleanup:
     name: ${{ matrix.arch }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     container:
       image: ghcr.io/osowoso/oco-builder-x86_64:latest
       credentials:
@@ -52,6 +51,21 @@ jobs:
           SURFER_USER: ${{ secrets.SURFER_USER }}
           PRIV_KEY: ${{ secrets.PRIV_KEY }}
           SURF_PURGE_PACKAGES: ${{ inputs.packages }}
+          ARCH: ${{ matrix.arch }}
+        run: |
+          set -eu
+          SFLAGS="-s repo.osowoso.org -u ${SURFER_USER} -p ${SURFER_TOKEN}"
+          mkdir -p /work
+          for _f in "${ARCH}-repodata" "${ARCH}-repodata.sig2"; do
+            surfer $SFLAGS get "${ARCH}/${_f}" > "/work/${_f}" 2>/dev/null || \
+              { echo "::error::failed to fetch ${_f}" >&2; exit 1; }
+          done
+
+      - name: Determine stale package versions
+        id: decide
+        env:
+          ARCH: ${{ matrix.arch }}
+        working-directory: /work
         run: |
           set -eu
           export PATH="/opt/xbps/usr/bin/:$PATH"

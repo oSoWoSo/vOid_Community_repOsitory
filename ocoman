@@ -101,14 +101,8 @@ _re() {
 # --- Surfer transport helpers ---
 
 # We talk to Surfer exclusively through the @cloudron/surfer CLI
-# (`npm -g install @cloudron/surfer`, shipped by the oco `surfer` package),
-# which speaks the REST API under ${SURFER_URL}/api/files/. The old inline
-# curl/WebDAV client is gone: Surfer 7 ships webdav-server v2, where every
-# WebDAV DELETE kills the app (getFileSystemPathSync() returns null for
-# Surfer's own unregistered SiteFileSystem -> uncaught TypeError -> Cloudron
-# restart -> nginx 502 "app is not responding"). The CLI deletes through
-# DELETE /api/files/<path>, which the server handles with fsPromises.rm and
-# which is unaffected.
+# (`npm -g install @cloudron/surfer`, shipped by the oco `surfer-cli` package),
+# which speaks the REST API under ${SURFER_URL}/api/files/.
 #
 # Every helper below takes paths RELATIVE to the API root, e.g. /x86_64.
 _SURF_READY=""
