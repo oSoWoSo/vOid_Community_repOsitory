@@ -4,14 +4,14 @@ version=7.2.6
 revision=1
 archs="x86_64* aarch64*"
 hostmakedepends="nodejs"
-depends="nodejs"
+depends="nodejs better-sqlite3"
 short_desc="Simple static file server with web interface and resumable uploads"
 maintainer="zenobit <zen@osoweso.org>"
 license="AGPL-3.0-only"
 homepage="https://github.com/cloudron-io/surfer"
 distfiles="https://github.com/cloudron-io/surfer/archive/refs/tags/v${version}.tar.gz"
 checksum=19fc9f186f4b0c05e6acd96c211d0d403f8617eedef6ad7ae6c1225ee40b942b
-subpackages="surfer-cli"
+nocross="depends on better-sqlite3, which cannot be cross built"
 system_accounts="_surfer"
 system_groups="_surfer"
 _surfer_homedir="/var/lib/surfer"
@@ -23,8 +23,8 @@ export npm_config_fund=false
 export npm_config_loglevel=error
 export npm_config_update_notifier=false
 
-# libc infix as better-sqlite3 and bare-* spell it in their prebuilds/ dirs,
-# i.e. prebuilds/<linux|linuxmusl>-<arch>[-<abi>].node
+# libc infix as better-sqlite3 spells it in its prebuilds/ dirs,
+# i.e. prebuilds/<linux|linuxmusl>-<arch>.node
 _node_libc() {
 	case "${XBPS_TARGET_LIBC}" in
 		musl) echo "musl-" ;;
@@ -32,7 +32,7 @@ _node_libc() {
 	esac
 }
 
-# nodejs arch string as npm and those packages spell it
+# nodejs arch string as npm spells it
 _node_arch() {
 	case "${XBPS_TARGET_MACHINE}" in
 		x86_64*) echo x64 ;;
@@ -57,10 +57,9 @@ do_configure() {
 do_build() {
 	local _arch="${_node_arch}"
 
-	# --ignore-scripts: better-sqlite3 ships a binding.gyp and npm happily
-	# rebuilds it from source, which is both slow and impossible when cross
-	# building. Its tarball already carries N-API prebuilds for every supported
-	# libc/arch, the right one is selected in do_install().
+	# --ignore-scripts: npm would rebuild better-sqlite3 from source here, and
+	# we take the compiled module from the better-sqlite3 package instead. Its
+	# own prebuild is only used to run the test suite, do_install() drops it.
 	npm install --ignore-scripts --os=linux --cpu="${_arch}"
 
 	# esbuild (a vite dependency) wires up its platform binary in an install script that we just skipped
@@ -79,33 +78,12 @@ do_check() {
 
 do_install() {
 	local _libdir="usr/lib/surfer" _clidir="usr/lib/surfer/cli"
-	local _arch _want _pre _plat
+	local _arch _mod
 
 	_arch="$(_node_arch)"
-	_want="linux$(_node_libc)${_arch}"
 
 	# devDependencies are only needed for the frontend build and the test suite
 	npm prune --omit=dev
-
-	# better-sqlite3 and the bare-* libraries ship one prebuild per platform in
-	# a single tarball, npm's os/cpu filtering cannot help. Drop everything that
-	# is not for this libc/arch: it is dead weight, and the Android builds are
-	# ELF objects linked against unversioned libc.so/libm.so/libdl.so which
-	# would show up as unresolvable SONAME requirements.
-	for _pre in $(find node_modules -type d -name prebuilds); do
-		for _plat in "${_pre}"/*; do
-			case "${_plat##*/}" in
-				"${_want}"|"${_want}.node") ;;
-				*) rm -rf "${_plat}" ;;
-			esac
-		done
-	done
-
-	# a wrong guess here silently produces a package that only breaks at
-	# runtime, the test suite is long done by the time we get here
-	if [ ! -e "node_modules/better-sqlite3/prebuilds/${_want}.node" ]; then
-		msg_error "surfer: no better-sqlite3 prebuild for '${_want}'\n"
-	fi
 
 	vmkdir "${_clidir}"
 	vcopy dist "${_libdir}"
@@ -115,8 +93,21 @@ do_install() {
 	vinstall package.json 644 "${_libdir}"
 
 	# the mocha sources of upstream are of no use on an installed system
-	rm -rf "${DESTDIR}${_libdir}/src/test" \
-		"${DESTDIR}${_libdir}/src/routes/test"
+	rm -rf "${PKGDESTDIR}/${_libdir}/src/test" \
+		"${PKGDESTDIR}/${_libdir}/src/routes/test"
+
+	# use one we build from source
+	rm -rf "${PKGDESTDIR}/${_libdir}/node_modules/better-sqlite3"
+	ln -s /usr/lib/node_modules/better-sqlite3 \
+		"${PKGDESTDIR}/${_libdir}/node_modules/better-sqlite3"
+
+	# tar-stream lists bare-fs as a dependency because the same tarball is
+	# published for the Bare runtime, but nothing in the Node build imports it
+	# and the addons only load there ("Bare is not defined"). They are the last
+	# native binaries in the payload, so what is left is pure JavaScript.
+	for _mod in bare-fs bare-path bare-url; do
+		rm -rf "${PKGDESTDIR}/${_libdir}/node_modules/${_mod}"
+	done
 
 	vcopy "cli/*.js" "${_clidir}"
 	vcopy cli/node_modules "${_clidir}"
