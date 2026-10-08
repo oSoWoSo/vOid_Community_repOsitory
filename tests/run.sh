@@ -70,7 +70,7 @@ eval "$(awk '
 # Every helper above reads these, so they must exist before the first call.
 export SURF_ATTEMPTS=4 SURF_BACKOFF=0
 export SURF_DEADLINE=1500 SURF_CONNECT_TIMEOUT=20 SURF_MAX_TIME=300 SURF_BACKOFF_MAX=30
-export SURF_SKIP_DELETE=0 SURFER_URL='https://repo.osowoso.org'
+export SURF_SKIP_DELETE=1 SURF_DELETE_ORPHANS=0 SURFER_URL='https://repo.osowoso.org'
 
 echo '== pkg_name =='
 it 'plain name';            assert_eq "$(pkg_name 'foo-1.0_1.x86_64')"          'foo'
@@ -634,27 +634,27 @@ prune_orphans "$(printf '%s\n' \
 it 'orphans file lists only removed packages'
 assert_eq "$(sort "$_orphans" | tr '\n' ',')" 'dropped,gone,'
 
-it 'kept packages were not deleted'
-if grep -q 'keepme\|alsokeep' "$_DELETED"; then
-	assert_eq 'kept package was deleted' 'kept package was not deleted'
+it 'prune_orphans never deletes .xbps files (Surfer 7 crashes on DELETE)'
+if [ -s "$_DELETED" ]; then
+	assert_eq 'DELETE was issued' 'prune_orphans did not delete'
 else
 	assert_eq 'ok' 'ok'
 fi
-
-it 'orphan delete_remote was called for both .xbps and .sig2'
-assert_eq "$(grep -c 'gone-1.0_1.x86_64.xbps' "$_DELETED")" '2'
 
 rm -f "$_orphans" "$_DELETED"
 rm -rf srcpkgs
 SCRIPT_DIR="$_SCRIPT_DIR_BACKUP"
 
-echo '== SURF_SKIP_DELETE =='
+echo '== SURF_SKIP_DELETE / SURF_DELETE_ORPHANS =='
 
-# The section above stubs delete_remote, so restore the real one: the point of
-# SURF_SKIP_DELETE is that the real function must not reach the network at all.
+# delete_remote must not reach the network unless an operator explicitly opts
+# into file deletion (SURF_DELETE_ORPHANS=1); orphan pruning itself must never
+# delete. prune_orphans ALWAYS lists packages with no template in srcpkgs/ so
+# the index gets stripped even when file deletion is suppressed.
 eval "$(awk '
 	/^delete_remote\(\)/ {p=1}
 	/^prune_orphans\(\)/ {p=1}
+	/^delete_orphan_files\(\)/ {p=1}
 	p {print}
 	p && /^}$/           {p=0}
 ' "$SCRIPT_DIR/ocoman")"
@@ -663,9 +663,9 @@ _PATH_BACKUP="$PATH"
 PATH="$_FAKE_BIN:$_PATH_BACKUP"
 _COUNT=$(mktemp)
 export PATH FAKE_CURL_ARGV="$_ARGV" FAKE_CURL_SCRIPT="$_SCRIPT" FAKE_CURL_COUNT="$_COUNT"
-export SURF_SKIP_DELETE=1
+export SURF_SKIP_DELETE=1 SURF_DELETE_ORPHANS=0
 
-it 'delete_remote returns success without issuing a request'
+it 'delete_remote is a no-op while SURF_SKIP_DELETE=1'
 printf 'http:204\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
 delete_remote 'https://example.com/_webdav/x86_64/gone-1.0_1.x86_64.xbps'
 _rc=$?
@@ -673,39 +673,52 @@ assert_rc "$_rc" 0
 it 'delete_remote: zero HTTP requests'
 assert_eq "$(cat "$_COUNT")" '0'
 
-it 'prune_orphans is a no-op while deletes are suppressed'
+it 'prune_orphans emits orphan names while deletes are suppressed'
 mkdir -p srcpkgs/keepme
 : > srcpkgs/keepme/template
 SCRIPT_DIR="$PWD" SRCPKGS=srcpkgs _webdav='https://example.com/_webdav'
 _orphans=$(mktemp)
-printf 'payload\n' > "$_orphans"
+: > "$_orphans"
 prune_orphans "$(printf '%s\n' \
 	'keepme-1.0_1.x86_64.xbps' \
 	'gone-1.0_1.x86_64.xbps')" "$_orphans" >/dev/null 2>&1
 _rc=$?
 assert_rc "$_rc" 0
-it 'prune_orphans: still zero HTTP requests'
+it 'prune_orphans: zero HTTP requests'
 assert_eq "$(cat "$_COUNT")" '0'
-it 'prune_orphans emits no orphan names (the index must not start lying)'
-assert_eq "$([ -s "$_orphans" ] && echo nonempty || echo empty)" 'empty'
+it 'prune_orphans lists the orphan even with deletes disabled (so index is stripped)'
+assert_eq "$(sort "$_orphans" | tr '\n' ',')" 'gone,'
 
-it 'the same call does delete when SURF_SKIP_DELETE=0'
-export SURF_SKIP_DELETE=0
+it 'delete_orphan_files is a no-op when SURF_DELETE_ORPHANS=0'
 printf 'http:204\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
-SURF_DEADLINE=0 prune_orphans "$(printf '%s\n' 'gone-1.0_1.x86_64.xbps')" "$_orphans" \
-	>/dev/null 2>&1
+delete_orphan_files "$_orphans" "$(printf '%s\n' 'gone-1.0_1.x86_64.xbps')" >/dev/null 2>&1
+_rc=$?
+assert_rc "$_rc" 0
+it 'delete_orphan_files: zero HTTP requests when disabled'
+assert_eq "$(cat "$_COUNT")" '0'
+
+it 'delete_orphan_files deletes when SURF_DELETE_ORPHANS=1'
+export SURF_DELETE_ORPHANS=1
+printf 'http:204\n' > "$_SCRIPT"; printf '0' > "$_COUNT"
+SURF_DEADLINE=0 delete_orphan_files "$_orphans" "$(printf '%s\n' \
+	'gone-1.0_1.x86_64.xbps' \
+	'keepme-1.0_1.x86_64.xbps')" >/dev/null 2>&1
 SURF_DEADLINE=1500
 if [ "$(cat "$_COUNT")" -gt 0 ]; then
 	assert_eq 'ok' 'ok'
 else
 	assert_eq 'no DELETE was issued' 'ok'
 fi
-it 'and that call does list the orphan'
-assert_eq "$(sort "$_orphans" | tr '\n' ',')" 'gone,'
+it 'delete_orphan_files only deletes listed orphans'
+if grep -q 'keepme' "$_ARGV" 2>/dev/null; then
+	assert_eq 'deleted unlisted keepme' 'only listed orphans deleted'
+else
+	assert_eq 'ok' 'ok'
+fi
 
 rm -f "$_orphans"
 rm -rf srcpkgs
-export SURF_SKIP_DELETE=0
+export SURF_SKIP_DELETE=1 SURF_DELETE_ORPHANS=0
 unset FAKE_CURL_ARGV FAKE_CURL_SCRIPT FAKE_CURL_COUNT
 PATH="$_PATH_BACKUP"
 SCRIPT_DIR="$_SCRIPT_DIR_BACKUP"

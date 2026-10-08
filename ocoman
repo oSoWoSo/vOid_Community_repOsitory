@@ -50,6 +50,11 @@ SURF_BACKOFF_MAX="${SURF_BACKOFF_MAX:-30}"
 # every request in that window. Retrying cannot fix it: the next DELETE
 # crashes the app again. Hence deletions are opt-in.
 SURF_SKIP_DELETE="${SURF_SKIP_DELETE:-1}"
+# Orphans (packages with no template in srcpkgs/) are ALWAYS stripped from the
+# published index -- that is what makes xbps stop resolving them -- but the
+# leftover .xbps binary is only deleted when this is explicitly enabled. The
+# default follows the known DELETE crash above: hide, never touch the file.
+SURF_DELETE_ORPHANS="${SURF_DELETE_ORPHANS:-0}"
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
 SIGNED_BY='oSoWoSo <mail@osowoso.org>'
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
@@ -256,6 +261,45 @@ surf_auth_check() {
 	return 0
 }
 
+# Remove a package name so it no longer resolves from OCO. This is the safe
+# way to retire a package (e.g. it was accepted upstream into void-packages):
+# the entry leaves the published index without issuing a WebDAV DELETE.
+#
+# Why not DELETE the .xbps too? Every WebDAV DELETE crashes Surfer 7
+# (webdav-server v2 dereferences a null file-system in getFileSystemPathSync
+# -> uncaught TypeError -> Node exits -> Cloudron restarts -> "app is not
+# responding" for minutes). The 2026-10-08 purge run proved it: the first
+# orphan DELETE bounced the whole repo and the run was canceled after
+# ~13 minutes of retrying against a restarting app. The .xbps staying behind
+# is harmless: xbps only installs what the index advertises.
+strip_orphans() {
+	_orphans_list="$1"
+	_repodata_file="$2"
+	if [ -s "$_orphans_list" ] && [ -f "$_repodata_file" ]; then
+		echo '==> Hiding orphan packages from the index (no WebDAV DELETE)'
+		if ! command -v python3 >/dev/null 2>&1; then
+			fatal 'python3 not found!'
+		fi
+		if ! xargs python3 "${REPODATA_STRIP_PY}" "$_repodata_file" < "$_orphans_list"; then
+			fatal "==> repodata-strip failed; refusing to publish an index that still advertises removed packages"
+		fi
+		# Belt and braces: before signing + republishing, verify every orphan
+		# really left the index.
+		_still_present=0
+		while IFS= read -r _orph; do
+			[ -n "$_orph" ] || continue
+			if python3 "${REPODATA_LIST_PY}" "$_repodata_file" | \
+				awk -F '\t' -v p="$_orph" '$1==p {found=1} END {exit !found}' >/dev/null 2>&1; then
+				echo "  ERROR: ${_orph} still present in $_repodata_file after strip" >&2
+				_still_present=1
+			fi
+		done < "$_orphans_list"
+		if [ "$_still_present" -ne 0 ]; then
+			fatal "==> orphan entries still present after strip; refusing to upload ${_repodata_file}"
+		fi
+	fi
+}
+
 usage() {
 	prog=${0##*/}
 	cat <<-EOF
@@ -440,19 +484,20 @@ upload_file() {
 prune_orphans() {
 	# Args:
 	#   $1: remote pkg list (one filename per line)
-	#   $2: optional path to write orphan PACKAGE NAMES (dedup, one per line)
-	_orphans_out="${2:-}"
-	if [ "$SURF_SKIP_DELETE" -eq 1 ]; then
-		# We are not deleting, so a remote .xbps has not been removed -- yet.
-		# Emitting its name would tell repodata-strip.py to hide a package
-		# that is still really on the server, i.e. the index would start
-		# lying. Keep the orphan list empty: stale versions stay indexed,
-		# which is harmless, instead of vanishing packages, which is not.
-		echo '==> Skipping orphan pruning (SURF_SKIP_DELETE=1); stale packages stay indexed'
-		[ -n "$_orphans_out" ] && : > "$_orphans_out"
-		return 0
-	fi
+	#   $2: path to write orphan PACKAGE NAMES (dedup, one per line)
+	#
+	# Orphan = a .xbps whose package name has no template in srcpkgs/.
+	# The name list is ALWAYS produced and is independent of the delete
+	# flag.  Stripping the name from the published index is what actually
+	# makes xbps stop resolving the package; the stray .xbps file on the
+	# server is invisible to installs.  We therefore never need to DELETE
+	# it -- and we must not, because every WebDAV DELETE crashes Surfer 7
+	# (see SURF_SKIP_DELETE) and that is why the purge run, which set
+	# SURF_SKIP_DELETE=0, bounced repo.osowoso.org for ~13 minutes.
+	# Deleting orphan FILES is opt-in via SURF_DELETE_ORPHANS=1 for
+	# operators who know the host no longer crashes on DELETE.
 	_remote_list="$1"
+	_orphans_out="$2"
 	[ -n "$_orphans_out" ] && : > "$_orphans_out"
 	echo '==> Pruning orphan packages (no template in srcpkgs)'
 	_srcpkgs="${SCRIPT_DIR}/${SRCPKGS}"
@@ -460,15 +505,43 @@ prune_orphans() {
 		[ -n "$_remote_pkg" ] || continue
 		_pkg=$(pkg_name "${_remote_pkg%.xbps}")
 		[ -d "${_srcpkgs}/${_pkg}" ] && continue
-		echo "  Removing orphan: $_remote_pkg ($_pkg)"
-		delete_remote "${_webdav}/${_remote_pkg}"
-		delete_remote "${_webdav}/${_remote_pkg}.sig2"
+		echo "  Orphan: $_remote_pkg ($_pkg)"
 		[ -n "$_orphans_out" ] && printf '%s\n' "$_pkg" >> "$_orphans_out"
 	done
 	if [ -n "$_orphans_out" ] && [ -s "$_orphans_out" ]; then
 		# Dedup in place (multiple .xbps per name from subpackages etc.)
 		sort -u -o "$_orphans_out" "$_orphans_out"
 	fi
+}
+
+delete_orphan_files() {
+	# Args:
+	#   $1: path to orphan PACKAGE NAMES (one per line)
+	#   $2: remote pkg list (one filename per line)
+	#
+	# Issue WebDAV DELETEs for the orphan .xbps (and .sig2).  Off by
+	# default (SURF_DELETE_ORPHANS=0) because each DELETE crashes
+	# Surfer 7; here only for operators who have that fixed.  The DELETE
+	# is issued ONCE with no retry: if the host is restarting, retrying a
+	# crash-inducing DELETE for SURF_DEADLINE seconds is what turned one
+	# bad request into a canceled 13-minute job on 2026-10-08.
+	#
+	# This is the explicit opt-in path, so it deliberately bypasses
+	# delete_remote()'s SURF_SKIP_DELETE gate (which defaults to "no
+	# deletes, ever") and talks to Surfer directly.
+	[ "$SURF_DELETE_ORPHANS" -eq 1 ] || return 0
+	[ -s "$1" ] || return 0
+	echo '==> Deleting orphan package files (SURF_DELETE_ORPHANS=1)'
+	_orphans_list="$1"
+	_remote_list="$2"
+	printf '%s\n' "$_remote_list" | while IFS= read -r _remote_pkg; do
+		[ -n "$_remote_pkg" ] || continue
+		_pkg=$(pkg_name "${_remote_pkg%.xbps}")
+		if grep -qx "$_pkg" "$_orphans_list"; then
+			surf_retry -sf -X DELETE "${_webdav}/${_remote_pkg}"
+			surf_retry -sf -X DELETE "${_webdav}/${_remote_pkg}.sig2"
+		fi
+	done
 }
 
 # --- Website helpers (from create-web) ---
@@ -1027,6 +1100,7 @@ do_upload() {
 		fi
 
 		prune_orphans "$_remote_list" "${PWD}/orphans.txt"
+		delete_orphan_files "${PWD}/orphans.txt" "$_remote_list"
 
 		if [ -s "${PWD}/orphans.txt" ] && [ -f "${ARCH}-repodata" ]; then
 			echo '==> Stripping orphan entries from local repodata'
@@ -1072,7 +1146,7 @@ do_upload() {
 		xbps-rindex -s --signedby "$SIGNED_BY" --privkey private.pem "$PWD"
 
 		if [ "$SURF_SKIP_DELETE" -eq 1 ]; then
-			echo "::warning::SURF_SKIP_DELETE=1: remote deletes are disabled, old versions and orphans stay indexed. Set SURF_SKIP_DELETE=0 once the Surfer host no longer crashes on DELETE." >&2
+			echo "::warning::SURF_SKIP_DELETE=1: remote .xbps deletes are disabled (Surfer 7 crashes on DELETE). Old versions and orphan binaries stay on the server but are stripped from the published index, so xbps no longer resolves them." >&2
 		fi
 
 		echo '==> Uploading packages'

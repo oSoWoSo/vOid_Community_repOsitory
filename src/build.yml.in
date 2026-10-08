@@ -596,7 +596,6 @@ jobs:
       SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
       SURFER_USER: ${{ secrets.SURFER_USER }}
       PRIV_KEY: ${{ secrets.PRIV_KEY }}
-      SURF_SKIP_DELETE: '0'
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v7
@@ -610,13 +609,16 @@ jobs:
           command -v xbps-rindex >/dev/null 2>&1 || { echo "xbps-rindex not found in builder image" >&2; exit 1; }
           # Runs AFTER build so the repodata edits never race the package-upload
           # index rewrite from the build job. The removed templates are gone from
-          # the checked-out srcpkgs/, so prune_orphans flags their .xbps, deletes
-          # them (SURF_SKIP_DELETE=0 above) and republishes a repodata that no
-          # longer advertises them. A removal-only push leaves nothing to build,
-          # so without this job the deleted package stayed forever in the index
-          # -- repo.osowoso.org/*-repodata -- which breaks `xbps-src pkg` of
-          # dependents like hyprcursor (error 16). Note: targets all four arches,
-          # while the build matrix only covers arches that had packages to build.
+          # the checked-out srcpkgs/, so prune_orphans flags their .xbps and the
+          # repodata is stripped + republished so the package no longer resolves.
+          # A removal-only push leaves nothing to build, so without this job the
+          # deleted package stayed forever in the index -- repo.osowoso.org/*-repodata
+          # -- which breaks `xbps-src pkg` of dependents like hyprcursor (error 16).
+          # Note: targets all four arches, while the build matrix only covers arches
+          # that had packages to build. No WebDAV DELETE is issued: Surfer 7
+          # crashes the app on every DELETE (getChildPath null-deref), which is why
+          # the previous SURF_SKIP_DELETE=0 purge bounced the repo for ~13 minutes.
+          # The leftover .xbps is invisible to installs since it is no longer indexed.
           ./ocoman -p
 
   update-status:
