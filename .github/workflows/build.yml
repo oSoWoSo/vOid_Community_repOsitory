@@ -300,6 +300,7 @@ on:
         - shattered-pixel-dungeon
         - simplex-chat
         - simplex-chat-desktop
+        - surfer-cli
         - surge-xt
         - surge-xt-clap
         - surge-xt-common
