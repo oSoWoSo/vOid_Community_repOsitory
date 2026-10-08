@@ -10,6 +10,7 @@ homepage="https://repo.osowoso.org"
 
 replaces="
  gradle<=9.0.0_1
+ surfer<=7.2.6_1
  tomlplusplus<=3.4.0_1
  tomlplusplus-devel<=3.4.0_1
 "
