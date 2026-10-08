@@ -301,6 +301,7 @@ on:
         - simplex-chat
         - simplex-chat-desktop
         - surfer-cli
+        - surfer-server
         - surge-xt
         - surge-xt-clap
         - surge-xt-common
