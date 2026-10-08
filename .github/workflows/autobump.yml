@@ -127,12 +127,7 @@ jobs:
       - name: Install xxtools-git
         run: |
           set -e
-          for i in 1 2 3; do
-            if sudo xbps-install -y xxtools-git; then
-              break
-            fi
-            sleep 5
-          done
+          sudo xbps-install -y xxtools-git
           command -v xxautobump || {
             echo "::error::xxautobump not available (xxtools-git install failed)"
             exit 1
