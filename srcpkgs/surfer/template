@@ -1,0 +1,140 @@
+# Template file for 'surfer'
+pkgname=surfer
+version=7.2.6
+revision=1
+archs="x86_64* aarch64*"
+hostmakedepends="nodejs"
+depends="nodejs"
+short_desc="Simple static file server with web interface and resumable uploads"
+maintainer="zenobit <zen@osoweso.org>"
+license="AGPL-3.0-only"
+homepage="https://github.com/cloudron-io/surfer"
+distfiles="https://github.com/cloudron-io/surfer/archive/refs/tags/v${version}.tar.gz"
+checksum=19fc9f186f4b0c05e6acd96c211d0d403f8617eedef6ad7ae6c1225ee40b942b
+subpackages="surfer-cli"
+system_accounts="_surfer"
+system_groups="_surfer"
+_surfer_homedir="/var/lib/surfer"
+_surfer_descr="Surfer file server user"
+make_dirs="/var/lib/surfer/public 0750 _surfer _surfer"
+
+export npm_config_audit=false
+export npm_config_fund=false
+export npm_config_loglevel=error
+export npm_config_update_notifier=false
+
+# libc infix as better-sqlite3 and bare-* spell it in their prebuilds/ dirs,
+# i.e. prebuilds/<linux|linuxmusl>-<arch>[-<abi>].node
+_node_libc() {
+	case "${XBPS_TARGET_LIBC}" in
+		musl) echo "musl-" ;;
+		*) echo "-" ;;
+	esac
+}
+
+# nodejs arch string as npm and those packages spell it
+_node_arch() {
+	case "${XBPS_TARGET_MACHINE}" in
+		x86_64*) echo x64 ;;
+		aarch64*) echo arm64 ;;
+		*) node -p "process.arch" ;;
+	esac
+}
+
+post_patch() {
+	# cli/package.json lags a release behind on every tag
+	vsed -i -e "s/\"version\": \"[0-9.]*\"/\"version\": \"${version}\"/" \
+		cli/package.json
+}
+
+do_configure() {
+	# npm insists on a writable HOME for its cache
+	export HOME="${WRKDIR}/.home"
+	export npm_config_cache="${HOME}/.npm"
+	mkdir -p "${HOME}"
+}
+
+do_build() {
+	local _arch="${_node_arch}"
+
+	# --ignore-scripts: better-sqlite3 ships a binding.gyp and npm happily
+	# rebuilds it from source, which is both slow and impossible when cross
+	# building. Its tarball already carries N-API prebuilds for every supported
+	# libc/arch, the right one is selected in do_install().
+	npm install --ignore-scripts --os=linux --cpu="${_arch}"
+
+	# esbuild (a vite dependency) wires up its platform binary in an install script that we just skipped
+	(cd node_modules/esbuild && node install.js) || true
+
+	# builds frontend/ into dist/
+	npm run build
+
+	cd cli
+	npm install --omit=dev --ignore-scripts --os=linux --cpu="${_arch}"
+}
+
+do_check() {
+	./run-tests
+}
+
+do_install() {
+	local _libdir="usr/lib/surfer" _clidir="usr/lib/surfer/cli"
+	local _arch _want _pre _plat
+
+	_arch="$(_node_arch)"
+	_want="linux$(_node_libc)${_arch}"
+
+	# devDependencies are only needed for the frontend build and the test suite
+	npm prune --omit=dev
+
+	# better-sqlite3 and the bare-* libraries ship one prebuild per platform in
+	# a single tarball, npm's os/cpu filtering cannot help. Drop everything that
+	# is not for this libc/arch: it is dead weight, and the Android builds are
+	# ELF objects linked against unversioned libc.so/libm.so/libdl.so which
+	# would show up as unresolvable SONAME requirements.
+	for _pre in $(find node_modules -type d -name prebuilds); do
+		for _plat in "${_pre}"/*; do
+			case "${_plat##*/}" in
+				"${_want}"|"${_want}.node") ;;
+				*) rm -rf "${_plat}" ;;
+			esac
+		done
+	done
+
+	# a wrong guess here silently produces a package that only breaks at
+	# runtime, the test suite is long done by the time we get here
+	if [ ! -e "node_modules/better-sqlite3/prebuilds/${_want}.node" ]; then
+		msg_error "surfer: no better-sqlite3 prebuild for '${_want}'\n"
+	fi
+
+	vmkdir "${_clidir}"
+	vcopy dist "${_libdir}"
+	vcopy src "${_libdir}"
+	vcopy node_modules "${_libdir}"
+	vinstall server.js 644 "${_libdir}"
+	vinstall package.json 644 "${_libdir}"
+
+	# the mocha sources of upstream are of no use on an installed system
+	rm -rf "${DESTDIR}${_libdir}/src/test" \
+		"${DESTDIR}${_libdir}/src/routes/test"
+
+	vcopy "cli/*.js" "${_clidir}"
+	vcopy cli/node_modules "${_clidir}"
+	vinstall cli/package.json 644 "${_clidir}"
+
+	vbin "${FILESDIR}/surferd"
+	vbin "${FILESDIR}/surfer-cli" surfer
+	vsv surfer
+
+	vlicense LICENSE
+}
+
+surfer-cli_package() {
+	short_desc+=" - command line client"
+	depends="nodejs"
+	pkg_install() {
+		vmove usr/lib/surfer/cli
+		vmove usr/bin/surfer
+		vlicense LICENSE
+	}
+}
