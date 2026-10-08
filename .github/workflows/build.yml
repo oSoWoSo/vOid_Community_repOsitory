@@ -55,6 +55,7 @@ on:
         -
         - android-sdk
         - aquamarine
+        - aquamarine-devel
         - better-sqlite3
         - better-sqlite3-devel
         - blocaled

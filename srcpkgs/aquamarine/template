@@ -1,12 +1,13 @@
 # Template file for 'aquamarine'
 pkgname=aquamarine
 version=0.15.1
-revision=1
+revision=2
 build_style=cmake
-configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
+configure_args="--no-warn-unused-cli -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr"
 hostmakedepends="pkg-config hyprwayland-scanner"
-makedepends="hwids hyprutils libdisplay-info-devel libinput-devel libseat-devel
- MesaLib-devel pixman-devel wayland-devel wayland-protocols"
+makedepends="hwids hyprutils-devel hyprwayland-scanner libdisplay-info-devel
+ libdrm-devel libgbm-devel libglvnd-devel libinput-devel libseat-devel
+ libudev-devel pixman-devel wayland-devel wayland-protocols"
 short_desc="Aquamarine is a very light linux rendering backend library"
 maintainer="zenobit <zen@osowoso.org>"
 license="BSD-3-Clause"
@@ -18,4 +19,15 @@ make_check=no # cant run in sandbox
 
 post_install() {
 	vlicense LICENSE
+}
+
+aquamarine-devel_package() {
+	depends="aquamarine-${version}_${revision}"
+	short_desc+=" - development files"
+
+	pkg_install() {
+		vmove usr/include
+		vmove "usr/lib/*.so"
+		vmove usr/lib/pkgconfig
+	}
 }

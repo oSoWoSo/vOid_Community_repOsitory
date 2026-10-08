@@ -31,6 +31,7 @@ src/__pycache__/
 # Start of templates list
 !/srcpkgs/android-sdk
 !/srcpkgs/aquamarine
+!/srcpkgs/aquamarine-devel
 !/srcpkgs/better-sqlite3
 !/srcpkgs/better-sqlite3-devel
 !/srcpkgs/blocaled
