@@ -355,17 +355,22 @@ permissions:
   packages: read
   issues: write
 
+# Every run that publishes into the shared binary repository (push on any
+# branch, repository_dispatch, workflow_dispatch) shares ONE group, so two
+# CI runs never run `ocoman -p` at the same time. `ocoman -p` is a
+# read-modify-write on the remote index (fetch list -> delete old versions ->
+# strip orphans -> xbps-rindex -a -> sign -> upload index). Two runs racing
+# on it lose each other's updates, and the last writer wins with an index
+# that can 404 or resurrect deleted packages. Same for the arch pages
+# (`ocoman -a`). `queue: max` keeps all runs pending in order instead of
+# cancelling them. PR runs never publish (test-pr builds in an isolated
+# container), so they keep a per-PR group and still run in parallel.
 concurrency:
   group: >-
     ${{
-      github.event_name == 'workflow_dispatch' &&
-      (inputs.all == 'true' && 'build: all packages' ||
-       inputs.template != '' && format('build: {0}', inputs.template) ||
-       inputs.templates != '' && format('build: {0}', inputs.templates)) ||
-      github.event_name == 'push' && github.event.head_commit.message ||
       github.event_name == 'pull_request' &&
-      format('{0} (#{1})', github.event.pull_request.title, github.event.pull_request.number) ||
-      'matrix build'
+      format('pr-{0}', github.event.pull_request.number) ||
+      'build-publish'
     }}
   cancel-in-progress: false
   queue: max

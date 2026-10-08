@@ -1,10 +1,24 @@
 name: update files
 on:
   push:
+    # Only regenerate mainline files on the default branch. Running on every
+    # branch (autobump/feature branches included) would add "CI: update"
+    # commits to PR branches and double up with concurrent build runs.
+    branches:
+      - OCO
     paths:
       - 'srcpkgs/**'
       - 'src/build.yml.in'
   workflow_dispatch:
+# This workflow commits regenerated README.md + build.yml back to the branch.
+# Concurrent runs on the same branch would both `git push` from the same base
+# and one would fail non-fast-forward (or, worse, both push and interleave).
+# Serialize per branch with an unbounded queue; never cancel in-progress runs.
+concurrency:
+  group: update-${{ github.ref }}
+  cancel-in-progress: false
+  queue: max
+
 permissions:
   contents: write
   actions: write
@@ -17,6 +31,14 @@ jobs:
         with:
           token: ${{ secrets.WORKFLOWS }}
           fetch-depth: 2
+
+      # The checkout above is pinned to the SHA at event time. When this run
+      # was queued behind an earlier "CI: update" commit, the branch tip has
+      # already moved; fast-forward to it so ./ocoman -u starts from the
+      # current tip and the push below stays a fast-forward.
+      - name: Sync to latest branch tip
+        run: |
+          git pull --ff-only origin "${GITHUB_REF_NAME}" || true
 
       - name: Update repo
         run: ./ocoman -u
