@@ -5,9 +5,8 @@ on:
     inputs:
       packages:
         description: >-
-          Space-separated package names to strip from the repo index. Used by
-          build.yml when a push deleted srcpkgs/* templates. Empty means
-          "strip every package that has no template in srcpkgs/".
+          Space-separated package names to strip from the repo index
+          Empty = auto-detect packages without a template
         required: false
         type: string
         default: ''
@@ -15,8 +14,8 @@ on:
     inputs:
       packages:
         description: >-
-          Space-separated package names to strip from the repo index.
-          Empty = auto-detect packages without a template in srcpkgs/.
+          Space-separated package names to strip from the repo index
+          Empty = auto-detect packages without a template
         required: false
         default: ''
 
