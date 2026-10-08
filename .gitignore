@@ -31,6 +31,8 @@ src/__pycache__/
 # Start of templates list
 !/srcpkgs/android-sdk
 !/srcpkgs/aquamarine
+!/srcpkgs/better-sqlite3
+!/srcpkgs/better-sqlite3-devel
 !/srcpkgs/blocaled
 !/srcpkgs/BoxBuddy
 !/srcpkgs/brave-browser-bin
