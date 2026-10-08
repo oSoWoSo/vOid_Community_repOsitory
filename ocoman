@@ -55,6 +55,10 @@ SURF_SKIP_DELETE="${SURF_SKIP_DELETE:-1}"
 # leftover .xbps binary is only deleted when this is explicitly enabled. The
 # default follows the known DELETE crash above: hide, never touch the file.
 SURF_DELETE_ORPHANS="${SURF_DELETE_ORPHANS:-0}"
+# Space-separated package names to strip from the repodata regardless of
+# whether a template still exists in srcpkgs/ (used by the cleanup workflow
+# when build.yml dispatches it with the exact set of removed packages).
+SURF_PURGE_PACKAGES="${SURF_PURGE_PACKAGES:-}"
 CI_URL="${CI_URL:-https://github.com/oSoWoSo/Void_Community_Repository}"
 SIGNED_BY='oSoWoSo <mail@osowoso.org>'
 ARCHES='x86_64 x86_64-musl aarch64 aarch64-musl'
@@ -1100,10 +1104,19 @@ do_upload() {
 		fi
 
 		prune_orphans "$_remote_list" "${PWD}/orphans.txt"
+		if [ -n "$SURF_PURGE_PACKAGES" ]; then
+			# Caller (cleanup workflow) explicitly named packages to strip,
+			# independent of srcpkgs/ presence. Merge into the strip list.
+			echo '==> Adding explicitly-purged packages to strip list'
+			for _p in $SURF_PURGE_PACKAGES; do
+				grep -qx "$_p" "${PWD}/orphans.txt" 2>/dev/null || printf '%s\n' "$_p" >> "${PWD}/orphans.txt"
+			done
+			sort -u -o "${PWD}/orphans.txt" "${PWD}/orphans.txt" 2>/dev/null || true
+		fi
 		delete_orphan_files "${PWD}/orphans.txt" "$_remote_list"
 
 		if [ -s "${PWD}/orphans.txt" ] && [ -f "${ARCH}-repodata" ]; then
-			echo '==> Stripping orphan entries from local repodata'
+			echo '==> Stripping removed packages from local repodata'
 			if command -v python3 >/dev/null 2>&1; then
 				# xargs avoids unquoted-expansion globbing on orphan names
 				xargs python3 "${REPODATA_STRIP_PY}" \
@@ -1113,12 +1126,12 @@ do_upload() {
 				fatal 'python3 not found!'
 			fi
 			if [ "$_strip_rc" -ne 0 ]; then
-				fatal "==> repodata-strip failed; refusing to publish an index that still references deleted packages (${ARCH})"
+				fatal "==> repodata-strip failed; refusing to publish an index that still references removed packages (${ARCH})"
 			fi
-			# Double-check in the rewritten index that every orphan is actually
-			# gone before we sign + republish it. This guards against a future
-			# change that strips by an inaccurate name, i.e. the exact stale
-			# index (tomlplusplus adverted, .xbps gone) that broke hyprcursor.
+			# Double-check in the rewritten index that every stripped entry is
+			# actually gone before we sign + republish it. This guards against
+			# a future change that strips by an inaccurate name, i.e. the exact
+			# stale index (tomlplusplus adverted, .xbps gone) that broke hyprcursor.
 			_still_missing=0
 			while IFS= read -r _orph; do
 				[ -n "$_orph" ] || continue

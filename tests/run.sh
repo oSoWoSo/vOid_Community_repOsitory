@@ -746,6 +746,10 @@ assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -c 'for _file in \./\*-repodata')" 
 it 'no unfiltered package glob survives anywhere in do_upload'
 assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -cE '\./\*\.xbps|"\$\{_builddir\}"/\*\.xbps')" '0'
 
+it 'SURF_PURGE_PACKAGES merges explicit names into the strip list'
+assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -c 'if \[ -n "\$SURF_PURGE_PACKAGES" \]')" '1'
+assert_eq "$(printf '%s' "$_DOUPLOAD" | grep -c "grep -qx \"\\\$_p\" \"\\\${PWD}/orphans.txt\"")" '1'
+
 it 'packages are uploaded before the index'
 _pkg_line=$(printf '%s' "$_DOUPLOAD" | grep -n '==> Uploading packages' | cut -d: -f1)
 _idx_line=$(printf '%s' "$_DOUPLOAD" | grep -n '==> Uploading repository index' | cut -d: -f1)
@@ -1222,6 +1226,22 @@ print(m.collect_results(sys.argv[2]) == ({}, {}))
 else
 	echo '  (skipped: python3 not on PATH)'
 fi
+
+echo '== workflows: no crashing WebDAV DELETE =='
+
+# Surfer 7 crashes on every `surfer ... del` / WebDAV DELETE. Neither the
+# canonical cleaner nor the build workflow may issue one; both must delegate
+# to ocoman's strip-index path (SURF_SKIP_DELETE=1 / SURF_DELETE_ORPHANS=0).
+it 'cleanup.yml does not use the surfer CLI del command'
+assert_eq "$(grep -c 'surfer .* del \| \bdel ' "$SCRIPT_DIR/.github/workflows/cleanup.yml" 2>/dev/null)" '0'
+
+it 'cleanup.yml delegates to ocoman prune (no DELETE)'
+assert_eq "$(grep -c './ocoman -p' "$SCRIPT_DIR/.github/workflows/cleanup.yml")" '1'
+assert_eq "$(grep -v '^[[:space:]]*#' "$SCRIPT_DIR/.github/workflows/cleanup.yml" | grep -c 'SURF_SKIP_DELETE=0\|xargs.*del\|surfer.*del\|\bdel\b')" '0'
+
+it 'build.yml calls cleanup.yml for removed packages'
+assert_eq "$(grep -c 'uses: \./\.github/workflows/cleanup\.yml' "$SCRIPT_DIR/.github/workflows/build.yml")" '1'
+assert_eq "$(grep -c 'SURF_SKIP_DELETE: .0' "$SCRIPT_DIR/.github/workflows/build.yml")" '0'
 
 echo
 printf 'Passed: %s    Failed: %s\n' "$_PASS" "$_FAIL"
