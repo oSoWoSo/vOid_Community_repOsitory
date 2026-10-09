@@ -238,7 +238,7 @@ Create PR
 | hyprpicker | 0.4.7 | [home](https://github.com/hyprwm/hyprpicker) | zenobit |  | Wlroots-compatible Wayland color picker that does not suck |
 | hyprpolkitagent | 0.1.3 | [home](https://github.com/hyprwm/hyprpolkitagent) | zenobit |  | Simple polkit authentication agent for Hyprland, written in QT/QML |
 | hyprsunset | 0.3.3 | [home](https://github.com/hyprwm/hyprsunset) | zenobit |  | Application to enable a blue-light filter on Hyprland |
-| hyprsysteminfo | 0.1.3 | [home](https://github.com/hyprwm/hyprsysteminfo) | zenobit |  | Tiny qt6/qml application to display system informations |
+| hyprsysteminfo | 0.2.0 | [home](https://github.com/hyprwm/hyprsysteminfo) | zenobit |  | Tiny qt6/qml application to display system informations |
 | hyprtoolkit | 0.6.0 | [home](https://github.com/hyprwm/hyprtoolkit) | zenobit |  | Modern C++ Wayland-native GUI toolkit |
 | hyprtoolkit-devel | 0.6.0 | [home](https://github.com/hyprwm/hyprtoolkit) | zenobit |  | Modern C++ Wayland-native GUI toolkit |
 | hyprutils | 0.14.2 | [home](https://github.com/hyprwm/hyprutils) | zenobit |  | Hyprland utilities library used across the ecosystem |
