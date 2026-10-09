@@ -1,11 +1,10 @@
 # Template file for 'cosmic-comp'
 pkgname=cosmic-comp
-version=1.9.0
+version=1.10.0
 revision=1
-archs="x86_64*"
 build_style=cargo
 configure_args="--no-default-features --features logind"
-hostmakedepends="pkg-config"
+hostmakedepends="just pkg-config rust-std"
 makedepends="eudev-libudev-devel libseat-devel libxkbcommon-devel libinput-devel
  pixman-devel libgbm-devel libdisplay-info-devel"
 short_desc="Compositor for the COSMIC desktop environment"
@@ -13,8 +12,8 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-only"
 homepage="https://github.com/pop-os/cosmic-comp"
 distfiles="https://github.com/pop-os/cosmic-comp/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=f0f3a2362861fe8976d7d45436aaa0a10de975522b6e8a53d77058a74ffc81e8
+checksum=db6bf35703db06b3ac89e5da9ba9cd60eceaed90515c47e4b3256d73cf0a0b81
 
 do_install() {
-	CARGO_TARGET_DIR="target/${RUST_TARGET}" DESTDIR=${DESTDIR} make install
+	just cargo-target-dir="target/${RUST_TARGET}" rootdir="${DESTDIR}" prefix=/usr install
 }

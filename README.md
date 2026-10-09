@@ -121,7 +121,7 @@ Create PR
 | cosmic-applets | 1.10.0 | [home](https://github.com/pop-os/cosmic-applets) | zenobit |  | Applets for COSMIC Panel |
 | cosmic-applibrary | 1.10.0 | [home](https://github.com/pop-os/cosmic-app-library) | zenobit |  | Application launcher for the COSMIC desktop |
 | cosmic-bg | 1.10.0 | [home](https://github.com/pop-os/cosmic-bg) | zenobit |  | COSMIC session service which applies backgrounds to displays |
-| cosmic-comp | 1.9.0 | [home](https://github.com/pop-os/cosmic-comp) | zenobit | x86_64* | Compositor for the COSMIC desktop environment |
+| cosmic-comp | 1.10.0 | [home](https://github.com/pop-os/cosmic-comp) | zenobit |  | Compositor for the COSMIC desktop environment |
 | cosmic-desktop-full | 1.1.0 | [home](https://github.com/pop-os/cosmic-epoch) | Bella109 | x86_64* | Full Cosmic Desktop |
 | cosmic-desktop-minimal | 1.1.0 | [home](https://github.com/pop-os/cosmic-epoch) | Bella109 | x86_64* | Meta Package for COSMIC Desktop |
 | cosmic-edit | 1.10.0 | [home](https://github.com/pop-os/cosmic-edit) | zenobit |  | Text editor for the COSMIC desktop |
