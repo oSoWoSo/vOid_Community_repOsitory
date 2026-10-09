@@ -129,8 +129,8 @@ Create PR
 | cosmic-greeter | 1.9.0 | [home](https://github.com/pop-os/cosmic-greeter) | zenobit | x86_64* | COSMIC greeter for greetd |
 | cosmic-icons | 1.10.0 | [home](https://github.com/pop-os/cosmic-icons) | zenobit |  | System76 Cosmic icon theme for Linux |
 | cosmic-idle | 1.10.0 | [home](https://github.com/pop-os/cosmic-idle) | zenobit |  | Idle daemon for the COSMIC desktop |
-| cosmic-initial-setup | 1.9.0 | [home](https://github.com/pop-os/cosmic-initial-setup) | zenobit | x86_64* | Initial setup for the COSMIC desktop |
-| cosmic-launcher | 1.9.0 | [home](https://github.com/pop-os/cosmic-launcher) | zenobit | x86_64* | Layer Shell frontend for pop-launcher |
+| cosmic-initial-setup | 1.10.0 | [home](https://github.com/pop-os/cosmic-initial-setup) | zenobit |  | Initial setup for the COSMIC desktop |
+| cosmic-launcher | 1.10.0 | [home](https://github.com/pop-os/cosmic-launcher) | zenobit |  | Layer Shell frontend for pop-launcher |
 | cosmic-monitor | 1.10.0 | [home](https://github.com/pop-os/cosmic-monitor) | zenobit |  | System monitor for the COSMIC desktop |
 | cosmic-notifications | 1.10.0 | [home](https://github.com/pop-os/cosmic-notifications) | zenobit |  | Layer Shell notifications daemon for the COSMIC desktop |
 | cosmic-osd | 1.10.0 | [home](https://github.com/pop-os/cosmic-osd) | zenobit |  | On-Screen Display daemon for the COSMIC desktop |
