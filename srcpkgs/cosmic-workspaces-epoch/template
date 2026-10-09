@@ -1,8 +1,7 @@
 # Template file for 'cosmic-workspaces-epoch'
 pkgname=cosmic-workspaces-epoch
-version=1.9.0
+version=1.10.0
 revision=1
-archs="x86_64*"
 build_style=cargo
 hostmakedepends="pkg-config"
 makedepends="libxkbcommon-devel libgbm-devel eudev-libudev-devel libinput-devel"
@@ -11,9 +10,9 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-only"
 homepage="https://github.com/pop-os/cosmic-workspaces-epoch"
 distfiles="https://github.com/pop-os/cosmic-workspaces-epoch/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=cf9afff9ba023abe3bd996b82ceda7a295f63bcdbbd9ad784a9643a86c647f04
+checksum=914c229f29b2dc1eaf91757b7f3d51ee7d58be5687fa6a5d7ad83b23121fd0f6
 
 post_install() {
-	vinstall data/com.system76.CosmicWorkspaces.desktop 0644 usr/share/applications
-	vinstall data/com.system76.CosmicWorkspaces.svg 0644 usr/share/icons/hicolor/scalable/apps
+	vinstall data/com.system76.CosmicWorkspaces.desktop 644 usr/share/applications
+	vinstall data/com.system76.CosmicWorkspaces.svg 644 usr/share/icons/hicolor/scalable/apps
 }
