@@ -13,6 +13,13 @@ homepage="https://github.com/pop-os/cosmic-files"
 distfiles="https://github.com/pop-os/cosmic-files/archive/refs/tags/epoch-${version}.tar.gz"
 checksum=1c33cf6f65782e8a84bb4281430f182363eb837229f68b7f36cce1f2d8147f05
 
+do_build() {
+	: ${make_cmd:=cargo auditable}
+	: ${make_verbose:=-v}
+	${make_cmd} build ${XBPS_VERBOSE+${make_verbose}} --release --locked --target ${RUST_TARGET} \
+		-p cosmic-files -p cosmic-files-thumbnailer -p cosmic-files-applet
+}
+
 do_install() {
 	just cargo-target-dir="target/${RUST_TARGET}" rootdir="${DESTDIR}" prefix=/usr install
 }
