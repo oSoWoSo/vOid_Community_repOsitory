@@ -186,7 +186,7 @@ Create PR
 | dragonfly-reverb-vst3 | 3.2.10 | [home](https://michaelwillis.github.io/dragonfly-reverb) | Trve_AY |  | Collection of reverbs |
 | drako | 0.4.1 | [home](https://github.com/lucky7xz/drako) | zenobit |  | Grid-based, customizable TUI-Deck launcher |
 | easybashgui | 15.0.2 | [home](https://github.com/BashGui/easybashgui) | zenobit |  | Bash functions library that aims to give simple GUI functions |
-| faugus-launcher | 2.4.3 | [home](https://github.com/Faugus/faugus-launcher) | zenobit |  | Simple and lightweight app for running Windows games using UMU-Launcher |
+| faugus-launcher | 2.4.4 | [home](https://github.com/Faugus/faugus-launcher) | zenobit |  | Simple and lightweight app for running Windows games using UMU-Launcher |
 | fcitx5-lotus | 4.0.1 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn |  | Fcitx5 - Vietnamese IME |
 | fcitx5-lotus-settings | 4.0.1 | [home](https://github.com/LotusInputMethod/fcitx5-lotus) | Coolllyn |  | Fcitx5 - Vietnamese IME |
 | floorp-bin | 12.20.0 | [home](https://github.com/Floorp-Projects/Floorp) | zenobit | x86_64 aarch64 | Browser built for keeping the Open, Private and Sustainable Web alive |
@@ -375,7 +375,7 @@ Create PR
 | void-src-builder-git | 0.0.0 | [home](https://codeberg.org/pinguin-void/void-src-builder) | zenobit |  | Build packages from the Void source code |
 | void-user-manager-git | 0.0.0 | [home](https://codeberg.org/pinguin-void/void-user-manager) | zenobit | x86_64 | Modern, lightweight user and service management application |
 | vote | 0.92 | [home](https://codeberg.org/oSoWoSo/vote) | zenobit |  | XBPS package management helper for VoidLinux |
-| vtm | 2026.10.04 | [home](https://github.com/directvt/vtm) | zenobit |  | Text-based desktop environment |
+| vtm | 2026.10.05 | [home](https://github.com/directvt/vtm) | zenobit |  | Text-based desktop environment |
 | waterfox-bin | 6.7.5 | [home](https://www.waterfox.net) | zenobit | x86_64 aarch64 | Fast and private web browser |
 | wpgtk | 6.7.1 | [home](https://github.com/deviantfero/wpgtk/) | zenobit |  | Colorscheme, wallpaper and template manager for *nix |
 | xdg-desktop-portal-cosmic | 1.9.0 | [home](https://github.com/pop-os/xdg-desktop-portal-cosmic) | zenobit | x86_64* | Backend implementation for xdg-desktop-portal for COSMIC |
