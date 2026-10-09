@@ -141,7 +141,7 @@ Create PR
 | cosmic-screenshot | 1.10.0 | [home](https://github.com/pop-os/cosmic-screenshot) | zenobit |  | Utility for capturing screenshots via XDG Desktop Portal |
 | cosmic-session | 1.9.0 | [home](https://github.com/pop-os/cosmic-session) | zenobit | x86_64* | Session manager for the COSMIC desktop environment |
 | cosmic-settings | 1.9.0 | [home](https://github.com/pop-os/cosmic-settings) | zenobit | x86_64* | Settings application for the COSMIC desktop environment |
-| cosmic-settings-daemon | 1.9.0 | [home](https://github.com/pop-os/cosmic-settings-daemon) | zenobit | x86_64* | Settings daemon for the COSMIC desktop environment |
+| cosmic-settings-daemon | 1.10.0 | [home](https://github.com/pop-os/cosmic-settings-daemon) | zenobit |  | Settings daemon for the COSMIC desktop environment |
 | cosmic-sound-theme | 1.9.0 | [home](https://github.com/pop-os/cosmic-sound-theme) | zenobit | x86_64* | Sound theme for the COSMIC desktop environment |
 | cosmic-store | 1.9.0 | [home](https://github.com/pop-os/cosmic-store) | zenobit | x86_64* | Cosmic App Store |
 | cosmic-term | 1.9.0 | [home](https://github.com/pop-os/cosmic-term) | zenobit | x86_64* | COSMIC terminal emulator |
