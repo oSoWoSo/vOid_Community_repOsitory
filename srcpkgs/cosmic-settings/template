@@ -1,8 +1,7 @@
 # Template file for 'cosmic-settings'
 pkgname=cosmic-settings
-version=1.9.0
+version=1.10.0
 revision=1
-archs="x86_64*"
 build_style=cargo
 hostmakedepends="pkg-config just"
 makedepends="libxkbcommon-devel eudev-libudev-devel libinput-devel libdav1d-devel"
@@ -12,8 +11,8 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-only"
 homepage="https://github.com/pop-os/cosmic-settings"
 distfiles="https://github.com/pop-os/cosmic-settings/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=1e33fec9dc70408a85eca4055dca16afa82baadc2edb957e1400294b09f2ff27
+checksum=d11ba9d67d3fa279b659e31d64024366358b3f207ce6fe25564772805e517f34
 
 do_install() {
-	just --set cargo-target-dir "target/${RUST_TARGET}" --set rootdir ${DESTDIR} --set prefix /usr install
+	just cargo-target-dir="target/${RUST_TARGET}" rootdir="${DESTDIR}" prefix=/usr install
 }
