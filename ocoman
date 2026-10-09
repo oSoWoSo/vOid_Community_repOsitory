@@ -108,8 +108,14 @@ _re() {
 _SURF_READY=""
 
 # Write ~/.surfer.json once, with mode 600. The CLI has no env-var auth
-# (cli/config.js only reads that file), and -u/-p on the command line would
-# expose the app password in the process argv.
+# (cli/config.js only reads that file), and passing the token on the command
+# line would expose the app password in the process argv.
+#
+# Key names: cli/config.js reads `server` and `accessToken`. Older builds of
+# the CLI read `username`/`password` instead, and unknown keys are simply
+# ignored, so write all four -- writing only one pair breaks the other.
+# (For the same reason callers must use `surfer get -s ... -t ...`, never
+# `-u`/`-p`: those options do not exist, and `-s` is a subcommand option.)
 surf_cli_init() {
 	[ -n "$_SURF_READY" ] && return 0
 
@@ -124,7 +130,7 @@ surf_cli_init() {
 	(
 		umask 077
 		cat > "$_sbi_cfg" <<EOF
-{"server": "${SURFER_URL}", "username": "${SURFER_USER}", "password": "${SURFER_TOKEN}"}
+{"server": "${SURFER_URL}", "accessToken": "${SURFER_TOKEN}", "username": "${SURFER_USER}", "password": "${SURFER_TOKEN}"}
 EOF
 	)
 	chmod 600 "$_sbi_cfg" 2> /dev/null || true
@@ -142,8 +148,14 @@ surf_diagnose() {
 		*'No such file or directory'*)
 			return 0
 			;;
-		*'Invalid username or password'*)
+		# The CLI prints 'Invalid token' for HTTP 401 (cli/actions.js).
+		# 'Invalid username or password' is what older builds printed.
+		*'Invalid token'* | *'Invalid username or password'*)
 			echo '::error::Surfer CLI rejected our credentials; check SURFER_USER/SURFER_TOKEN' >&2
+			return 2
+			;;
+		*'Run surfer config first'*)
+			echo '::error::surfer CLI could not read its config; expected ~/.surfer.json with server+accessToken' >&2
 			return 2
 			;;
 		*'Failed to connect'*)
@@ -196,11 +208,23 @@ surf_cli() {
 	surfer "$@"
 }
 
+# True when $1 is a plausible repodata index (magic bytes + readable tar +
+# an index.plist member). `surfer get` exits 0 even when it writes an error
+# page or a truncated body to stdout -- any non-401/404/222 HTTP response is
+# piped straight through (cli/actions.js) -- so the exit code alone proves
+# nothing about what landed in the file.
+repodata_looks_valid() {
+	python3 "${REPODATA_STRIP_PY}" --check "$1" > /dev/null 2>&1
+}
+
 # Download ${ARCH}-repodata into the given file. Contract: 0 = downloaded,
 # 1 = not there yet (first run), 2 = gave up.
 # 'surfer get' prints errors on stdout, so the payload and the error text
-# have to be told apart by what landed in the output file.
+# have to be told apart by what landed in the output file -- and a zero exit
+# code is not enough, hence repodata_looks_valid() below.
 fetch_repodata() {
+	command -v python3 >/dev/null 2>&1 ||
+		fatal 'python3 not found (needed to validate the downloaded index)'
 	_fr_rel="$1"
 	_fr_out="$2"
 	_fr_start=$(date +%s)
@@ -216,17 +240,31 @@ fetch_repodata() {
 		# ("invalid header"). Errors still go to stdout, so the classification
 		# below keeps working.
 		if surf_cli get "$_fr_rel" > "$_fr_out"; then
-			return 0
+			# Exit 0 only means "something was written". Anything the
+			# server answered with that is not the index (HTML error page,
+			# JSON body, half a stream) also exits 0, and used to reach
+			# repodata-strip.py as `tarfile.ReadError: invalid header`.
+			if repodata_looks_valid "$_fr_out"; then
+				return 0
+			fi
+			_fr_last="downloaded payload is not a repodata index: $(python3 "${REPODATA_STRIP_PY}" --check "$_fr_out" 2>&1 >/dev/null | head -n1)"
+			rm -f "$_fr_out"
+		else
+			_fr_last=$(cat "$_fr_out")
 		fi
-		_fr_last=$(cat "$_fr_out")
 		case "$_fr_last" in
 			*'No such file or directory'*)
 				rm -f "$_fr_out"
 				return 1
 				;;
-			*'Invalid username or password'*)
+			*'Invalid token'* | *'Invalid username or password'*)
 				rm -f "$_fr_out"
 				echo '::error::Surfer CLI rejected our credentials; check SURFER_USER/SURFER_TOKEN' >&2
+				return 2
+				;;
+			*'Run surfer config first'*)
+				rm -f "$_fr_out"
+				echo '::error::surfer CLI could not read its config; expected ~/.surfer.json with server+accessToken' >&2
 				return 2
 				;;
 		esac
@@ -1064,7 +1102,11 @@ do_upload() {
 			done
 			sort -u -o "${PWD}/orphans.txt" "${PWD}/orphans.txt" 2>/dev/null || true
 		fi
-		delete_orphan_files "${PWD}/orphans.txt" "$_remote_list"
+		# NOTE: the orphan .xbps files are deleted only AFTER the new index
+		# is live (see "Deleting purged package files" below). Deleting first
+		# leaves the published index advertising downloads that 404 whenever
+		# anything downstream fails -- which is exactly what happened to
+		# tomlplusplus on x86_64.
 
 		if [ -s "${PWD}/orphans.txt" ] && [ -f "${ARCH}-repodata" ]; then
 			echo '==> Stripping removed packages from local repodata'
@@ -1129,6 +1171,9 @@ do_upload() {
 			upload_file "$_file" "${_arch_dir}" \
 				|| fatal "==> Error: failed to upload ${_fname}"
 		done
+
+		# Safe only now: the index no longer references these files.
+		delete_orphan_files "${PWD}/orphans.txt" "$_remote_list"
 
 	)
 	_upload_status=$?

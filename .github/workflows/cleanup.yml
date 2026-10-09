@@ -27,6 +27,7 @@ jobs:
   cleanup:
     name: ${{ matrix.arch }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container:
       image: ghcr.io/osowoso/oco-builder-x86_64:latest
       credentials:
@@ -45,30 +46,26 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Strip removed packages from remote repodata
+      # `ocoman -p` does the whole purge by itself: it fetches the remote
+      # repodata, deletes orphan .xbps/.sig2 files, strips the removed names
+      # out of index.plist, re-signs and uploads the index. Do NOT download
+      # ${ARCH}-repodata here -- there is no ${ARCH}-repodata.sig2 on the
+      # server (xbps-rindex -s embeds the signature in stage.plist), so any
+      # step that fetches one fails with 404.
+      - name: Purge removed packages from repodata
         env:
           SURFER_TOKEN: ${{ secrets.SURFER_TOKEN }}
           SURFER_USER: ${{ secrets.SURFER_USER }}
           PRIV_KEY: ${{ secrets.PRIV_KEY }}
           SURF_PURGE_PACKAGES: ${{ inputs.packages }}
-          ARCH: ${{ matrix.arch }}
-        run: |
-          set -eu
-          SFLAGS="-s repo.osowoso.org -u ${SURFER_USER} -p ${SURFER_TOKEN}"
-          mkdir -p /work
-          for _f in "${ARCH}-repodata" "${ARCH}-repodata.sig2"; do
-            surfer $SFLAGS get "${ARCH}/${_f}" > "/work/${_f}" 2>/dev/null || \
-              { echo "::error::failed to fetch ${_f}" >&2; exit 1; }
-          done
-
-      - name: Determine stale package versions
-        id: decide
-        env:
-          ARCH: ${{ matrix.arch }}
-        working-directory: /work
         run: |
           set -eu
           export PATH="/opt/xbps/usr/bin/:$PATH"
-          command -v xbps-rindex >/dev/null 2>&1 || { echo "xbps-rindex not found in builder image" >&2; exit 1; }
-          # ARCH comes from the job env, `ocoman -p` takes no argument.
-          ./ocoman -p
+          command -v xbps-rindex >/dev/null 2>&1 || { echo "::error::xbps-rindex not found in builder image" >&2; exit 1; }
+          command -v surfer >/dev/null 2>&1 || { echo "::error::surfer CLI not found in builder image" >&2; exit 1; }
+          # ARCH comes from the job env; `ocoman -p` takes no argument and
+          # must run from the checkout so it finds src/ and srcpkgs/. It
+          # only reads BUILDDIR to pick up freshly built .xbps files; this
+          # job builds nothing, so point it at an empty directory.
+          mkdir -p "${RUNNER_TEMP}/empty"
+          BUILDDIR="${RUNNER_TEMP}/empty" ./ocoman -p
