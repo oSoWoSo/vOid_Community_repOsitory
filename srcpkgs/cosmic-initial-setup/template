@@ -1,9 +1,9 @@
 # Template file for 'cosmic-initial-setup'
 pkgname=cosmic-initial-setup
 version=1.10.0
-revision=1
+revision=2
 build_style=cargo
-hostmakedepends="pkg-config just"
+hostmakedepends="pkg-config just rust-std"
 makedepends="libxkbcommon-devel libzstd-devel eudev-libudev-devel libinput-devel"
 depends="blocaled iso-codes"
 short_desc="Initial setup for the COSMIC desktop"
