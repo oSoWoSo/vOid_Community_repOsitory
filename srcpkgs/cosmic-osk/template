@@ -1,7 +1,7 @@
 # Template file for 'cosmic-osk'
 pkgname=cosmic-osk
 version=1.10.0
-revision=1
+revision=2
 build_style=cargo
 hostmakedepends="pkg-config just"
 makedepends="libxkbcommon-devel eudev-libudev-devel"
@@ -12,17 +12,10 @@ homepage="https://github.com/pop-os/cosmic-osk"
 distfiles="https://github.com/pop-os/cosmic-osk/archive/refs/tags/epoch-${version}.tar.gz"
 checksum=7d92c3df124d1d009ae94cc95915c9085af4ceeb6027473fc02ee564dcead81a
 
-do_build() {
-	#cargo build --release --locked --target ${RUST_TARGET}
-	#cargo build --release --locked --target ${RUST_TARGET} --package cosmic-osk
-	just build-release
+pre_build() {
+	cargo fetch --locked
 }
 
 do_install() {
-	#just --set cargo-target-dir "target/${RUST_TARGET}" --set rootdir ${DESTDIR} --set prefix /usr install
-	just install
-}
-
-post_install() {
-	vbin target/release/cosmic-osk
+	just cargo-target-dir="target/${RUST_TARGET}" rootdir="${DESTDIR}" prefix=/usr install
 }
