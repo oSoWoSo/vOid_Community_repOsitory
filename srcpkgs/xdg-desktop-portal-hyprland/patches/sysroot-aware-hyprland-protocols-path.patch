@@ -4,7 +4,7 @@ HYPRLAND_PROTOS_PREFIX comes from "prefix" in hyprland-protocols.pc, which is
 baked in as /usr at build time and therefore does not carry the cross base.
 In cross builds hyprwayland-scanner (a host tool) then looks for the protocol
 XML in /usr/share/hyprland-protocols, which does not exist, and every
-protocolnew() step fails with "Couldn't load proto".
+protocol code generation step fails with "Couldn't load proto".
 
 pkg_get_variable() resolves pkgdatadir, which is defined as
 ${pc_sysrootdir}${datarootdir}/hyprland-protocols. The xbps-src pkg-config
