@@ -135,7 +135,7 @@ Create PR
 | cosmic-notifications | 1.10.0 | [home](https://github.com/pop-os/cosmic-notifications) | zenobit |  | Layer Shell notifications daemon for the COSMIC desktop |
 | cosmic-osd | 1.10.0 | [home](https://github.com/pop-os/cosmic-osd) | zenobit |  | On-Screen Display daemon for the COSMIC desktop |
 | cosmic-osk | 1.10.0 | [home](https://github.com/pop-os/cosmic-osk) | zenobit |  | COSMIC On-Screen Keyboard |
-| cosmic-panel | 1.9.0 | [home](https://github.com/pop-os/cosmic-panel) | zenobit | x86_64* | COSMIC applet for creating panels and docks |
+| cosmic-panel | 1.10.0 | [home](https://github.com/pop-os/cosmic-panel) | zenobit |  | COSMIC applet for creating panels and docks |
 | cosmic-player | 1.9.0 | [home](https://github.com/pop-os/cosmic-player) | zenobit | x86_64* | Media player for the COSMIC desktop |
 | cosmic-randr | 1.9.0 | [home](https://github.com/pop-os/cosmic-randr) | zenobit | x86_64* | Library and utility for displaying and configuring Wayland outputs |
 | cosmic-screenshot | 1.9.0 | [home](https://github.com/pop-os/cosmic-screenshot) | zenobit | x86_64* | Utility for capturing screenshots via XDG Desktop Portal |
