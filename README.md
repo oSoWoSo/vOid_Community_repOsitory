@@ -132,8 +132,8 @@ Create PR
 | cosmic-initial-setup | 1.9.0 | [home](https://github.com/pop-os/cosmic-initial-setup) | zenobit | x86_64* | Initial setup for the COSMIC desktop |
 | cosmic-launcher | 1.9.0 | [home](https://github.com/pop-os/cosmic-launcher) | zenobit | x86_64* | Layer Shell frontend for pop-launcher |
 | cosmic-monitor | 1.10.0 | [home](https://github.com/pop-os/cosmic-monitor) | zenobit |  | System monitor for the COSMIC desktop |
-| cosmic-notifications | 1.9.0 | [home](https://github.com/pop-os/cosmic-notifications) | zenobit | x86_64* | Layer Shell notifications daemon for the COSMIC desktop |
-| cosmic-osd | 1.9.0 | [home](https://github.com/pop-os/cosmic-osd) | zenobit | x86_64* | On-Screen Display daemon for the COSMIC desktop |
+| cosmic-notifications | 1.10.0 | [home](https://github.com/pop-os/cosmic-notifications) | zenobit |  | Layer Shell notifications daemon for the COSMIC desktop |
+| cosmic-osd | 1.10.0 | [home](https://github.com/pop-os/cosmic-osd) | zenobit |  | On-Screen Display daemon for the COSMIC desktop |
 | cosmic-osk | 1.10.0 | [home](https://github.com/pop-os/cosmic-osk) | zenobit |  | COSMIC On-Screen Keyboard |
 | cosmic-panel | 1.9.0 | [home](https://github.com/pop-os/cosmic-panel) | zenobit | x86_64* | COSMIC applet for creating panels and docks |
 | cosmic-player | 1.9.0 | [home](https://github.com/pop-os/cosmic-player) | zenobit | x86_64* | Media player for the COSMIC desktop |
