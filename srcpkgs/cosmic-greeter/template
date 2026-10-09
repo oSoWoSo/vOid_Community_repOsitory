@@ -20,4 +20,9 @@ export VERGEN_GIT_SHA="${version}_${revision}"
 
 do_install() {
 	just cargo-target-dir="target/${RUST_TARGET}" rootdir="${DESTDIR}" prefix=/usr install
+
+	vinstall ${FILESDIR}/cosmic-greeter.pam 644 etc/pam.d cosmic-greeter
+	vinstall ${FILESDIR}/cosmic-greeter.toml 644 etc/greetd
+	vsv cosmic-greeter-daemon
+	vsv cosmic-greeter
 }
