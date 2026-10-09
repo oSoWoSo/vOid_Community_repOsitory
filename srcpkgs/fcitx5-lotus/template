@@ -1,10 +1,10 @@
 # Template file for 'fcitx5-lotus'
 pkgname=fcitx5-lotus
-version=4.0.1
+version=5.0.0
 revision=1
 build_style=cmake
 configure_args="-DLOTUS_UINPUT_PROXY_USER=_uinput_proxy -DINSTALL_RUNIT=ON -DRUNIT_SV_DIR=/usr/share/examples/sv -DLOTUS_BYTECOMPILE_PYTHON=OFF"
-hostmakedepends="extra-cmake-modules pkgconf gettext go librsvg-utils"
+hostmakedepends="extra-cmake-modules pkgconf gettext go"
 makedepends="libfcitx5-devel libinput-devel eudev-libudev-devel"
 depends="fcitx5 acl-progs"
 short_desc="Fcitx5 - Vietnamese IME"
@@ -13,7 +13,7 @@ license="GPL-3.0-or-later AND MIT"
 homepage="https://github.com/LotusInputMethod/fcitx5-lotus"
 changelog="https://github.com/LotusInputMethod/fcitx5-lotus/releases"
 distfiles="https://github.com/LotusInputMethod/fcitx5-lotus/archive/refs/tags/v${version}.tar.gz>fcitx5-lotus-${version}.tar.gz"
-checksum="98bf54e3ede73579fd0c3366ff2c1ffbc334eb110ad726c61be3f3e169677474"
+checksum="d9db9191003e30afe193613aeacd24c391b1a752f7b3cd48211c0243270f839e"
 system_accounts="_uinput_proxy"
 _uinput_proxy_groups="input"
 
