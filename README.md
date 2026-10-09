@@ -127,7 +127,7 @@ Create PR
 | cosmic-edit | 1.10.0 | [home](https://github.com/pop-os/cosmic-edit) | zenobit |  | Text editor for the COSMIC desktop |
 | cosmic-files | 1.9.0 | [home](https://github.com/pop-os/cosmic-files) | zenobit | x86_64* | File manager for the COSMIC desktop environment |
 | cosmic-greeter | 1.9.0 | [home](https://github.com/pop-os/cosmic-greeter) | zenobit | x86_64* | COSMIC greeter for greetd |
-| cosmic-icons | 1.9.0 | [home](https://github.com/pop-os/cosmic-icons) | zenobit | x86_64* | System76 Cosmic icon theme for Linux |
+| cosmic-icons | 1.10.0 | [home](https://github.com/pop-os/cosmic-icons) | zenobit |  | System76 Cosmic icon theme for Linux |
 | cosmic-idle | 1.10.0 | [home](https://github.com/pop-os/cosmic-idle) | zenobit |  | Idle daemon for the COSMIC desktop |
 | cosmic-initial-setup | 1.9.0 | [home](https://github.com/pop-os/cosmic-initial-setup) | zenobit | x86_64* | Initial setup for the COSMIC desktop |
 | cosmic-launcher | 1.9.0 | [home](https://github.com/pop-os/cosmic-launcher) | zenobit | x86_64* | Layer Shell frontend for pop-launcher |
