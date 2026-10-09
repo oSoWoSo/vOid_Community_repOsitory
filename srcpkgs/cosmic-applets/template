@@ -1,8 +1,7 @@
 # Template file for 'cosmic-applets'
 pkgname=cosmic-applets
-version=1.9.0
+version=1.10.0
 revision=1
-archs="x86_64*"
 build_style=cargo
 hostmakedepends="pkg-config just"
 makedepends="libxkbcommon-devel eudev-libudev-devel dbus-devel pulseaudio-devel libinput-devel"
@@ -11,9 +10,9 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-only"
 homepage="https://github.com/pop-os/cosmic-applets"
 distfiles="https://github.com/pop-os/cosmic-applets/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=f113f74cd05b179ab0478dd5876b671880914600d5df56d518f8f80c08543037
+checksum=fa922a252d87eeb37e5847fa6840e321f9f75961ae3c9bd6d7ab1b779779f08e
 
 do_install() {
-	just --set targetdir "target/${RUST_TARGET}" --set rootdir ${DESTDIR} \
-		--set prefix /usr --set cosmic-applets-bin cosmic-applets install
+	just targetdir="target/${RUST_TARGET}" rootdir="${DESTDIR}" \
+		prefix=/usr cosmic-applets-bin=cosmic-applets install
 }
