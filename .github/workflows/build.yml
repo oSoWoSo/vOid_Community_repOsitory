@@ -161,6 +161,7 @@ on:
         - gh-lazy
         - ghgrab
         - glaze
+        - glaze7
         - gofer
         - gradle9
         - graphite-gtk-theme

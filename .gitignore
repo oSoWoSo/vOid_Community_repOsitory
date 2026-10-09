@@ -137,6 +137,7 @@ src/__pycache__/
 !/srcpkgs/gh-lazy
 !/srcpkgs/ghgrab
 !/srcpkgs/glaze
+!/srcpkgs/glaze7
 !/srcpkgs/gofer
 !/srcpkgs/gradle9
 !/srcpkgs/graphite-gtk-theme
