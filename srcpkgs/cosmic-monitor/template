@@ -1,8 +1,7 @@
 # Template file for 'cosmic-monitor'
 pkgname=cosmic-monitor
-version=1.9.0
+version=1.10.0
 revision=1
-archs="x86_64*"
 build_style=cargo
 hostmakedepends="pkg-config just"
 makedepends="libxkbcommon-devel"
@@ -11,8 +10,8 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-only"
 homepage="https://github.com/pop-os/cosmic-monitor"
 distfiles="https://github.com/pop-os/cosmic-monitor/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=2ef7102ddfc982bd4c3e70632bce1b0e5bb2d6d96fb830a3ac8db0b2fff47709
+checksum=ad05af39c240f252bf1191a58563c3d3e858afeeec8334879bba0050c9697496
 
 do_install() {
-	just --set cargo-target-dir "target/${RUST_TARGET}" --set rootdir ${DESTDIR} --set prefix /usr install
+	just cargo-target-dir="target/${RUST_TARGET}" rootdir="${DESTDIR}" prefix=/usr install
 }

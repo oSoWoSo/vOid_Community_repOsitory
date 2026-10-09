@@ -131,7 +131,7 @@ Create PR
 | cosmic-idle | 1.10.0 | [home](https://github.com/pop-os/cosmic-idle) | zenobit |  | Idle daemon for the COSMIC desktop |
 | cosmic-initial-setup | 1.9.0 | [home](https://github.com/pop-os/cosmic-initial-setup) | zenobit | x86_64* | Initial setup for the COSMIC desktop |
 | cosmic-launcher | 1.9.0 | [home](https://github.com/pop-os/cosmic-launcher) | zenobit | x86_64* | Layer Shell frontend for pop-launcher |
-| cosmic-monitor | 1.9.0 | [home](https://github.com/pop-os/cosmic-monitor) | zenobit | x86_64* | System monitor for the COSMIC desktop |
+| cosmic-monitor | 1.10.0 | [home](https://github.com/pop-os/cosmic-monitor) | zenobit |  | System monitor for the COSMIC desktop |
 | cosmic-notifications | 1.9.0 | [home](https://github.com/pop-os/cosmic-notifications) | zenobit | x86_64* | Layer Shell notifications daemon for the COSMIC desktop |
 | cosmic-osd | 1.9.0 | [home](https://github.com/pop-os/cosmic-osd) | zenobit | x86_64* | On-Screen Display daemon for the COSMIC desktop |
 | cosmic-osk | 1.10.0 | [home](https://github.com/pop-os/cosmic-osk) | zenobit |  | COSMIC On-Screen Keyboard |
