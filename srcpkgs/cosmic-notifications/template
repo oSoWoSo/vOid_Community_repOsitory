@@ -1,8 +1,7 @@
 # Template file for 'cosmic-notifications'
 pkgname=cosmic-notifications
-version=1.9.0
+version=1.10.0
 revision=1
-archs="x86_64*"
 build_style=cargo
 hostmakedepends="pkg-config just"
 makedepends="libxkbcommon-devel"
@@ -11,8 +10,8 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-only"
 homepage="https://github.com/pop-os/cosmic-notifications"
 distfiles="https://github.com/pop-os/cosmic-notifications/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=36fb0a639461432f77df30e8d065ecc536a64a8504e2eebe4b0dcd054cffad08
+checksum=73992c11fd16aa695279f78ed412f07cb71b3d62ca4999e2e6fcd44155c8550c
 
 do_install() {
-	just --set cargo-target-dir "target/${RUST_TARGET}" --set rootdir ${DESTDIR} --set prefix /usr install
+	just cargo-target-dir="target/${RUST_TARGET}" rootdir="${DESTDIR}" prefix=/usr install
 }
