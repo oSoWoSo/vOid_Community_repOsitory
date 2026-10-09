@@ -1,8 +1,7 @@
 # Template file for 'cosmic-screenshot'
 pkgname=cosmic-screenshot
-version=1.9.0
+version=1.10.0
 revision=1
-archs="x86_64*"
 build_style=cargo
 hostmakedepends="just"
 short_desc="Utility for capturing screenshots via XDG Desktop Portal"
@@ -10,8 +9,8 @@ maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-only"
 homepage="https://github.com/pop-os/cosmic-screenshot"
 distfiles="https://github.com/pop-os/cosmic-screenshot/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=2f809f4e1ed8ca218b9d39975cee290d168f231b48204a4d91d75ee63f30abcb
+checksum=1f74e8ac311e564dd1bac64a2bf02aa095e9c98222be832c2b3366124b3a5000
 
 do_install() {
-	just --set cargo-target-dir "target/${RUST_TARGET}" --set rootdir ${DESTDIR} --set prefix /usr install
+	just cargo-target-dir="target/${RUST_TARGET}" rootdir="${DESTDIR}" prefix=/usr install
 }
