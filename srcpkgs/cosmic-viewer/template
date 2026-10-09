@@ -1,32 +1,36 @@
 # Template file for 'cosmic-viewer'
 pkgname=cosmic-viewer
-version=1.9.0
-revision=1
+version=1.10.0
+revision=2
 build_style=cargo
-hostmakedepends="pkg-config just cmake nasm"
-makedepends="libxkbcommon-devel"
+# --frozen is --locked --offline, so the build never reaches the network
+make_build_args="--frozen"
+hostmakedepends="pkg-config just"
+makedepends="libxkbcommon-devel libheif-devel libjpeg-turbo-devel
+ libstdc++-devel"
+depends="hicolor-icon-theme"
 short_desc="COSMIC Image Viewer"
 maintainer="zenobit <zen@osowoso.org>"
 license="GPL-3.0-only"
 homepage="https://github.com/pop-os/cosmic-viewer"
 distfiles="https://github.com/pop-os/cosmic-viewer/archive/refs/tags/epoch-${version}.tar.gz"
-checksum=a1c3b54c5f7dde278d17e4bd67395cd1ce4ef4a130ec1b0cfeebc05cc0ce3026
+checksum=ac0cee420c954b85188d1fbfffee32a49d11dacced881c68b068c56e83efcdad
 
-do_build() {
-	just build-release
+pre_build() {
+	# Fetch dependencies for the target we are building for. Under cross
+	# builds rustc is the host compiler, so --print host-tuple is wrong.
+	cargo fetch --locked --target "${RUST_TARGET}"
 }
 
 do_install() {
-	#just --set cargo-target-dir "target/${RUST_TARGET}" --set rootdir ${DESTDIR} --set prefix /usr install
-	just install
-}
-
-post_install() {
-	vbin target/release/cosmic-viewer
-	vinstall res/com.system76.CosmicViewer.metainfo.xml 644 usr/share/metainfo
-	vinstall res/com.system76.CosmicViewer.desktop 644 usr/share/applications
-	for size in 16 24 32 48 64 128 256; do
-		vinstall res/icons/hicolor/${size}x${size}/apps/com.system76.CosmicViewer.svg \
-		 644 usr/share/icons/hicolor/${size}x${size}/apps/com.system76.CosmicViewer.svg
-	done
+	# Upstream's install recipe is the canonical install path: it covers the
+	# binary, the desktop entry, the metainfo and every icon size, so there
+	# is no need to duplicate that in post_install(). rootdir has to be
+	# pointed at the package destdir, otherwise the recipe installs into
+	# the masterdir and the package ends up empty.
+	#
+	# cargo-target-dir is the target root, not the profile dir: the justfile
+	# appends /release to it itself. cargo.sh always passes --target, so the
+	# binary always lands in target/${RUST_TARGET}/release.
+	just cargo-target-dir="target/${RUST_TARGET}" rootdir="${DESTDIR}" prefix=/usr install
 }
