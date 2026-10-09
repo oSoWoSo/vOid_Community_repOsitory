@@ -259,6 +259,8 @@ Create PR
 | libbtrfsutil | 7.1 | [home](https://btrfs.wiki.kernel.org/index.php/Main_Page) | Enno Boland |  | Btrfs filesystem utilities |
 | libbtrfsutil-devel | 7.1 | [home](https://btrfs.wiki.kernel.org/index.php/Main_Page) | Enno Boland |  | Btrfs filesystem utilities |
 | libcprime | 5.0.1 | [home](https://gitlab.com/cubocore/libcprime) | zenobit |  | Library for bookmarking, saving activities, sharing files and more |
+| libheif | 1.23.6 | [home](https://github.com/strukturag/libheif) | zenobit |  | HEIF file format decoder and encoder + Dav1d encoding |
+| libheif-devel | 1.23.6 | [home](https://github.com/strukturag/libheif) | zenobit |  | HEIF file format decoder and encoder + Dav1d encoding |
 | librewolf-bin | 157.0.1.1 | [home](https://librewolf.net) | zenobit | x86_64 aarch64 | Community-maintained fork of Firefox focused on privacy and security |
 | libspng | 0.7.4 | [home](https://libspng.org/) | zenobit |  | Simple, modern libpng alternative |
 | libtsm | 4.8.0 | [home](https://github.com/kmscon/libtsm) | zenobit |  | Terminal-emulator State Machine |

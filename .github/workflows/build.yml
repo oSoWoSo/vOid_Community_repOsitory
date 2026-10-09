@@ -220,6 +220,8 @@ on:
         - libbtrfsutil
         - libbtrfsutil-devel
         - libcprime
+        - libheif
+        - libheif-devel
         - librewolf-bin
         - libspng
         - libtsm
