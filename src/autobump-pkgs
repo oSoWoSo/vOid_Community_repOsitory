@@ -1,7 +1,14 @@
-# Templates for which a `package-update` issue automatically triggers an autobump.
-# One package name per line, '#' for comments. Packages listed here should be
-# safe for `xxautobump` (i.e. void-packages update-check can find the upstream
-# version and the distfiles URL derives from ${version} without extra mangling).
+# Templates for which a `package-update` issue automatically triggers an
+# autobump. One package name per line, '#' for comments.
+#
+# A template qualifies when both autobump halves work on it:
+#   * its `update` file yields a candidate version (.github/scripts/detect-update.sh)
+#   * its distfiles URL derives from ${version} and every distfile is a plain
+#     sha256 download (.github/scripts/bump-template.sh)
+#
+# Never list a symlinked alias: an alias is a second name for one directory,
+# so bumping it would rewrite the target's template. lint-autobump-symlinks.sh
+# enforces that.
 #
 # To re-run the automation for an issue, edit the issue body (e.g. bump the
 # version) — the workflow re-triggers on `edited` events.
