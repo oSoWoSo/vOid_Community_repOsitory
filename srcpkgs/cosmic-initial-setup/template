@@ -13,6 +13,36 @@ homepage="https://github.com/pop-os/cosmic-initial-setup"
 distfiles="https://github.com/pop-os/cosmic-initial-setup/archive/refs/tags/epoch-${version}.tar.gz"
 checksum=9f6320bf51a9edfb63d0bf896e39a34a07e6921b8b67e316ace47081ca368080
 
+# crabtime's proc macro compiles a nested cargo project for the host target and
+# inherits the global RUSTFLAGS, which points at the cross sysroot and breaks std
+# lookup. Scope the sysroot flag to the cross target so nested host builds are clean.
+_nested_cargo_rustflags() {
+	if [ -n "$CROSS_BUILD" ]; then
+		unset RUSTFLAGS
+		_RUST_TARGET_ENV="${RUST_TARGET^^}"
+		_RUSTFLAGS_VAR="CARGO_TARGET_${_RUST_TARGET_ENV//-/_}_RUSTFLAGS"
+		export "$_RUSTFLAGS_VAR=$XBPS_CROSS_RUSTFLAGS"
+	fi
+}
+
+do_build() {
+	: "${make_cmd:=cargo auditable}"
+	: "${make_verbose:=-v}"
+	_nested_cargo_rustflags
+
+	${make_cmd} build ${XBPS_VERBOSE+${make_verbose}} --release --locked --target ${RUST_TARGET} \
+		${configure_args} ${make_build_args}
+}
+
+do_check() {
+	: "${make_cmd:=cargo auditable}"
+	: "${make_verbose:=-v}"
+	_nested_cargo_rustflags
+
+	${make_check_pre} ${make_cmd} test ${XBPS_VERBOSE+${make_verbose}} --release --locked --target ${RUST_TARGET} \
+		${configure_args} ${make_check_args}
+}
+
 do_install() {
 	just cargo-target-dir="target/${RUST_TARGET}" rootdir="${DESTDIR}" prefix=/usr install
 }
