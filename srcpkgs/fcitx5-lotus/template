@@ -3,6 +3,7 @@ pkgname=fcitx5-lotus
 version=5.0.0
 revision=1
 build_style=cmake
+build_helper=go
 configure_args="-DLOTUS_UINPUT_PROXY_USER=_uinput_proxy -DINSTALL_RUNIT=ON -DRUNIT_SV_DIR=/usr/share/examples/sv -DLOTUS_BYTECOMPILE_PYTHON=OFF"
 hostmakedepends="extra-cmake-modules pkgconf gettext go"
 makedepends="libfcitx5-devel libinput-devel eudev-libudev-devel"
@@ -25,23 +26,6 @@ if [ "$XBPS_TARGET_LIBC" = "musl" ]; then
 	# Tests fail on musl: https://github.com/golang/go/issues/13492
 	make_check=no
 fi
-
-export CGO_ENABLED=1
-case "${XBPS_TARGET_MACHINE}" in
-	aarch64*) export GOARCH=arm64 ;;
-	armv5*)   export GOARCH=arm; export GOARM=5 ;;
-	armv6*)   export GOARCH=arm; export GOARM=6 ;;
-	armv7*)   export GOARCH=arm; export GOARM=7 ;;
-	i686*)    export GOARCH=386 ;;
-	x86_64*)  export GOARCH=amd64 ;;
-	ppc64le*) export GOARCH=ppc64le ;;
-	ppc64*)   export GOARCH=ppc64 ;;
-	ppc*)     export GOARCH=ppc ;;
-	mipsel*)  export GOARCH=mipsle ;;
-	mips*)    export GOARCH=mips ;;
-	riscv64*) export GOARCH=riscv64 ;;
-	*) broken="Unsupported architecture ${XBPS_TARGET_MACHINE}" ;;
-esac
 
 post_install() {
 	vlicense bamboo/bamboo-core/LICENSE bamboo-core.LICENSE
