@@ -1,6 +1,6 @@
 # Template file for 'fcitx5-lotus'
 pkgname=fcitx5-lotus
-version=5.0.0
+version=5.0.1
 revision=1
 build_style=cmake
 build_helper=go
@@ -14,7 +14,7 @@ license="GPL-3.0-or-later AND MIT"
 homepage="https://github.com/LotusInputMethod/fcitx5-lotus"
 changelog="https://github.com/LotusInputMethod/fcitx5-lotus/releases"
 distfiles="https://github.com/LotusInputMethod/fcitx5-lotus/archive/refs/tags/v${version}.tar.gz>fcitx5-lotus-${version}.tar.gz"
-checksum="d9db9191003e30afe193613aeacd24c391b1a752f7b3cd48211c0243270f839e"
+checksum="6999b34540c3a477290b424f7a34a34e935450c61ed4cb1942028dc87f0fdf02"
 system_accounts="_uinput_proxy"
 _uinput_proxy_groups="input"
 
