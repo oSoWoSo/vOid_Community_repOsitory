@@ -13,6 +13,34 @@ homepage="https://github.com/pop-os/cosmic-initial-setup"
 distfiles="https://github.com/pop-os/cosmic-initial-setup/archive/refs/tags/epoch-${version}.tar.gz"
 checksum=9f6320bf51a9edfb63d0bf896e39a34a07e6921b8b67e316ace47081ca368080
 
+_crabtime_host_build_env() {
+	if [ -z "$CROSS_BUILD" ]; then
+		return 0
+	fi
+	unset RUSTFLAGS
+	_triple_env="${RUST_TARGET^^}"
+	export "CARGO_TARGET_${_triple_env//-/_}_RUSTFLAGS=$XBPS_CROSS_RUSTFLAGS"
+	unset _triple_env
+}
+
+do_build() {
+	: ${make_cmd:=cargo auditable}
+	: ${make_verbose:=-v}
+	_crabtime_host_build_env
+
+	${make_cmd} build ${XBPS_VERBOSE+${make_verbose}} --release --locked --target ${RUST_TARGET} \
+		${configure_args} ${make_build_args}
+}
+
+do_check() {
+	: ${make_cmd:=cargo auditable}
+	: ${make_verbose:=-v}
+	_crabtime_host_build_env
+
+	${make_check_pre} ${make_cmd} test ${XBPS_VERBOSE+${make_verbose}} --release --locked --target ${RUST_TARGET} \
+		${configure_args} ${make_check_args}
+}
+
 do_install() {
 	just cargo-target-dir="target/${RUST_TARGET}" rootdir="${DESTDIR}" prefix=/usr install
 }
