@@ -1,7 +1,7 @@
 # Template file for 'surfer-cli'
 pkgname=surfer-cli
-version=7.2.6
-revision=2
+version=7.2.7
+revision=1
 hostmakedepends="nodejs python3"
 depends="nodejs"
 short_desc="Command line interface for surfer"
@@ -9,7 +9,7 @@ maintainer="zenobit <zen@osoweso.org>"
 license="AGPL-3.0-only"
 homepage="https://github.com/cloudron-io/surfer"
 distfiles="https://github.com/cloudron-io/surfer/archive/refs/tags/v${version}.tar.gz"
-checksum=19fc9f186f4b0c05e6acd96c211d0d403f8617eedef6ad7ae6c1225ee40b942b
+checksum=e1a5a7f611a6979b6f2ef1b3a27d6a1897c196fae44dffd33cdf23099b4990b2
 
 export npm_config_audit=false
 export npm_config_fund=false
@@ -56,16 +56,11 @@ do_build() {
 do_install() {
 	local _clidir="usr/lib/surfer/cli"
 	local _mod
-
 	npm prune --omit=dev
-
 	vmkdir "${_clidir}"
-
 	vcopy "cli/*.js" "${_clidir}"
 	vcopy cli/node_modules "${_clidir}"
 	vinstall cli/package.json 644 "${_clidir}"
-
 	vbin ${FILESDIR}/surfer
-
 	vlicense LICENSE
 }
