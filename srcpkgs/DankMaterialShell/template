@@ -1,10 +1,10 @@
 # Template file for 'DankMaterialShell'
 pkgname=DankMaterialShell
-version=1.6.2
-revision=2
+version=1.6.3
+revision=1
 _version=1.6.0
 build_style=gnu-makefile
-build_helper=qemu
+build_helper="go qemu"
 make_build_args="VERSION=${version} COMMIT=2db7646fe3ab47fddfdb8723f2da07d61a0d47ac"
 hostmakedepends="go tar"
 short_desc="Desktop shell for wayland compositors built with Quickshell & GO"
@@ -13,7 +13,7 @@ license="MIT"
 homepage="https://github.com/AvengeMedia/DankMaterialShell"
 distfiles="https://github.com/AvengeMedia/DankMaterialShell/archive/refs/tags/v${version}.tar.gz
  https://github.com/AvengeMedia/dank-qml-common/archive/refs/tags/v${_version}.tar.gz"
-checksum="5eff09d35d39b18f9d593f0f464e2fb5be3ddf6c92fa9eb1e99c534126c62419
+checksum="32e5a87130c5127391f5b1f307348e89a2b34f17e9f0d9c8c0ce09fba334e1fd
  1d2a7820054ed7efdcf3bffe4ba611a37c2e701844de575a168cece66f57027e"
 
 post_extract() {
@@ -21,28 +21,8 @@ post_extract() {
 	mv dank-qml-common-${_version}/* dank-qml-common/
 }
 
-pre_build() {
-	case "${XBPS_TARGET_MACHINE}" in
-		aarch64*) export GOARCH=arm64 ;;
-		armv5*) export GOARCH=arm; export GOARM=5 ;;
-		armv6*) export GOARCH=arm; export GOARM=6 ;;
-		armv7*) export GOARCH=arm; export GOARM=7 ;;
-		i686*) export GOARCH=386 ;;
-		x86_64*) export GOARCH=amd64 ;;
-		ppc64le*) export GOARCH=ppc64le ;;
-		ppc64*) export GOARCH=ppc64 ;;
-		riscv64*) export GOARCH=riscv64 ;;
-		*) broken="DankMaterialShell: unsupported architecture: ${XBPS_TARGET_MACHINE}" ;;
-	esac
-	export GOOS=linux
-	export CGO_ENABLED=0
-	export GOTOOLCHAIN=local
-	export GOPATH="${XBPS_HOSTDIR}/gopath"
-	export GOCACHE="${XBPS_HOSTDIR}/gocache-${XBPS_TARGET_MACHINE}"
-}
-
-do_check() {
-	echo "In next version"
+doo_check() {
+	echo "In some future version..."
 	#make test-qml
 }
 
